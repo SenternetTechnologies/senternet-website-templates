@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jane Doe | Graphic Designer & Visual Artist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .hero-bg {
+            background-color: #0f172a; /* slate-900 */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(148, 163, 184, 0.1), transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.1), transparent 40%);
+        }
+        .section-title {
+            @apply text-3xl md:text-4xl font-bold text-slate-800 mb-2;
+        }
+        .section-subtitle {
+            @apply text-lg text-slate-500 mb-12;
+        }
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+        @media (min-width: 1024px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            width: 100%;
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-slate-800">Jane Doe</a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about" class="text-slate-600 hover:text-blue-500 transition-colors">About</a>
+                <a href="#work" class="text-slate-600 hover:text-blue-500 transition-colors">Work</a>
+                <a href="#contact" class="text-slate-600 hover:text-blue-500 transition-colors">Contact</a>
+            </nav>
+            <a href="#contact" class="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all">Hire Me</a>
+            <button id="mobile-menu-button" class="md:hidden text-slate-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#about" class="block py-2 text-slate-600 hover:text-blue-500">About</a>
+            <a href="#work" class="block py-2 text-slate-600 hover:text-blue-500">Work</a>
+            <a href="#contact" class="block py-2 text-slate-600 hover:text-blue-500">Contact</a>
+            <a href="#contact" class="block mt-2 bg-blue-500 text-white text-center px-4 py-2 rounded-lg hover:bg-blue-600">Hire Me</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center pt-20 md:pt-0">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-7xl font-extrabold text-white leading-tight">
+                Visual Storyteller & <br> Digital Artist
+            </h1>
+            <p class="text-slate-300 mt-6 text-lg md:text-xl max-w-3xl mx-auto">
+                I create compelling brand identities, intuitive user interfaces, and engaging digital experiences that connect with people.
+            </p>
+            <div class="mt-10">
+                <a href="#work" class="bg-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all transform hover:scale-105">View My Work</a>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- About Section -->
+        <section id="about" class="py-20 md:py-32">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-5 gap-12 items-center">
+                    <div class="md:col-span-2">
+                        <img src="https://placehold.co/600x700/e2e8f0/334155?text=Jane+Doe" alt="Portrait of Jane Doe" class="rounded-lg shadow-2xl w-full">
+                    </div>
+                    <div class="md:col-span-3">
+                        <h2 class="section-title">About Me</h2>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            Hi, I'm Jane, a passionate graphic designer with over 8 years of experience in helping brands tell their stories visually. My design philosophy is rooted in simplicity, clarity, and purpose. I believe that great design is not just about aesthetics, but about solving problems and creating meaningful connections.
+                        </p>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            My expertise spans across branding, UI/UX design, illustration, and motion graphics. I'm proficient with industry-standard tools like Adobe Creative Suite and Figma, and I'm always eager to learn new things and push my creative boundaries.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">Branding</span>
+                            <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">UI/UX Design</span>
+                            <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">Illustration</span>
+                            <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">Figma</span>
+                            <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">Adobe CC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Work Section -->
+        <section id="work" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="section-title">My Portfolio</h2>
+                    <p class="section-subtitle">A selection of my favorite projects.</p>
+                </div>
+
+                <!-- Layout 1: Masonry Grid -->
+                <h3 class="text-2xl font-bold text-slate-700 mb-8">Layout 1: Masonry Grid</h3>
+                <div class="masonry-grid">
+                    <div class="masonry-item">
+                        <img src="https://placehold.co/600x800/a5b4fc/1e293b?text=Project+1" alt="Project 1" class="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full" onclick="openModal(this.src)">
+                    </div>
+                    <div class="masonry-item">
+                        <img src="https://placehold.co/600x400/93c5fd/1e293b?text=Project+2" alt="Project 2" class="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full" onclick="openModal(this.src)">
+                    </div>
+                    <div class="masonry-item">
+                        <img src="https://placehold.co/600x600/67e8f9/1e293b?text=Project+3" alt="Project 3" class="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full" onclick="openModal(this.src)">
+                    </div>
+                    <div class="masonry-item">
+                        <img src="https://placehold.co/600x450/f9a8d4/1e293b?text=Project+4" alt="Project 4" class="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full" onclick="openModal(this.src)">
+                    </div>
+                    <div class="masonry-item">
+                        <img src="https://placehold.co/600x750/fde047/1e293b?text=Project+5" alt="Project 5" class="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full" onclick="openModal(this.src)">
+                    </div>
+                    <div class="masonry-item">
+                        <img src="https://placehold.co/600x500/a78bfa/1e293b?text=Project+6" alt="Project 6" class="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer w-full" onclick="openModal(this.src)">
+                    </div>
+                </div>
+                
+                <hr class="my-20 border-slate-200">
+
+                <!-- Layout 2: Full-Width Showcase -->
+                <h3 class="text-2xl font-bold text-slate-700 mb-8 text-center">Layout 2: Full-Width Showcase</h3>
+                <div class="space-y-24">
+                    <!-- Project A -->
+                    <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                        <div class="order-2 md:order-1">
+                            <h4 class="text-2xl font-bold text-slate-800 mb-2">E-commerce Redesign</h4>
+                            <p class="text-slate-600 mb-4">A complete visual and UX overhaul for a leading online retailer, focusing on a clean interface and seamless checkout process.</p>
+                            <a href="#" class="font-semibold text-blue-500 hover:underline">View Case Study &rarr;</a>
+                        </div>
+                        <div class="order-1 md:order-2">
+                            <img src="https://placehold.co/800x600/93c5fd/1e293b?text=E-commerce+Mockup" alt="E-commerce Project" class="rounded-lg shadow-xl">
+                        </div>
+                    </div>
+                    <!-- Project B -->
+                    <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                        <div>
+                            <img src="https://placehold.co/800x600/a5b4fc/1e293b?text=Branding+Concept" alt="Branding Project" class="rounded-lg shadow-xl">
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-bold text-slate-800 mb-2">Tech Startup Branding</h4>
+                            <p class="text-slate-600 mb-4">Developed a fresh and modern brand identity for a new SaaS startup, including logo, color palette, and typography guidelines.</p>
+                             <a href="#" class="font-semibold text-blue-500 hover:underline">View Case Study &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-20 border-slate-200">
+
+                <!-- Layout 3: Centered Carousel/Slideshow -->
+                <h3 class="text-2xl font-bold text-slate-700 mb-8 text-center">Layout 3: Focused Carousel</h3>
+                <div id="carousel" class="max-w-4xl mx-auto relative shadow-2xl rounded-lg">
+                    <div class="overflow-hidden rounded-lg">
+                        <div id="carousel-inner" class="flex transition-transform duration-500 ease-in-out">
+                            <!-- Carousel items will be injected by JS -->
+                        </div>
+                    </div>
+                    <button id="prevBtn" class="absolute top-1/2 left-4 -translate-y-1/2 bg-white/70 hover:bg-white p-2 rounded-full shadow-md">
+                        <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <button id="nextBtn" class="absolute top-1/2 right-4 -translate-y-1/2 bg-white/70 hover:bg-white p-2 rounded-full shadow-md">
+                        <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                    <div id="carousel-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                        <!-- Dots will be injected by JS -->
+                    </div>
+                </div>
+                
+                <hr class="my-20 border-slate-200">
+
+                <!-- Layout 4: Overlapping Grid -->
+                <h3 class="text-2xl font-bold text-slate-700 mb-16 text-center">Layout 4: Artistic Overlapping Grid</h3>
+                <div class="relative max-w-5xl mx-auto grid grid-cols-6 grid-rows-4 gap-4" style="min-height: 600px;">
+                    <div class="col-span-3 row-span-3 rounded-lg shadow-xl overflow-hidden z-10">
+                        <img src="https://placehold.co/600x600/f9a8d4/1e293b?text=Artistic+1" class="w-full h-full object-cover cursor-pointer" onclick="openModal(this.src)">
+                    </div>
+                    <div class="col-start-3 col-span-4 row-start-2 row-span-3 bg-white p-8 rounded-lg shadow-2xl z-20">
+                        <h4 class="text-2xl font-bold mb-2">Editorial Design</h4>
+                        <p class="text-slate-600">A magazine spread design focusing on dynamic typography and impactful imagery. The layout creates a visual hierarchy that guides the reader through the content.</p>
+                    </div>
+                    <div class="col-start-4 col-span-3 row-start-1 row-span-1 rounded-lg shadow-lg z-0">
+                         <img src="https://placehold.co/600x200/67e8f9/1e293b?text=Artistic+2" class="w-full h-full object-cover cursor-pointer" onclick="openModal(this.src)">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 md:py-32">
+            <div class="container mx-auto px-6 max-w-3xl text-center">
+                <h2 class="section-title">Let's Create Together</h2>
+                <p class="section-subtitle">Have a project in mind? I'd love to hear about it. Drop me a line!</p>
+                <form action="#" method="POST" class="text-left space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-slate-700">Name</label>
+                        <input type="text" id="name" name="name" class="mt-1 block w-full px-4 py-3 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
+                        <input type="email" id="email" name="email" class="mt-1 block w-full px-4 py-3 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-slate-700">Message</label>
+                        <textarea id="message" name="message" rows="4" class="mt-1 block w-full px-4 py-3 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-blue-500 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all transform hover:scale-105">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 Jane Doe. All Rights Reserved.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="hover:text-white transition-colors">Twitter</a>
+                <a href="#" class="hover:text-white transition-colors">Instagram</a>
+                <a href="#" class="hover:text-white transition-colors">Dribbble</a>
+                <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal-overlay fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 opacity-0 pointer-events-none">
+        <div id="modalContent" class="modal-content bg-white p-2 rounded-lg shadow-2xl max-w-4xl max-h-full w-full transform scale-95">
+            <img id="modalImage" src="" alt="Full-size project image" class="w-full h-auto object-contain max-h-[85vh] rounded">
+        </div>
+        <button id="closeModal" class="absolute top-4 right-4 text-white text-4xl font-bold">&times;</button>
+    </div>
+
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Image Modal Logic
+        const modal = document.getElementById('imageModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalImage = document.getElementById('modalImage');
+        const closeModalButton = document.getElementById('closeModal');
+
+        function openModal(src) {
+            modalImage.src = src;
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('pointer-events-none');
+            }, 300); // Wait for transition to finish
+        }
+
+        closeModalButton.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Carousel Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const carouselImages = [
+                { src: "https://placehold.co/1200x800/fde047/1e293b?text=App+Screen+1", alt: "App Screen 1" },
+                { src: "https://placehold.co/1200x800/a78bfa/1e293b?text=App+Screen+2", alt: "App Screen 2" },
+                { src: "https://placehold.co/1200x800/f9a8d4/1e293b?text=App+Screen+3", alt: "App Screen 3" },
+                { src: "https://placehold.co/1200x800/67e8f9/1e293b?text=App+Screen+4", alt: "App Screen 4" },
+            ];
+
+            const carouselInner = document.getElementById('carousel-inner');
+            const carouselDots = document.getElementById('carousel-dots');
+            
+            carouselImages.forEach((img, index) => {
+                // Create image slide
+                const slide = document.createElement('div');
+                slide.className = 'w-full flex-shrink-0';
+                const image = document.createElement('img');
+                image.src = img.src;
+                image.alt = img.alt;
+                image.className = 'w-full h-full object-cover';
+                slide.appendChild(image);
+                carouselInner.appendChild(slide);
+
+                // Create dot indicator
+                const dot = document.createElement('button');
+                dot.className = 'w-3 h-3 rounded-full transition-colors';
+                dot.dataset.index = index;
+                dot.classList.add(index === 0 ? 'bg-slate-800' : 'bg-slate-400', 'hover:bg-slate-600');
+                carouselDots.appendChild(dot);
+            });
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const slides = document.querySelectorAll('#carousel-inner > div');
+            const dots = document.querySelectorAll('#carousel-dots > button');
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+
+            function updateCarousel() {
+                carouselInner.style.transform = `translateX(-${currentIndex * 100}%)`;
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('bg-slate-800', index === currentIndex);
+                    dot.classList.toggle('bg-slate-400', index !== currentIndex);
+                });
+            }
+
+            nextBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                updateCarousel();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                updateCarousel();
+            });
+            
+            dots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    currentIndex = parseInt(e.target.dataset.index);
+                    updateCarousel();
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>
