@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senternet Technologies | Digital Transformation Experts</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Font and Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8fa;
+        }
+        /* Gradient for Hero button */
+        .hero-btn {
+            background-image: linear-gradient(to right, #1d4ed8, #3b82f6);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4);
+        }
+        /* Custom Card styles for better aesthetics */
+        .service-card {
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navigation Bar -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-extrabold text-blue-700">SENTERNET</a>
+            <nav class="hidden md:flex space-x-6 text-gray-600 font-medium">
+                <a href="#home" class="hover:text-blue-700 transition duration-150">Home</a>
+                <a href="#services" class="hover:text-blue-700 transition duration-150">Services</a>
+                <a href="#portfolio" class="hover:text-blue-700 transition duration-150">Projects</a>
+                <a href="#team" class="hover:text-blue-700 transition duration-150">Team</a>
+                <a href="#contact" class="hover:text-blue-700 transition duration-150">Contact</a>
+            </nav>
+            <div class="md:hidden">
+                <!-- Mobile Menu Icon - simple for single file mandate -->
+                <button class="text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 1. Hero Section -->
+    <section id="home" class="bg-gray-50 py-20 md:py-32 text-center">
+        <div class="container mx-auto px-6">
+            <p class="text-blue-600 font-semibold mb-3 tracking-widest uppercase">Digital Transformation Starts Here</p>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+                Build Your <span class="text-blue-700">Awesome Website</span> & Achieve Marketing Success
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
+                SENTERNET TECHNOLOGIES, based in Aranthangi, provides expert Web Development, Graphic Design, and Digital Marketing services to scale your business globally.
+            </p>
+            <a href="#services" class="hero-btn inline-block text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl duration-300">
+                Explore Our Services
+            </a>
+        </div>
+    </section>
+
+    <!-- 2. Services Section -->
+    <section id="services" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Core Expertise</h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                We blend creativity with technology to deliver results that matter.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Service 1: Web Development -->
+                <div class="service-card bg-blue-50 p-8 rounded-2xl border border-blue-100 shadow-md flex flex-col items-center">
+                    <div class="text-blue-600 mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Modern Web Development</h3>
+                    <p class="text-gray-600">
+                        Crafting fast, secure, and fully responsive websites, from custom HTML/CSS to robust backend solutions and CMS integration.
+                    </p>
+                </div>
+
+                <!-- Service 2: Graphic Design -->
+                <div class="service-card bg-green-50 p-8 rounded-2xl border border-green-100 shadow-md flex flex-col items-center">
+                    <div class="text-green-600 mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Creative Graphic Design</h3>
+                    <p class="text-gray-600">
+                        Designing impactful visual assets: logos, branding, marketing materials, and stunning graphics that tell your brand's unique story.
+                    </p>
+                </div>
+
+                <!-- Service 3: Digital Marketing -->
+                <div class="service-card bg-red-50 p-8 rounded-2xl border border-red-100 shadow-md flex flex-col items-center">
+                    <div class="text-red-600 mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Strategic Digital Marketing</h3>
+                    <p class="text-gray-600">
+                        Driving targeted traffic and leads through expert social media marketing, SEO, and focused digital advertising campaigns.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Portfolio/Projects Section -->
+    <section id="portfolio" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">Our Successful Ventures</h2>
+            <p class="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                A glimpse into the diverse projects where we delivered innovative digital solutions.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project Card 1 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="p-6">
+                        <p class="text-sm font-semibold text-blue-500 mb-1">Web Platform</p>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Muvi Foods Website</h4>
+                        <p class="text-gray-600">Complete web presence and branding for a food product company.</p>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="p-6">
+                        <p class="text-sm font-semibold text-green-500 mb-1">Branding & Design</p>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Abulu Juice Identity</h4>
+                        <p class="text-gray-600">A refreshing new visual identity and packaging design.</p>
+                    </div>
+                </div>
+
+                <!-- Project Card 3 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="p-6">
+                        <p class="text-sm font-semibold text-red-500 mb-1">AI & Tech</p>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Senternet Story AI</h4>
+                        <p class="text-gray-600">Developing innovative AI tools for narrative generation.</p>
+                    </div>
+                </div>
+
+                 <!-- Project Card 4 (Placeholder) -->
+                 <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="p-6">
+                        <p class="text-sm font-semibold text-yellow-500 mb-1">E-commerce</p>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Sana Foods E-Store</h4>
+                        <p class="text-gray-600">E-commerce setup for specialty food products.</p>
+                    </div>
+                </div>
+
+                <!-- Project Card 5 (Placeholder) -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="p-6">
+                        <p class="text-sm font-semibold text-indigo-500 mb-1">Construction Website</p>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Shivan Constructions</h4>
+                        <p class="text-gray-600">Professional website showcasing construction projects and services.</p>
+                    </div>
+                </div>
+
+                <!-- Project Card 6 (Placeholder) -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="p-6">
+                        <p class="text-sm font-semibold text-pink-500 mb-1">Gaming</p>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Monster Game for CS</h4>
+                        <p class="text-gray-600">Conceptualizing and designing game assets for a new title.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Team Section -->
+    <section id="team" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Meet Our Powerhouse Team</h2>
+            <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                The experts behind your success, combining technical skills with creative flair.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                <!-- Team Member 1: Senthil -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-blue-200" src="https://placehold.co/80x80/2563EB/ffffff?text=SK" onerror="this.src='https://placehold.co/80x80/2563EB/ffffff?text=SK';" alt="Senthil">
+                    <h4 class="font-bold text-gray-900">Senthil</h4>
+                    <p class="text-sm text-blue-600 font-medium">Owner & CEO</p>
+                </div>
+
+                <!-- Team Member 2: Kumar -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-indigo-200" src="https://placehold.co/80x80/4F46E5/ffffff?text=K" onerror="this.src='https://placehold.co/80x80/4F46E5/ffffff?text=K';" alt="Kumar">
+                    <h4 class="font-bold text-gray-900">Kumar</h4>
+                    <p class="text-sm text-indigo-600 font-medium">Web Designer</p>
+                </div>
+
+                <!-- Team Member 3: Sathish -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-red-200" src="https://placehold.co/80x80/EF4444/ffffff?text=Sath" onerror="this.src='https://placehold.co/80x80/EF4444/ffffff?text=Sath';" alt="Sathish">
+                    <h4 class="font-bold text-gray-900">Sathish</h4>
+                    <p class="text-sm text-red-600 font-medium">Graphic Designer</p>
+                </div>
+
+                <!-- Team Member 4: Swetha -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-pink-200" src="https://placehold.co/80x80/EC4899/ffffff?text=Swe" onerror="this.src='https://placehold.co/80x80/EC4899/ffffff?text=Swe';" alt="Swetha">
+                    <h4 class="font-bold text-gray-900">Swetha</h4>
+                    <p class="text-sm text-pink-600 font-medium">Digital Marketing</p>
+                </div>
+
+                <!-- Team Member 5: Shanthi -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-yellow-200" src="https://placehold.co/80x80/F59E0B/ffffff?text=Shan" onerror="this.src='https://placehold.co/80x80/F59E0B/ffffff?text=Shan';" alt="Shanthi">
+                    <h4 class="font-bold text-gray-900">Shanthi</h4>
+                    <p class="text-sm text-yellow-600 font-medium">Digital Marketing</p>
+                </div>
+
+                <!-- Team Member 6: Santhosh -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-green-200" src="https://placehold.co/80x80/10B981/ffffff?text=San" onerror="this.src='https://placehold.co/80x80/10B981/ffffff?text=San';" alt="Santhosh">
+                    <h4 class="font-bold text-gray-900">Santhosh</h4>
+                    <p class="text-sm text-green-600 font-medium">Web Developer</p>
+                </div>
+
+                <!-- Team Member 7: Anitha -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-teal-200" src="https://placehold.co/80x80/14B8A6/ffffff?text=Ani" onerror="this.src='https://placehold.co/80x80/14B8A6/ffffff?text=Ani';" alt="Anitha">
+                    <h4 class="font-bold text-gray-900">Anitha</h4>
+                    <p class="text-sm text-teal-600 font-medium">Backend Worker</p>
+                </div>
+
+                <!-- Team Member 8: Surya -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-cyan-200" src="https://placehold.co/80x80/06B6D4/ffffff?text=Sur" onerror="this.src='https://placehold.co/80x80/06B6D4/ffffff?text=Sur';" alt="Surya">
+                    <h4 class="font-bold text-gray-900">Surya</h4>
+                    <p class="text-sm text-cyan-600 font-medium">Backend/Web Dev</p>
+                </div>
+
+                <!-- Team Member 9: Saran -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-fuchsia-200" src="https://placehold.co/80x80/D946EF/ffffff?text=Sar" onerror="this.src='https://placehold.co/80x80/D946EF/ffffff?text=Sar';" alt="Saran">
+                    <h4 class="font-bold text-gray-900">Saran</h4>
+                    <p class="text-sm text-fuchsia-600 font-medium">Social Media Marketing</p>
+                </div>
+
+                <!-- Team Member 10: Fasman -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-lime-200" src="https://placehold.co/80x80/84CC16/ffffff?text=Fas" onerror="this.src='https://placehold.co/80x80/84CC16/ffffff?text=Fas';" alt="Fasman">
+                    <h4 class="font-bold text-gray-900">Fasman</h4>
+                    <p class="text-sm text-lime-600 font-medium">Business Marketing</p>
+                </div>
+
+                <!-- Team Member 11: Arun -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-orange-200" src="https://placehold.co/80x80/F97316/ffffff?text=Aru" onerror="this.src='https://placehold.co/80x80/F97316/ffffff?text=Aru';" alt="Arun">
+                    <h4 class="font-bold text-gray-900">Arun</h4>
+                    <p class="text-sm text-orange-600 font-medium">Autocad Specialist</p>
+                </div>
+
+                <!-- Team Member 12: Siva -->
+                <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition duration-200">
+                    <img class="w-20 h-20 rounded-full mb-3 object-cover bg-gray-300" src="https://placehold.co/80x80/6B7280/ffffff?text=Siv" onerror="this.src='https://placehold.co/80x80/6B7280/ffffff?text=Siv';" alt="Siva">
+                    <h4 class="font-bold text-gray-900">Siva</h4>
+                    <p class="text-sm text-gray-600 font-medium">Product Marketing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Contact Section -->
+    <section id="contact" class="py-16 md:py-24 bg-blue-700 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Start Your Project?</h2>
+            <p class="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+                Let's discuss how Senternet Technologies can bring your digital vision to life.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8">
+                <a href="https://wa.me/918190038085" target="_blank" class="bg-white text-blue-700 font-bold py-3 px-8 rounded-xl hover:bg-gray-100 transition duration-300 shadow-lg">
+                    <i class="fab fa-whatsapp mr-2"></i> WhatsApp Now
+                </a>
+                <a href="mailto:senternettechnologies@gmail.com" class="border border-white text-white font-bold py-3 px-8 rounded-xl hover:bg-blue-600 transition duration-300 shadow-lg">
+                    Email Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <!-- Col 1: Brand Info -->
+            <div>
+                <h3 class="text-xl font-bold mb-3 text-blue-400">SENTERNET TECHNOLOGIES</h3>
+                <p class="text-sm text-gray-400">
+                    Your partner in digital growth, providing exceptional web, design, and marketing solutions from Aranthangi.
+                </p>
+            </div>
+
+            <!-- Col 2: Quick Contact -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-blue-400">Quick Contact</h3>
+                <ul class="space-y-2">
+                    <li class="text-sm text-gray-300">WhatsApp: <a href="https://wa.me/918190038085" target="_blank" class="hover:text-white transition duration-150 font-medium">+91 81900 38085</a></li>
+                    <li class="text-sm text-gray-300">Email: <a href="mailto:senternettechnologies@gmail.com" class="hover:text-white transition duration-150 font-medium">senternettechnologies@gmail.com</a></li>
+                    <li class="text-sm text-gray-300">Location: Aranthangi, Pudukkottai, India</li>
+                </ul>
+            </div>
+
+            <!-- Col 3: Navigation -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-blue-400">Sitemap</h3>
+                <ul class="space-y-2">
+                    <li class="text-sm text-gray-300"><a href="#services" class="hover:text-white transition duration-150">Services</a></li>
+                    <li class="text-sm text-gray-300"><a href="#portfolio" class="hover:text-white transition duration-150">Projects</a></li>
+                    <li class="text-sm text-gray-300"><a href="#team" class="hover:text-white transition duration-150">Team</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-10 pt-6 border-t border-gray-800 text-center">
+            <p class="text-sm text-gray-500">&copy; 2025 SENTERNET TECHNOLOGIES. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
