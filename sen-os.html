@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENTERNET OS - Digital Excellence Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --windows-blue: #0078D4;
+            --windows-dark: #1F1F1F;
+            --acrylic-light: rgba(255, 255, 255, 0.75);
+            --acrylic-dark: rgba(0, 0, 0, 0.6);
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Dark Blue Windows 11 Wallpaper feel with subtle texture */
+            background: radial-gradient(circle at 50% 50%, rgba(30, 58, 138, 0.8) 0%, rgba(12, 74, 110, 1) 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Acrylic Blur Effect for Start Menu/Taskbar/Windows */
+        .acrylic-light {
+            background-color: var(--acrylic-light);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .acrylic-dark {
+            background-color: var(--acrylic-dark);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Taskbar button hover effect */
+        .taskbar-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Active Start Button color */
+        #start-button.active {
+            background-color: var(--windows-blue);
+        }
+
+        /* Custom Scrollbar for a more modern look */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Window Styling */
+        .win-border {
+            border: 1px solid var(--windows-blue);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .win-content-dark {
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- 1. DESKTOP ICONS (8 total) -->
+    <div id="desktop" class="absolute inset-0 p-4 pt-16 z-10 flex flex-wrap content-start overflow-y-auto">
+        <!-- ICON TEMPLATE - About -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="about">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2m-6 0h.01"></path></svg>
+            <span class="text-xs text-center mt-1">About Us</span>
+        </div>
+        <!-- ICON TEMPLATE - Services -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="services">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L14 10.75L18.25 17L14 17.5M12 20.25V3.75M12 20.25H4.75A2.25 2.25 0 012.5 18V6A2.25 2.25 0 014.75 3.75H19.25A2.25 2.25 0 0121.5 6V18A2.25 2.25 0 0119.25 20.25H12"></path></svg>
+            <span class="text-xs text-center mt-1">Services</span>
+        </div>
+        <!-- ICON TEMPLATE - Projects -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="projects">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+            <span class="text-xs text-center mt-1">Projects</span>
+        </div>
+        <!-- New ICON: Vision -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="vision">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6a2 2 0 00-2-2H5a2 2 0 00-2 2v13M19 19V6a2 2 0 01-2-2h-2a2 2 0 01-2 2v13m-6 0H3m18 0h-6"></path></svg>
+            <span class="text-xs text-center mt-1">Our Vision</span>
+        </div>
+        <!-- New ICON: Digital Marketing -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="digital_marketing">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            <span class="text-xs text-center mt-1">Digital Marketing</span>
+        </div>
+        <!-- New ICON: AI Innovation -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="ai_innovation">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m-9-9h18m-6 0h.01M5.07 18.02a9 9 0 0113.86 0M3 12h18m-6 0h.01M5.07 5.98a9 9 0 0013.86 0M3 12a9 9 0 0018 0"></path></svg>
+            <span class="text-xs text-center mt-1">AI Innovation</span>
+        </div>
+        <!-- ICON TEMPLATE - Team -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="team">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h-4a2 2 0 01-2-2v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2a6 6 0 016-6h6a6 6 0 016 6v2a2 2 0 01-2 2zM12 8a4 4 0 100-8 4 4 0 000 8z"></path></svg>
+            <span class="text-xs text-center mt-1">Team</span>
+        </div>
+        <!-- ICON TEMPLATE - Contact -->
+        <div class="desktop-icon w-20 flex flex-col items-center p-2 rounded-lg cursor-pointer hover:bg-white/20 active:bg-white/40 transition duration-150" data-window-id="contact">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-6 13h6a2 2 0 002-2V5a2 2 0 00-2-2H3a2 2 0 00-2 2v14a2 2 0 002 2h6l3-3"></path></svg>
+            <span class="text-xs text-center mt-1">Contact</span>
+        </div>
+    </div>
+
+    <!-- 2. START MENU -->
+    <div id="start-menu" class="hidden fixed bottom-16 left-1/2 transform -translate-x-1/2 w-[350px] md:w-[550px] h-[550px] acrylic-light rounded-xl p-4 flex flex-col z-40 transition-all duration-200">
+        <div class="text-gray-900 font-semibold mb-4 text-sm flex items-center">
+            <span class="p-1 rounded-md bg-blue-500 text-white mr-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L14 10.75L18.25 17L14 17.5M12 20.25V3.75M12 20.25H4.75A2.25 2.25 0 012.5 18V6A2.25 2.25 0 014.75 3.75H19.25A2.25 2.25 0 0121.5 6V18A2.25 2.25 0 0119.25 20.25H12"></path></svg>
+            </span>
+            <span class="tracking-wider">Senternet Technologies OS</span>
+        </div>
+
+        <!-- Pinned Apps Section (Updated for 8 apps + 1 system) -->
+        <div class="mb-6">
+            <h2 class="text-gray-700 text-base font-semibold mb-2">Pinned</h2>
+            <div class="grid grid-cols-6 gap-2">
+                <!-- Row 1 -->
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="about"><div class="w-10 h-10 bg-blue-500 rounded-md flex items-center justify-center text-white text-xl">A</div><span class="text-xs text-gray-900 mt-1">About</span></div>
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="services"><div class="w-10 h-10 bg-green-500 rounded-md flex items-center justify-center text-white text-xl">S</div><span class="text-xs text-gray-900 mt-1">Services</span></div>
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="projects"><div class="w-10 h-10 bg-red-500 rounded-md flex items-center justify-center text-white text-xl">P</div><span class="text-xs text-gray-900 mt-1">Projects</span></div>
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="vision"><div class="w-10 h-10 bg-indigo-500 rounded-md flex items-center justify-center text-white text-xl">V</div><span class="text-xs text-gray-900 mt-1">Vision</span></div>
+                <!-- Row 2 -->
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="digital_marketing"><div class="w-10 h-10 bg-yellow-600 rounded-md flex items-center justify-center text-white text-xl">D</div><span class="text-xs text-gray-900 mt-1">Marketing</span></div>
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="ai_innovation"><div class="w-10 h-10 bg-pink-500 rounded-md flex items-center justify-center text-white text-xl">AI</div><span class="text-xs text-gray-900 mt-1">AI Tools</span></div>
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="team"><div class="w-10 h-10 bg-yellow-500 rounded-md flex items-center justify-center text-gray-900 text-xl">T</div><span class="text-xs text-gray-900 mt-1">Team</span></div>
+                <div class="start-app-icon start-app-opener p-2 flex flex-col items-center rounded-lg hover:bg-gray-200 transition" data-window-id="contact"><div class="w-10 h-10 bg-purple-500 rounded-md flex items-center justify-center text-white text-xl">C</div><span class="text-xs text-gray-900 mt-1">Contact</span></div>
+            </div>
+        </div>
+
+        <!-- Recommended Section -->
+        <div>
+            <h2 class="text-gray-700 text-base font-semibold mb-2 flex justify-between items-center">
+                Recommended
+                <button class="text-sm text-blue-600 hover:underline">More ></button>
+            </h2>
+            <div class="grid grid-cols-2 gap-3 custom-scrollbar overflow-y-auto h-[180px]">
+                <div class="p-2 flex items-center rounded-lg hover:bg-gray-200 transition">
+                    <div class="w-8 h-8 bg-pink-100 rounded-md flex items-center justify-center text-pink-600 text-base">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-gray-900 font-medium">Digital Marketing Strategy</p>
+                        <p class="text-xs text-gray-600">Yesterday at 10:30 AM</p>
+                    </div>
+                </div>
+                <div class="p-2 flex items-center rounded-lg hover:bg-gray-200 transition">
+                    <div class="w-8 h-8 bg-teal-100 rounded-md flex items-center justify-center text-teal-600 text-base">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L14 10.75L18.25 17L14 17.5M12 20.25V3.75M12 20.25H4.75A2.25 2.25 0 012.5 18V6A2.25 2.25 0 014.75 3.75H19.25A2.25 2.25 0 0121.5 6V18A2.25 2.25 0 0119.25 20.25H12"></path></svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-gray-900 font-medium">Muvi Foods Web Design</p>
+                        <p class="text-xs text-gray-600">Today at 9:00 AM</p>
+                    </div>
+                </div>
+                <!-- System Button -->
+                <div class="start-app-icon p-2 flex items-center rounded-lg hover:bg-gray-200 transition">
+                    <div class="w-8 h-8 bg-gray-400 rounded-md flex items-center justify-center text-white text-base">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-gray-900 font-medium">System Settings</p>
+                        <p class="text-xs text-gray-600">Configuration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User/Power Button Section -->
+        <div class="mt-auto border-t border-gray-300 pt-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">SK</div>
+                <span class="text-sm text-gray-900 font-medium">Senthilkumar (Admin)</span>
+            </div>
+            <button class="p-2 hover:bg-gray-200 rounded-md transition text-gray-900" title="Shutdown">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M16 12a4 4 0 01-4 4H8a4 4 0 01-4-4V8a4 4 0 014-4h4a4 4 0 014 4v4zm0 0h2.586l.828-.828a2 2 0 012.828 0l.828.828L22 12m-6 0h.01"></path></svg>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- 3. TASKBAR -->
+    <div id="taskbar" class="fixed bottom-0 left-0 right-0 h-14 acrylic-dark flex justify-center items-center px-4 z-50">
+        <div class="flex items-center space-x-2">
+            <!-- Start Button -->
+            <button id="start-button" class="taskbar-btn p-3 rounded-lg transition duration-150 active:scale-95">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.5 5.5H11.5V11.5H5.5V5.5Z" fill="white"/>
+                    <path d="M12.5 5.5H18.5V11.5H12.5V5.5Z" fill="white"/>
+                    <path d="M5.5 12.5H11.5V18.5H5.5V12.5Z" fill="white"/>
+                    <path d="M12.5 12.5H18.5V18.5H12.5V12.5Z" fill="white"/>
+                </svg>
+            </button>
+
+            <!-- Pinned/Open Apps -->
+            <div id="taskbar-windows" class="flex items-center space-x-2">
+                <!-- Initial Pinned App (About) -->
+                <div class="taskbar-btn p-3 rounded-lg transition duration-150 active:scale-95" data-window-id="about">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2m-6 0h.01"></path></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Tray (Time & Date) -->
+        <div class="absolute right-4 flex items-center space-x-4 h-full">
+            <div id="time-date" class="text-sm flex flex-col justify-center items-end h-full leading-tight pr-2">
+                <span id="time">15:03</span>
+                <span id="date" class="text-xs">11/12/25</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. WINDOW CONTAINER -->
+    <div id="window-container" class="absolute inset-0 z-30 pointer-events-none">
+        <!-- Windows will be injected here -->
+    </div>
+
+
+    <script>
+        // --- GLOBAL STATE ---
+        let windows = {};
+        let activeWindowId = null;
+        let zIndexCounter = 100;
+        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Helper function to create SVG icons
+        const getSvg = (id) => {
+            const icons = {
+                about: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2m-6 0h.01"></path>', // Folder/Document
+                services: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L14 10.75L18.25 17L14 17.5M12 20.25V3.75M12 20.25H4.75A2.25 2.25 0 012.5 18V6A2.25 2.25 0 014.75 3.75H19.25A2.25 2.25 0 0121.5 6V18A2.25 2.25 0 0119.25 20.25H12"></path>', // Display
+                projects: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>', // Briefcase
+                vision: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6a2 2 0 00-2-2H5a2 2 0 00-2 2v13M19 19V6a2 2 0 01-2-2h-2a2 2 0 01-2 2v13m-6 0H3m18 0h-6"></path>', // Buildings/Future
+                digital_marketing: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>', // Trend up chart
+                ai_innovation: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m-9-9h18m-6 0h.01M5.07 18.02a9 9 0 0113.86 0M3 12h18m-6 0h.01M5.07 5.98a9 9 0 0013.86 0M3 12a9 9 0 0018 0"></path>', // Brain/Network
+                team: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h-4a2 2 0 01-2-2v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2a6 6 0 016-6h6a6 6 0 016 6v2a2 2 0 01-2 2zM12 8a4 4 0 100-8 4 4 0 000 8z"></path>', // Users
+                contact: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-6 13h6a2 2 0 002-2V5a2 2 0 00-2-2H3a2 2 0 00-2 2v14a2 2 0 002 2h6l3-3"></path>', // Mail
+            };
+            return `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">${icons[id]}</svg>`;
+        };
+
+        // --- WINDOW TEMPLATES (The actual content of the apps - 8 SECTIONS) ---
+        const windowTemplates = {
+            about: {
+                title: "About Senternet Technologies",
+                icon: 'about',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-blue-400 border-b border-gray-600 pb-2">Digital Foundation & Expertise</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/0078D4/FFFFFF?text=Senternet+HQ" alt="Placeholder image for Senternet HQ" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <p>Senternet Technologies, led by Senthilkumar, is dedicated to crafting high-impact digital solutions. Our commitment is to blend creative design with robust technology to deliver exceptional results for businesses worldwide.</p>
+                                <p class="mt-3 text-sm text-gray-400">Founded in Aranthangi, Pudukkottai, we bring a global perspective, honed from experience in a Singapore consulting agency, directly to your digital needs.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-green-400 mt-4">Founder Profile</h3>
+                        <p class="text-sm"><strong>Senthilkumar:</strong> Owner & CEO. A BCA graduate with a deep passion for the digital realm, excelling in both web design/development and strategic digital marketing. His dual expertise ensures every project is technically sound and commercially effective.</p>
+                        
+                    </div>
+                    `
+                )
+            },
+            vision: {
+                title: "Our Vision & Mission",
+                icon: 'vision',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-yellow-400 border-b border-gray-600 pb-2">Future Forward: Innovation & Growth</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-center">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/FFC107/1F1F1F?text=Future+Vision" alt="Placeholder image for future vision" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <h3 class="text-xl font-semibold text-yellow-400">Our Core Vision</h3>
+                                <p>To be the leading digital solutions provider from Tamil Nadu, known for integrating cutting-edge technology, exceptional design, and measurable marketing impact to transform businesses globally.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-yellow-400 mt-4">Our Mission Pillars</h3>
+                        <ul class="list-disc list-inside ml-4 space-y-2 text-sm">
+                            <li><strong>Innovation:</strong> Continuously exploring and adopting new technologies, like AI, to deliver smarter solutions.</li>
+                            <li><strong>Integrity:</strong> Operating with complete transparency and dedication to client success.</li>
+                            <li><strong>Impact:</strong> Ensuring every service we offer translates directly into tangible business growth for our clients.</li>
+                        </ul>
+                    </div>
+                    `
+                )
+            },
+            services: {
+                title: "Core Service Offerings",
+                icon: 'services',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-green-400 border-b border-gray-600 pb-2">Comprehensive Digital Toolkit</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/10B981/FFFFFF?text=Web+Design" alt="Placeholder image for Website Design" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <h3 class="text-xl font-semibold text-green-400">1. Website Design & Development</h3>
+                                <p class="text-sm">We don't just build websites; we build digital homes. From high-speed landing pages to complex service-based and e-commerce platforms, we focus on responsive design, modern frameworks, and optimal user experience (UX/UI).</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/EF4444/FFFFFF?text=Graphic+Design" alt="Placeholder image for Graphic Design" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <h3 class="text-xl font-semibold text-green-400">2. Creative Graphic Design</h3>
+                                <p class="text-sm">Concept-based visual communication is our forte. We develop compelling branding, social media creatives, and print media that are ideological, attractive, and always connected to your core brand identity.</p>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                )
+            },
+            digital_marketing: {
+                title: "Digital Marketing Strategy",
+                icon: 'digital_marketing',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-teal-400 border-b border-gray-600 pb-2">Visibility. Engagement. Conversion.</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/06B6D4/FFFFFF?text=Digital+Strategy" alt="Placeholder image for Digital Marketing Strategy" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <p>In today's competitive landscape, being online is not enough. Our Digital Marketing services ensure your business is **seen by the right audience** at the right time, leading to superior engagement and conversion rates.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-teal-400 mt-4">Key Focus Areas</h3>
+                        <ul class="list-disc list-inside ml-4 space-y-2 text-sm">
+                            <li><strong>SEO & Content Strategy:</strong> Driving organic traffic and authority.</li>
+                            <li><strong>Social Media Campaigns:</strong> Creating buzz and direct customer interaction.</li>
+                            <li><strong>Performance Marketing:</strong> Focused advertising (PPC) for immediate ROI.</li>
+                        </ul>
+                        <p class="text-xs italic text-gray-500 mt-4">We craft strategic campaigns that resonate with your target market, transforming visitors into loyal customers.</p>
+                    </div>
+                    `
+                )
+            },
+            ai_innovation: {
+                title: "Internal AI Innovation",
+                icon: 'ai_innovation',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-pink-400 border-b border-gray-600 pb-2">Powering Creativity with AI</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/D946EF/FFFFFF?text=AI+Tools" alt="Placeholder image for AI Tools" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <p>We constantly leverage internal AI projects to enhance efficiency and creative output, ensuring our client work is always ahead of the curve. This is where **innovation meets execution**.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-pink-400 mt-4">Our AI Projects</h3>
+                        <ul class="list-disc list-inside ml-4 space-y-2 text-sm">
+                            <li><strong>Senternet Story AI:</strong> Developed for high-quality, concept-based content generation for marketing and website copywriting.</li>
+                            <li><strong>Insta AI for Senternet:</strong> Internal tool to optimize visual content and analyze social media trends for superior graphic design output.</li>
+                        </ul>
+                        <p class="text-xs italic text-gray-500 mt-4">Our internal R&D ensures clients benefit from optimized workflows and next-generation content.</p>
+                    </div>
+                    `
+                )
+            },
+            projects: {
+                title: "Client Portfolio (Projects)",
+                icon: 'projects',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-red-400 border-b border-gray-600 pb-2">Proven Track Record</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-3 bg-gray-700/50 rounded-lg space-y-2">
+                                <h3 class="text-lg font-semibold text-white">Food & Beverage Sector</h3>
+                                <img src="https://placehold.co/150x80/DC2626/FFFFFF?text=Food+Client" alt="Placeholder image for Food Client" class="rounded-lg mb-2">
+                                <ul class="list-disc list-inside ml-4 text-sm space-y-1">
+                                    <li>Muvi Foods (Food delivery/Website Development)</li>
+                                    <li>Abulu Juice (Beverage Branding & Design)</li>
+                                    <li>Sana Foods (Comprehensive Branding & Digital presence)</li>
+                                </ul>
+                            </div>
+                            <div class="p-3 bg-gray-700/50 rounded-lg space-y-2">
+                                <h3 class="text-lg font-semibold text-white">Technology & Construction</h3>
+                                <img src="https://placehold.co/150x80/FBBF24/1F1F1F?text=Tech+Client" alt="Placeholder image for Tech Client" class="rounded-lg mb-2">
+                                <ul class="list-disc list-inside ml-4 text-sm space-y-1">
+                                    <li>AR Rahman Constructions (Web Presence)</li>
+                                    <li>Website Collections for Cansing Groups</li>
+                                    <li>Monster Game for CS & Cover Event for CS (Tech Projects)</li>
+                                    <li>Senternet Websites (Internal platform)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-sm italic text-gray-500 mt-4">Our portfolio showcases diversity and our ability to adapt our technical and creative skills across different industries.</p>
+                    </div>
+                    `
+                )
+            },
+            team: {
+                title: "Senternet Team - Our Strength",
+                icon: 'team',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-indigo-400 border-b border-gray-600 pb-2">Meet the Innovators</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/6366F1/FFFFFF?text=Team+Photo" alt="Placeholder image for Team" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <p>Our team is a collective of highly skilled professionals, working together to turn complex digital challenges into elegant, functional solutions. Every member is a crucial asset to **Senternet Technologies**.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-indigo-400 mt-4">Core Team Members</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Sevu</div>
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Jo</div>
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Arun</div>
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Karthik</div>
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Haritha</div>
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Abubakkar Siddhik</div>
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Santhosh</div>
+                            <div class="p-2 bg-gray-700/50 rounded-lg text-center">Shanthi</div>
+                        </div>
+                    </div>
+                    `
+                )
+            },
+            contact: {
+                title: "Contact & Connect",
+                icon: 'contact',
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-purple-400 border-b border-gray-600 pb-2">Let's Start Your Next Project</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/9333EA/FFFFFF?text=Contact+Us" alt="Placeholder image for Contact" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <p>Ready to transform your digital presence? Reach out to us for consultations, quotes, or partnership inquiries. We are here to help you grow!</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-purple-400 mt-4">Official Channels</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3 p-3 bg-gray-700/50 rounded-lg">
+                                <span class="text-blue-400 font-semibold w-24">WhatsApp:</span>
+                                <a href="https://wa.me/918190038085" target="_blank" class="text-sm hover:underline">+91 81900 38085</a>
+                            </div>
+                            <div class="flex items-center space-x-3 p-3 bg-gray-700/50 rounded-lg">
+                                <span class="text-blue-400 font-semibold w-24">Gmail:</span>
+                                <a href="mailto:senternettechnologies@gmail.com" class="text-sm hover:underline">senternettechnologies@gmail.com</a>
+                            </div>
+                            <div class="flex items-center space-x-3 p-3 bg-gray-700/50 rounded-lg">
+                                <span class="text-blue-400 font-semibold w-24">Location:</span>
+                                <span class="text-sm">Aranthangi, Pudukkottai, India.</span>
+                            </div>
+                            <div class="flex items-center space-x-3 p-3 bg-gray-700/50 rounded-lg">
+                                <span class="text-blue-400 font-semibold w-24">OS App ID:</span>
+                                <span class="text-sm">${APP_ID}</span>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                )
+            },
+             // 8th Section - Case Studies or Testimonials
+             case_studies: {
+                title: "Client Success Stories",
+                icon: 'projects', // Reusing the project icon
+                content: (
+                    `
+                    <div class="p-6 custom-scrollbar overflow-y-auto h-full space-y-6">
+                        <h2 class="text-2xl font-bold text-cyan-400 border-b border-gray-600 pb-2">Results That Speak for Themselves</h2>
+                        
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-start">
+                            <div class="md:w-1/3">
+                                <img src="https://placehold.co/200x150/06B6D4/1F1F1F?text=Success+Rate" alt="Placeholder image for Success Rate" class="rounded-lg shadow-lg mb-4">
+                            </div>
+                            <div class="md:w-2/3">
+                                <p>Seeing our clients achieve their goals is our greatest reward. We document key challenges, the strategic solutions implemented, and the measurable results achieved for partners across various sectors.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mt-4">Featured Case Study: Muvi Foods</h3>
+                        <div class="p-4 bg-gray-700/50 rounded-lg text-sm space-y-2">
+                            <p><strong>Challenge:</strong> Required a modern, efficient, and user-friendly platform for their food delivery business.</p>
+                            <p><strong>Solution:</strong> Developed a responsive website with a focus on fast loading times and a streamlined ordering process.</p>
+                            <p><strong>Outcome:</strong> Increased online order conversion rate by <strong>18%</strong> within the first quarter of launch.</p>
+                        </div>
+                         <h3 class="text-xl font-semibold text-cyan-400 mt-4">Client Testimonial</h3>
+                         <blockquote class="border-l-4 border-cyan-500 pl-4 italic text-gray-300">
+                             "Senternet Technologies delivered an exceptional website that immediately boosted our brand credibility. The design quality and quick response time were outstanding." - Client, AR Rahman Constructions.
+                         </blockquote>
+                    </div>
+                    `
+                )
+            }
+        };
+
+        // --- WINDOW MANAGEMENT FUNCTIONS ---
+
+        function focusWindow(windowElement) {
+            const id = windowElement.id.replace('window-', '');
+            if (activeWindowId === id) return;
+
+            // Blur previous active window (optional visual change)
+            if (activeWindowId && windows[activeWindowId]) {
+                const prevWindow = document.getElementById(`window-${activeWindowId}`);
+                const prevTaskbar = document.querySelector(`#taskbar-windows button[data-window-id="${activeWindowId}"]`);
+                if (prevWindow) prevWindow.classList.remove('win-border');
+                if (prevTaskbar) prevTaskbar.classList.remove('bg-white/20');
+            }
+
+            // Set new active window
+            zIndexCounter++;
+            windowElement.style.zIndex = zIndexCounter;
+            windowElement.classList.add('win-border');
+            
+            const taskbarItem = document.querySelector(`#taskbar-windows button[data-window-id="${id}"]`);
+            if (taskbarItem) taskbarItem.classList.add('bg-white/20');
+
+            activeWindowId = id;
+        }
+
+        function minimizeWindow(id) {
+            const windowElement = document.getElementById(`window-${id}`);
+            if (windowElement) {
+                windowElement.classList.add('hidden');
+                document.querySelector(`#taskbar-windows button[data-window-id="${id}"]`).classList.remove('bg-white/20');
+            }
+            if (activeWindowId === id) activeWindowId = null;
+        }
+
+        function maximizeWindow(id) {
+            const windowElement = document.getElementById(`window-${id}`);
+            const titlebar = windowElement.querySelector('.title-bar');
+            
+            const isMaximized = windowElement.dataset.maximized === 'true';
+
+            if (isMaximized) {
+                // Restore
+                windowElement.classList.remove('inset-0', 'w-full', 'h-full', 'rounded-none');
+                windowElement.style.width = windows[id].w + 'px';
+                windowElement.style.height = windows[id].h + 'px';
+                windowElement.style.top = windows[id].y + 'px';
+                windowElement.style.left = windows[id].x + 'px';
+                windowElement.dataset.maximized = 'false';
+                titlebar.classList.remove('cursor-default');
+                titlebar.classList.add('cursor-move');
+            } else {
+                // Maximize
+                // Save current position and size
+                windows[id].w = windowElement.offsetWidth;
+                windows[id].h = windowElement.offsetHeight;
+                windows[id].x = windowElement.offsetLeft;
+                windows[id].y = windowElement.offsetTop;
+                
+                windowElement.classList.add('inset-0', 'w-full', 'h-full', 'rounded-none');
+                windowElement.style.width = ''; // Reset inline styles for full width/height
+                windowElement.style.height = '';
+                windowElement.style.top = '0px';
+                windowElement.style.left = '0px';
+                windowElement.dataset.maximized = 'true';
+                titlebar.classList.remove('cursor-move');
+                titlebar.classList.add('cursor-default');
+            }
+            focusWindow(windowElement);
+        }
+
+        function closeWindow(id) {
+            const windowElement = document.getElementById(`window-${id}`);
+            const taskbarItem = document.querySelector(`#taskbar-windows button[data-window-id="${id}"]`);
+            
+            if (windowElement) windowElement.remove();
+            if (taskbarItem) taskbarItem.remove();
+            
+            delete windows[id];
+            if (activeWindowId === id) activeWindowId = null;
+        }
+
+        function createMainWindow(id) {
+            if (windows[id]) {
+                const existingWindow = document.getElementById(`window-${id}`);
+                existingWindow.classList.remove('hidden');
+                focusWindow(existingWindow);
+                return;
+            }
+
+            const template = windowTemplates[id];
+            if (!template) return;
+
+            // Initial dimensions and position
+            const width = Math.min(800, window.innerWidth * 0.9);
+            const height = Math.min(600, window.innerHeight * 0.9);
+            const initialX = (window.innerWidth - width) / 2;
+            const initialY = (window.innerHeight - height) / 2 - 20;
+
+            const windowElement = document.createElement('div');
+            windowElement.id = `window-${id}`;
+            windowElement.dataset.maximized = 'false';
+            windowElement.classList.add(
+                'absolute', 'acrylic-dark', 'rounded-xl', 'overflow-hidden', 
+                'transition-all', 'duration-300', 'flex', 'flex-col',
+                'win-border', 'pointer-events-auto' // Enable pointer events for the window
+            );
+            windowElement.style.width = `${width}px`;
+            windowElement.style.height = `${height}px`;
+            windowElement.style.top = `${initialY}px`;
+            windowElement.style.left = `${initialX}px`;
+            
+            // Store window state
+            windows[id] = { id, w: width, h: height, x: initialX, y: initialY };
+
+
+            windowElement.innerHTML = `
+                <!-- Title Bar -->
+                <div class="title-bar flex justify-between items-center p-3 bg-black/30 cursor-move rounded-t-xl" data-id="${id}">
+                    <div class="flex items-center space-x-2 text-base font-medium">
+                        ${getSvg(template.icon)}
+                        <span>${template.title}</span>
+                    </div>
+                    <!-- Control Buttons -->
+                    <div class="flex space-x-1">
+                        <button class="win-control p-1 rounded hover:bg-white/20" data-action="minimize">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                        </button>
+                        <button class="win-control p-1 rounded hover:bg-white/20" data-action="maximize">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10.5V19.5M4.5 10.5V19.5M19.5 10.5V19.5M10.5 4.5H19.5M4.5 4.5H10.5M10.5 10.5H19.5M4.5 10.5H10.5"></path></svg>
+                        </button>
+                        <button class="win-control p-1 rounded hover:bg-red-600/80 transition" data-action="close">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                <!-- Content -->
+                <div class="flex-grow win-content-dark custom-scrollbar overflow-hidden rounded-b-xl">
+                    ${template.content}
+                </div>
+            `;
+
+            document.getElementById('window-container').appendChild(windowElement);
+            createTaskbarItem(id, template.icon, template.title);
+            focusWindow(windowElement);
+            makeWindowDraggable(windowElement);
+            makeWindowResizable(windowElement);
+        }
+
+        function createTaskbarItem(id, icon, title) {
+            let taskbarItem = document.querySelector(`#taskbar-windows button[data-window-id="${id}"]`);
+            if (taskbarItem) return; // Already exists
+
+            taskbarItem = document.createElement('button');
+            taskbarItem.classList.add('taskbar-btn', 'p-3', 'rounded-lg', 'transition', 'duration-150', 'active:scale-95');
+            taskbarItem.setAttribute('data-window-id', id);
+            taskbarItem.setAttribute('title', title);
+            taskbarItem.innerHTML = getSvg(icon);
+
+            taskbarItem.addEventListener('click', () => {
+                const windowElement = document.getElementById(`window-${id}`);
+                if (windowElement.classList.contains('hidden') || activeWindowId !== id) {
+                    windowElement.classList.remove('hidden');
+                    focusWindow(windowElement);
+                } else {
+                    minimizeWindow(id);
+                }
+            });
+
+            document.getElementById('taskbar-windows').appendChild(taskbarItem);
+        }
+
+        // --- DRAG AND RESIZE LOGIC ---
+
+        function makeWindowDraggable(windowElement) {
+            const titleBar = windowElement.querySelector('.title-bar');
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            titleBar.addEventListener('mousedown', (e) => {
+                if (windowElement.dataset.maximized === 'true') return;
+
+                isDragging = true;
+                focusWindow(windowElement);
+                windowElement.style.transition = 'none';
+                
+                // Use clientX/Y for both mouse and touch start (if applicable)
+                startX = e.clientX || e.touches[0].clientX;
+                startY = e.clientY || e.touches[0].clientY;
+                initialX = windowElement.offsetLeft;
+                initialY = windowElement.offsetTop;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                let newX = initialX + dx;
+                let newY = initialY + dy;
+
+                // Keep window on screen
+                newX = Math.max(0, Math.min(newX, window.innerWidth - windowElement.offsetWidth));
+                newY = Math.max(0, Math.min(newY, window.innerHeight - windowElement.offsetHeight - 56)); // Subtract taskbar height
+
+                windowElement.style.left = newX + 'px';
+                windowElement.style.top = newY + 'px';
+
+                // Update stored position
+                windows[windowElement.id.replace('window-', '')].x = newX;
+                windows[windowElement.id.replace('window-', '')].y = newY;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    windowElement.style.transition = 'all 0.3s ease-in-out';
+                }
+            });
+
+            titleBar.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                maximizeWindow(windowElement.id.replace('window-', ''));
+            });
+            
+            // Adding basic touch event handling for mobile drag
+             titleBar.addEventListener('touchstart', (e) => {
+                if (windowElement.dataset.maximized === 'true' || e.touches.length !== 1) return;
+                e.preventDefault(); 
+                isDragging = true;
+                focusWindow(windowElement);
+                windowElement.style.transition = 'none';
+                
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                initialX = windowElement.offsetLeft;
+                initialY = windowElement.offsetTop;
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                
+                const dx = e.touches[0].clientX - startX;
+                const dy = e.touches[0].clientY - startY;
+
+                let newX = initialX + dx;
+                let newY = initialY + dy;
+
+                newX = Math.max(0, Math.min(newX, window.innerWidth - windowElement.offsetWidth));
+                newY = Math.max(0, Math.min(newY, window.innerHeight - windowElement.offsetHeight - 56));
+
+                windowElement.style.left = newX + 'px';
+                windowElement.style.top = newY + 'px';
+
+                windows[windowElement.id.replace('window-', '')].x = newX;
+                windows[windowElement.id.replace('window-', '')].y = newY;
+            });
+
+            document.addEventListener('touchend', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    windowElement.style.transition = 'all 0.3s ease-in-out';
+                }
+            });
+        }
+
+
+        function makeWindowResizable(windowElement) {
+            // No native resize handles for simplicity, relying on maximize/restore and touch/click on titlebar
+            // This is a minimal, touch-friendly implementation.
+            
+            // Add event listeners for control buttons
+            windowElement.querySelectorAll('.win-control').forEach(btn => {
+                // FIX START: Prevent drag listener in title-bar from interfering with button click
+                btn.addEventListener('mousedown', (e) => e.stopPropagation()); 
+                btn.addEventListener('touchstart', (e) => e.stopPropagation());
+                // FIX END
+                
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const action = e.currentTarget.dataset.action;
+                    const id = windowElement.id.replace('window-', '');
+                    
+                    if (action === 'minimize') minimizeWindow(id);
+                    else if (action === 'maximize') maximizeWindow(id);
+                    else if (action === 'close') closeWindow(id);
+                });
+            });
+        }
+
+        // --- TIME/DATE FUNCTIONALITY ---
+
+        function updateTime() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false };
+            const dateOptions = { month: '2-digit', day: '2-digit', year: '2-digit' };
+            
+            document.getElementById('time').textContent = now.toLocaleTimeString('en-IN', timeOptions);
+            document.getElementById('date').textContent = now.toLocaleDateString('en-IN', dateOptions);
+        }
+        
+        // --- INITIALIZATION ---
+
+        window.onload = function() {
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // 1. Start Menu Toggle
+            document.getElementById('start-button').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const startMenu = document.getElementById('start-menu');
+                const startButton = document.getElementById('start-button');
+                const isHidden = startMenu.classList.contains('hidden');
+
+                if (isHidden) {
+                    startMenu.classList.remove('hidden');
+                    startButton.classList.add('active');
+                } else {
+                    startMenu.classList.add('hidden');
+                    startButton.classList.remove('active');
+                }
+            });
+
+            // 2. Hide Start Menu when clicking outside
+            document.addEventListener('click', (e) => {
+                const startMenu = document.getElementById('start-menu');
+                const startButton = document.getElementById('start-button');
+                
+                // Check if the click is outside the start menu and not on the start button
+                if (!startMenu.classList.contains('hidden') && 
+                    !startButton.contains(e.target) && 
+                    !startMenu.contains(e.target) &&
+                    !e.target.closest('#start-menu')) {
+                    startMenu.classList.add('hidden');
+                    startButton.classList.remove('active');
+                }
+            });
+
+            // 3. Desktop Icon and Start Menu App Launchers
+            document.querySelectorAll('.desktop-icon, .start-app-opener').forEach(element => {
+                element.addEventListener('click', (e) => {
+                    const windowId = e.currentTarget.dataset.windowId;
+                    if (windowId) {
+                        createMainWindow(windowId);
+                    }
+                    // Hide start menu on app launch
+                    document.getElementById('start-menu').classList.add('hidden');
+                    document.getElementById('start-button').classList.remove('active');
+                });
+            });
+
+            // 4. Initial Window: Open "About Us" on load (optional)
+            createMainWindow('about');
+        };
+
+        // Handle window resize event for responsive positioning (not maximizing)
+        window.addEventListener('resize', () => {
+             Object.values(windows).forEach(win => {
+                const windowElement = document.getElementById(`window-${win.id}`);
+                if (windowElement && windowElement.dataset.maximized !== 'true') {
+                    // Re-center any non-maximized windows
+                    const newX = (window.innerWidth - windowElement.offsetWidth) / 2;
+                    const newY = (window.innerHeight - windowElement.offsetHeight) / 2 - 20;
+
+                    windowElement.style.left = newX + 'px';
+                    windowElement.style.top = newY + 'px';
+                    win.x = newX;
+                    win.y = newY;
+                }
+             });
+        });
+    </script>
+</body>
+</html>
