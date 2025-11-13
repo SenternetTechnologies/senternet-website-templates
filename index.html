@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senternet Multi-App Dashboard</title>
+    <style>
+        /* Simple styling for the tabs and iframe */
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+        }
+        #content-frame {
+            width: 100%;
+            height: 600px; /* Nee thevaiyana height-a maaththikalam */
+            border: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tabs">
+        <button class="tab-button" onclick="loadContent('static_home.html')">Home</button>
+        <button class="tab-button" onclick="loadContent('app1_full_code.html')">App 1 (Website A)</button>
+        <button class="tab-button" onclick="loadContent('app2_full_code.html')">App 2 (Website B)</button>
+    </div>
+
+    <iframe id="content-frame" src="static_home.html"></iframe>
+
+    <script>
+        function loadContent(filename) {
+            // Iframe-oda src-a maaththum
+            document.getElementById('content-frame').src = filename;
+        }
+        
+        // Initial load for Home tab
+        // Note: static_home.html, app1_full_code.html, and app2_full_code.html 
+        // should be separate HTML files in the same folder.
+    </script>
+
+    <footer>
+        <p>A Product by **SENTERNET TECHNOLOGIES**, Aranthangi. WhatsApp: +91 81900 38085, Gmail: senternettechnologies@gmail.com</p>
+    </footer>
+
+</body>
+</html>
