@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chic Boutique - Animated Circle Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fdf8f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- Circular Menu --- */
+        .circular-menu {
+            position: fixed;
+            top: 50%;
+            left: -80px; /* Initially hidden on small screens */
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), left 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        @media (min-width: 1024px) {
+            .circular-menu {
+                left: 40px;
+            }
+        }
+
+        .menu-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 40px;
+            transform-origin: -25px center; /* Adjust rotation origin */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-item a {
+            text-decoration: none;
+            color: #5a3e36;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .menu-item.active a,
+        .menu-item a:hover {
+            background-color: #e4b3a5;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        /* --- Content Sections --- */
+        .content-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.15;
+        }
+        
+        .section-content {
+            text-align: center;
+            max-width: 800px;
+            background: rgba(253, 248, 245, 0.7);
+            padding: 2rem;
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .content-section.visible .section-content {
+            opacity: 1;
+            transform: translateY(0);
+            animation: slideUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Header & Cart --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1001;
+            background: rgba(253, 248, 245, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background-color: #d97706;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+        
+        .cart-icon:hover .cart-count {
+            transform: scale(1.2);
+        }
+        
+        .add-to-cart-btn {
+            background-color: #5a3e36;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 1rem;
+            border: 2px solid transparent;
+        }
+        
+        .add-to-cart-btn:hover {
+            background-color: #fff;
+            color: #5a3e36;
+            border-color: #5a3e36;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header -->
+    <header class="header">
+        <h1 class="text-2xl font-bold text-gray-800">Chic Boutique</h1>
+        <div class="cart-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span class="cart-count" id="cart-count">0</span>
+        </div>
+    </header>
+
+    <!-- Circular Navigation Menu -->
+    <div class="circular-menu" id="circular-menu">
+        <!-- Menu items will be injected by JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <section id="home" class="content-section">
+             <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=2070&auto=format&fit=crop" class="section-background" alt="Fashion background">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-7xl font-bold mb-4">Timeless Elegance</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Discover curated collections that celebrate modern femininity. Style that speaks volumes, crafted for the discerning woman.</p>
+            </div>
+        </section>
+
+        <section id="new-arrivals" class="content-section">
+            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071&auto=format&fit=crop" class="section-background" alt="New Arrivals">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">New Arrivals</h2>
+                <p class="text-lg text-gray-600">Freshly picked styles for the new season. Be the first to own the latest trends.</p>
+                <a href="#" class="add-to-cart-btn">Explore Collection</a>
+            </div>
+        </section>
+
+        <section id="dresses" class="content-section">
+            <img src="https://images.unsplash.com/photo-1595444934531-614a38a83412?q=80&w=1974&auto=format&fit=crop" class="section-background" alt="Dresses">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Dresses</h2>
+                <p class="text-lg text-gray-600">From casual day dresses to show-stopping evening gowns. Find your perfect fit.</p>
+                <a href="#" class="add-to-cart-btn">Shop Dresses</a>
+            </div>
+        </section>
+
+        <section id="tops" class="content-section">
+            <img src="https://images.unsplash.com/photo-1581655353421-dd591012437e?q=80&w=1964&auto=format&fit=crop" class="section-background" alt="Tops">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Tops & Blouses</h2>
+                <p class="text-lg text-gray-600">Versatile tops that form the foundation of any stylish wardrobe.</p>
+                <a href="#" class="add-to-cart-btn">Discover Tops</a>
+            </div>
+        </section>
+
+        <section id="bottoms" class="content-section">
+            <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1974&auto=format&fit=crop" class="section-background" alt="Bottoms">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Skirts & Trousers</h2>
+                <p class="text-lg text-gray-600">Chic skirts and tailored trousers to elevate your look from desk to dinner.</p>
+                <a href="#" class="add-to-cart-btn">View Bottoms</a>
+            </div>
+        </section>
+
+        <section id="outerwear" class="content-section">
+            <img src="https://images.unsplash.com/photo-1542842423-8d2a65a36162?q=80&w=1964&auto=format&fit=crop" class="section-background" alt="Outerwear">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Outerwear</h2>
+                <p class="text-lg text-gray-600">Stay warm in style with our collection of coats, jackets, and blazers.</p>
+                <a href="#" class="add-to-cart-btn">Browse Jackets</a>
+            </div>
+        </section>
+
+        <section id="shoes" class="content-section">
+            <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=2080&auto=format&fit=crop" class="section-background" alt="Shoes">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Shoes</h2>
+                <p class="text-lg text-gray-600">Step up your game. Find the perfect pair, from elegant heels to comfy flats.</p>
+                <a href="#" class="add-to-cart-btn">Find Your Pair</a>
+            </div>
+        </section>
+
+        <section id="accessories" class="content-section">
+            <img src="https://images.unsplash.com/photo-1620921234293-8742b7891456?q=80&w=1964&auto=format&fit=crop" class="section-background" alt="Accessories">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Accessories</h2>
+                <p class="text-lg text-gray-600">The finishing touches. Explore our jewelry, bags, and scarves.</p>
+                <a href="#" class="add-to-cart-btn">Explore Accessories</a>
+            </div>
+        </section>
+
+        <section id="sale" class="content-section">
+            <img src="https://images.unsplash.com/photo-1572584642822-60a0a20347a2?q=80&w=2070&auto=format&fit=crop" class="section-background" alt="Sale">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Sale</h2>
+                <p class="text-lg text-gray-600">Don't miss out on incredible styles at reduced prices. Limited time only.</p>
+                <a href="#" class="add-to-cart-btn">Shop Sale</a>
+            </div>
+        </section>
+
+        <section id="lookbook" class="content-section">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop" class="section-background" alt="Lookbook">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Lookbook</h2>
+                <p class="text-lg text-gray-600">Get inspired by our latest campaign and see how to style our pieces.</p>
+                <a href="#" class="add-to-cart-btn">Get Inspired</a>
+            </div>
+        </section>
+
+        <section id="about" class="content-section">
+            <img src="https://images.unsplash.com/photo-1529641484336-ef35140bab06?q=80&w=1964&auto=format&fit=crop" class="section-background" alt="About Us">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">About Us</h2>
+                <p class="text-lg text-gray-600">Chic Boutique was founded on the belief that fashion should be personal and expressive. We provide high-quality, stylish pieces that empower you to feel your best.</p>
+            </div>
+        </section>
+
+        <section id="contact" class="content-section">
+            <img src="https://images.unsplash.com/photo-1587560699334-cc426240169f?q=80&w=2070&auto=format&fit=crop" class="section-background" alt="Contact">
+            <div class="section-content">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4">Get In Touch</h2>
+                <p class="text-lg text-gray-600 mb-4">Have questions? We'd love to hear from you. <br> Email: contact@chicboutique.com | Phone: (123) 456-7890</p>
+                <a href="mailto:contact@chicboutique.com" class="add-to-cart-btn">Email Us</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menu = document.getElementById('circular-menu');
+            const sections = document.querySelectorAll('.content-section');
+            const mainContent = document.getElementById('main-content');
+            const cartCountEl = document.getElementById('cart-count');
+            let cartItems = 0;
+
+            // --- 1. Populate Menu ---
+            const menuItems = [];
+            sections.forEach(section => {
+                const id = section.id;
+                const name = id.charAt(0).toUpperCase() + id.slice(1).replace('-', ' ');
+                menuItems.push({ id: `#${id}`, name: name });
+            });
+
+            const angleStep = 360 / menuItems.length;
+            menuItems.forEach((item, index) => {
+                const angle = angleStep * index - 90; // Start from the top
+                const menuItemEl = document.createElement('div');
+                menuItemEl.classList.add('menu-item');
+                menuItemEl.innerHTML = `<a href="${item.id}">${item.name}</a>`;
+                menuItemEl.style.transform = `rotate(${angle}deg) translate(150px)`; // Position items around circle
+                menu.appendChild(menuItemEl);
+            });
+
+            const menuLinks = menu.querySelectorAll('a');
+
+            // --- 2. Animate Menu on Scroll ---
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', () => {
+                const st = window.pageYOffset || document.documentElement.scrollTop;
+                const scrollAmount = st / (document.documentElement.scrollHeight - window.innerHeight);
+                const rotation = -scrollAmount * 360 * 2; // Adjust multiplier for rotation speed
+
+                menu.style.transform = `rotate(${rotation}deg)`;
+                
+                lastScrollTop = st <= 0 ? 0 : st;
+            }, false);
+
+            // --- 3. Handle Active Section and Menu Item ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    const correspondingLink = menu.querySelector(`a[href="#${id}"]`);
+                    
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        menuLinks.forEach(link => link.parentElement.classList.remove('active'));
+                        if (correspondingLink) {
+                            correspondingLink.parentElement.classList.add('active');
+                        }
+                    } else {
+                         entry.target.classList.remove('visible');
+                    }
+                });
+            }, { threshold: 0.5 }); // 50% of the section must be visible
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // --- 4. Smooth Scrolling ---
+            menuLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // --- 5. Cart Functionality ---
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent navigation for demo
+                    cartItems++;
+                    cartCountEl.textContent = cartItems;
+                    
+                    // Fun animation
+                    cartCountEl.style.transform = 'scale(1.4)';
+                    setTimeout(() => {
+                        cartCountEl.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
