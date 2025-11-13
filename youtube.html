@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            color: #0f0f0f;
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Custom scrollbar for sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                z-index: 50;
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .content-area {
+                margin-left: 0; /* Full width on mobile */
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .header-search {
+                width: 100%; /* Full width search on mobile */
+            }
+
+            .header-actions {
+                display: none; /* Hide actions on mobile to save space */
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-white p-4 shadow-sm flex items-center justify-between sticky top-0 z-40">
+        <div class="flex items-center space-x-4">
+            <!-- Hamburger Menu Icon for Mobile -->
+            <button id="menu-toggle" class="md:hidden text-gray-700 focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <!-- Logo -->
+            <div class="flex items-center space-x-1">
+                <i class="fab fa-youtube text-red-500 text-3xl"></i>
+                <span class="text-2xl font-bold text-gray-800">YouTube</span>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-grow max-w-xl mx-4 relative header-search">
+            <input type="text" id="search-input" placeholder="Search"
+                   class="w-full p-2 pl-4 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="search-button" class="absolute right-0 top-0 h-full px-4 bg-gray-100 text-gray-600 rounded-r-full border-l border-gray-300 hover:bg-gray-200">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <!-- Right-side Actions (hidden on mobile) -->
+        <div class="flex items-center space-x-4 header-actions">
+            <button class="text-gray-700 hover:text-gray-900">
+                <i class="fas fa-video text-xl"></i>
+            </button>
+            <button class="text-gray-700 hover:text-gray-900">
+                <i class="fas fa-bell text-xl"></i>
+            </button>
+            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                A
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar bg-white w-64 p-4 border-r border-gray-200 flex-shrink-0 overflow-y-auto md:block">
+            <nav>
+                <ul>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 text-gray-700 font-medium">
+                            <i class="fas fa-home mr-4 text-lg"></i> Home
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 text-gray-700 font-medium">
+                            <i class="fas fa-compass mr-4 text-lg"></i> Explore
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 text-gray-700 font-medium">
+                            <i class="fas fa-history mr-4 text-lg"></i> History
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 text-gray-700 font-medium">
+                            <i class="fas fa-play-circle mr-4 text-lg"></i> Your videos
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 text-gray-700 font-medium">
+                            <i class="fas fa-clock mr-4 text-lg"></i> Watch later
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <hr class="my-4 border-gray-200">
+            <h3 class="text-sm font-semibold text-gray-500 mb-2 uppercase">Subscriptions</h3>
+            <ul>
+                <li class="mb-2">
+                    <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 text-gray-700">
+                        <div class="w-6 h-6 bg-purple-500 rounded-full mr-3 flex items-center justify-center text-white text-xs">C</div> Channel 1
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 text-gray-700">
+                        <div class="w-6 h-6 bg-green-500 rounded-full mr-3 flex items-center justify-center text-white text-xs">D</div> Channel 2
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Video Grid -->
+        <main class="flex-1 p-6 md:ml-0 content-area">
+            <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Video cards will be dynamically inserted here -->
+            </div>
+            <div id="no-results" class="text-center text-gray-600 text-lg mt-10 hidden">
+                No videos found matching your search.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mock video data
+        const videos = [
+            {
+                id: '1',
+                thumbnail: 'https://placehold.co/360x202/E0E0E0/333333?text=Video+1',
+                title: 'Exploring the Mountains: A Nature Documentary',
+                channel: 'Nature Explorer',
+                views: '1.2M',
+                uploaded: '1 month ago',
+                channelAvatar: 'https://placehold.co/36x36/60A5FA/FFFFFF?text=NE'
+            },
+            {
+                id: '2',
+                thumbnail: 'https://placehold.co/360x202/D0D0D0/333333?text=Video+2',
+                title: 'Top 10 Programming Languages for 2025',
+                channel: 'Code Master',
+                views: '500K',
+                uploaded: '3 weeks ago',
+                channelAvatar: 'https://placehold.co/36x36/8B5CF6/FFFFFF?text=CM'
+            },
+            {
+                id: '3',
+                thumbnail: 'https://placehold.co/360x202/C0C0C0/333333?text=Video+3',
+                title: 'Delicious Vegan Recipes for Beginners',
+                channel: 'Healthy Bites',
+                views: '2.1M',
+                uploaded: '2 months ago',
+                channelAvatar: 'https://placehold.co/36x36/EC4899/FFFFFF?text=HB'
+            },
+            {
+                id: '4',
+                thumbnail: 'https://placehold.co/360x202/B0B0B0/333333?text=Video+4',
+                title: 'The Future of AI: What to Expect',
+                channel: 'Tech Insights',
+                views: '800K',
+                uploaded: '1 week ago',
+                channelAvatar: 'https://placehold.co/36x36/10B981/FFFFFF?text=TI'
+            },
+            {
+                id: '5',
+                thumbnail: 'https://placehold.co/360x202/A0A0A0/333333?text=Video+5',
+                title: 'Learn Guitar in 30 Days: Beginner Course',
+                channel: 'Music Hub',
+                views: '3.5M',
+                uploaded: '5 months ago',
+                channelAvatar: 'https://placehold.co/36x36/F59E0B/FFFFFF?text=MH'
+            },
+            {
+                id: '6',
+                thumbnail: 'https://placehold.co/360x202/909090/333333?text=Video+6',
+                title: 'Travel Vlog: Discovering Hidden Gems in Japan',
+                channel: 'Wanderlust Diaries',
+                views: '1.5M',
+                uploaded: '4 weeks ago',
+                channelAvatar: 'https://placehold.co/36x36/EF4444/FFFFFF?text=WD'
+            },
+            {
+                id: '7',
+                thumbnail: 'https://placehold.co/360x202/808080/333333?text=Video+7',
+                title: 'Effective Home Workout Routine',
+                channel: 'Fitness Guru',
+                views: '900K',
+                uploaded: '2 weeks ago',
+                channelAvatar: 'https://placehold.co/36x36/3B82F6/FFFFFF?text=FG'
+            },
+            {
+                id: '8',
+                thumbnail: 'https://placehold.co/360x202/707070/333333?text=Video+8',
+                title: 'Mastering Photography: Tips for Stunning Shots',
+                channel: 'Lens Craft',
+                views: '650K',
+                uploaded: '1 month ago',
+                channelAvatar: 'https://placehold.co/36x36/6366F1/FFFFFF?text=LC'
+            },
+            {
+                id: '9',
+                thumbnail: 'https://placehold.co/360x202/606060/333333?text=Video+9',
+                title: 'DIY Home Decor Ideas on a Budget',
+                channel: 'Creative Living',
+                views: '1.1M',
+                uploaded: '3 months ago',
+                channelAvatar: 'https://placehold.co/36x36/D946EF/FFFFFF?text=CL'
+            },
+            {
+                id: '10',
+                thumbnail: 'https://placehold.co/360x202/505050/333333?text=Video+10',
+                title: 'Understanding Quantum Physics for Dummies',
+                channel: 'Science Explained',
+                views: '400K',
+                uploaded: '6 weeks ago',
+                channelAvatar: 'https://placehold.co/36x36/F97316/FFFFFF?text=SE'
+            }
+        ];
+
+        const videoGrid = document.getElementById('video-grid');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const noResultsMessage = document.getElementById('no-results');
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        /**
+         * Renders the video cards based on the provided video data.
+         * @param {Array<Object>} videoData - An array of video objects.
+         */
+        function renderVideos(videoData) {
+            videoGrid.innerHTML = ''; // Clear existing videos
+            if (videoData.length === 0) {
+                noResultsMessage.classList.remove('hidden');
+            } else {
+                noResultsMessage.classList.add('hidden');
+                videoData.forEach(video => {
+                    const videoCard = `
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-200">
+                            <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-auto object-cover rounded-t-lg">
+                            <div class="p-4">
+                                <div class="flex items-start">
+                                    <img src="${video.channelAvatar}" alt="${video.channel} avatar" class="w-9 h-9 rounded-full mr-3 flex-shrink-0">
+                                    <div>
+                                        <h3 class="text-base font-semibold text-gray-900 line-clamp-2 mb-1">${video.title}</h3>
+                                        <p class="text-sm text-gray-600">${video.channel}</p>
+                                        <p class="text-sm text-gray-600">${video.views} views • ${video.uploaded}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    videoGrid.innerHTML += videoCard;
+                });
+            }
+        }
+
+        /**
+         * Handles the search functionality, filtering videos based on input.
+         */
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredVideos = videos.filter(video =>
+                video.title.toLowerCase().includes(searchTerm) ||
+                video.channel.toLowerCase().includes(searchTerm)
+            );
+            renderVideos(filteredVideos);
+        }
+
+        // Event Listeners
+        searchButton.addEventListener('click', handleSearch);
+        searchInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+        // Toggle sidebar for mobile
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            // Add an overlay when sidebar is open on mobile
+            if (sidebar.classList.contains('open')) {
+                const overlay = document.createElement('div');
+                overlay.id = 'sidebar-overlay';
+                overlay.classList.add('fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'z-40', 'md:hidden');
+                document.body.appendChild(overlay);
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.remove();
+                });
+            } else {
+                document.getElementById('sidebar-overlay')?.remove();
+            }
+        });
+
+        // Initial render of all videos
+        window.onload = () => {
+            renderVideos(videos);
+        };
+    </script>
+</body>
+</html>
