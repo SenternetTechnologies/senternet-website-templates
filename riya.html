@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riya Mehandhi Case Study - Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <!-- Chosen Palette: Calm Harmony (Warm Neutrals with Soft Teal/Indigo Accents) -->
+    <!-- Application Structure Plan: A single-page narrative SPA. The structure guides the user from the high-level 'Overview & Key Results' (with dynamic stat cards) through 'The Challenge' (icon-based grid), 'The Solution' (interactive tabs), and 'The Impact' (a 'Before vs. After' bar chart). This narrative flow, supported by a sticky nav, was chosen to tell the case study's story logically and make the data-driven 'Impact' the clear climax, enhancing usability over a static document. -->
+    <!-- Visualization & Content Choices: 1. Report Info: Impact Metrics Table (Conversion, Admin Time). Goal: Compare. Viz: Grouped Bar Chart. Interaction: Hover Tooltips. Justification: Clearest way to show 'Before vs. After' data. Library: Chart.js (Canvas). 2. Report Info: 3 Challenges list. Goal: Inform/Organize. Viz: 3-Column HTML/Tailwind Grid w/ Unicode Icons. Interaction: Static. Justification: More digestible than a text list. Library: HTML/Tailwind. 3. Report Info: 4 Solution Features list. Goal: Organize/Inform. Viz: Tabbed Interface. Interaction: Click to show/hide content. Justification: Condenses info, user-controlled. Library: JS + HTML/Tailwind. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap');
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link.active {
+            color: #14b8a6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <span class="text-xl font-bold text-stone-700">Riya Mehandhi Case Study</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600 hover:text-teal-600">Overview</a>
+                        <a href="#challenge" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600 hover:text-teal-600">The Challenge</a>
+                        <a href="#solution" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600 hover:text-teal-600">The Solution</a>
+                        <a href="#impact" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600 hover:text-teal-600">The Impact</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+
+        <section id="overview" class="mb-20 scroll-mt-20">
+            <h1 class="text-4xl md:text-5xl font-bold text-center text-teal-800 mb-6">Crafting Digital Elegance for Henna Art</h1>
+            <p class="text-lg text-center text-stone-600 max-w-3xl mx-auto mb-12">
+                This interactive report explores the successful digital transformation of Riya Mehandhi by SENTERNET TECHNOLOGIES. We translated a scattered social media presence into a professional, high-conversion web application, demonstrating the clear business value of strategic web development.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-3xl font-bold text-teal-600">+40%</h3>
+                    <p class="text-stone-700 font-semibold mt-2">Increase in Paid Bookings</p>
+                    <p class="text-sm text-stone-500">In the first quarter post-launch.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-3xl font-bold text-teal-600">66%</h3>
+                    <p class="text-stone-700 font-semibold mt-2">Reduction in Admin Time</p>
+                    <p class="text-sm text-stone-500">From ~45 to ~15 mins per booking.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-3xl font-bold text-teal-600">A-Grade</h3>
+                    <p class="text-stone-700 font-semibold mt-2">Mobile Load Speed</p>
+                    <p class="text-sm text-stone-500">Ensuring an excellent user experience.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenge" class="mb-20 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-center text-stone-800 mb-4">The Challenge</h2>
+            <p class="text-lg text-center text-stone-600 max-w-3xl mx-auto mb-12">
+                Before the web app, Riya Mehandhi faced critical operational challenges that limited growth and created significant administrative overhead.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-xl text-center border-t-4 border-teal-500">
+                    <span class="text-5xl" role="img" aria-label="chat bubbles">💬</span>
+                    <h3 class="text-2xl font-bold text-stone-800 my-4">Inefficient Booking</h3>
+                    <p class="text-stone-600">All inquiries, scheduling, and portfolio sharing were handled manually via DMs, leading to missed bookings and delays.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-xl text-center border-t-4 border-teal-500">
+                    <span class="text-5xl" role="img" aria-label="picture frames">🖼️</span>
+                    <h3 class="text-2xl font-bold text-stone-800 my-4">Portfolio Fragmentation</h3>
+                    <p class="text-stone-600">High-quality work was scattered across social media posts, making it hard for clients to compare styles quickly.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-xl text-center border-t-4 border-teal-500">
+                    <span class="text-5xl" role="img" aria-label="shield">🛡️</span>
+                    <h3 class="text-2xl font-bold text-stone-800 my-4">Lack of Trust Signals</h3>
+                    <p class="text-stone-600">Clients required extensive clarification on henna quality, aftercare, and pricing, slowing down the sales cycle.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="mb-20 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-center text-stone-800 mb-4">The Solution</h2>
+            <p class="text-lg text-center text-stone-600 max-w-3xl mx-auto mb-12">
+                SENTERNET TECHNOLOGIES designed a responsive, mobile-first web application focused on solving these core challenges. Explore the core features:
+            </p>
+            
+            <div class="bg-white rounded-lg shadow-2xl overflow-hidden">
+                <div class="flex border-b border-stone-200">
+                    <button class="tab-button flex-1 py-4 px-6 text-center font-semibold text-stone-500 hover:bg-stone-100 focus:outline-none" data-tab="portfolio">
+                        Portfolio Gallery
+                    </button>
+                    <button class="tab-button flex-1 py-4 px-6 text-center font-semibold text-stone-500 hover:bg-stone-100 focus:outline-none" data-tab="pricing">
+                        Pricing Tiers
+                    </button>
+                    <button class="tab-button flex-1 py-4 px-6 text-center font-semibold text-stone-500 hover:bg-stone-100 focus:outline-none" data-tab="booking">
+                        Booking Flow
+                    </button>
+                    <button class="tab-button flex-1 py-4 px-6 text-center font-semibold text-stone-500 hover:bg-stone-100 focus:outline-none" data-tab="trust">
+                        Trust Modules
+                    </button>
+                </div>
+                
+                <div class="p-8 md:p-12">
+                    <div class="tab-panel" id="tab-portfolio">
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4">High-Resolution Portfolio Gallery</h3>
+                        <p class="text-stone-600">A clean, image-centric design was implemented to showcase separate, filterable galleries for Bridal, Arabic, and Simple designs. This allowed users to filter and view the artist's range of expertise instantly, directly addressing the portfolio fragmentation problem.</p>
+                    </div>
+                    <div class="tab-panel hidden" id="tab-pricing">
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4">Integrated Service & Pricing Tiers</h3>
+                        <p class="text-stone-600">Clear, upfront pricing packages (Bronze, Silver, Gold, Bridal Premier) were displayed, detailing coverage, time taken, and cost. This transparency minimized back-and-forth price negotiations and empowered clients to make informed decisions.</p>
+                    </div>
+                    <div class="tab-panel hidden" id="tab-booking">
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4">Streamlined Booking Flow</h3>
+                        <p class="text-stone-600">A user-friendly, single-step booking request form was integrated. It requires only the essential details (date, occasion, package), enabling faster lead qualification and replacing the inefficient DM-based system entirely.</p>
+                    </div>
+                    <div class="tab-panel hidden" id="tab-trust">
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4">Trust & Transparency Modules</h3>
+                        <p class="text-stone-600">Dedicated sections were created to address client concerns upfront. This included a guarantee of 100% natural, chemical-free henna with detailed aftercare instructions, and a prominent display of client testimonials to build immediate social proof.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="scroll-mt-20">
+            <h2 class="text-4xl font-bold text-center text-stone-800 mb-4">The Impact: Before vs. After</h2>
+            <p class="text-lg text-center text-stone-600 max-w-3xl mx-auto mb-12">
+                The new platform delivered measurable results, transforming business operations. This chart visualizes the improvements in key performance indicators (KPIs). Hover over the bars to see the exact data.
+            </p>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-2xl">
+                <div class="chart-container">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-stone-800 text-stone-200 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <h3 class="text-2xl font-bold text-white mb-2">Developed by SENTERNET TECHNOLOGIES</h3>
+            <p class="text-stone-400 mb-4">Web Design, Digital Marketing, and IT Solutions</p>
+            <div class="flex justify-center space-x-6 text-sm">
+                <span class="text-stone-300">Location: Aranthangi, Pudukkottai</span>
+                <span class="text-stone-300">WhatsApp: +91 81900 38085</span>
+                <span class="text-stone-300">Gmail: senternettechnologies@gmail.com</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const chartData = {
+                labels: ['Paid Booking Conversion Rate (%)', 'Administrative Time (minutes)'],
+                datasets: [
+                    {
+                        label: 'Before Web App',
+                        data: [20, 45],
+                        backgroundColor: 'rgba(156, 163, 175, 0.6)',
+                        borderColor: 'rgba(156, 163, 175, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'After Web App',
+                        data: [28, 15],
+                        backgroundColor: 'rgba(20, 184, 166, 0.7)',
+                        borderColor: 'rgba(20, 184, 166, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }
+                ]
+            };
+            
+            const chartConfig = {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Key Metric Improvement: Before vs. After',
+                            font: { size: 18, family: 'Inter', weight: '600' },
+                            color: '#374151',
+                            padding: { bottom: 20 }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1f2937',
+                            titleFont: { size: 14, family: 'Inter', weight: 'bold' },
+                            bodyFont: { size: 12, family: 'Inter' },
+                            padding: 12,
+                            cornerRadius: 4,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        let value = context.parsed.y;
+                                        if (context.label.includes('%')) {
+                                            label += value + '%';
+                                        } else {
+                                            label += value + ' mins';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb'
+                            },
+                            ticks: {
+                                color: '#4b5563',
+                                font: { family: 'Inter' }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Value',
+                                color: '#374151',
+                                font: { size: 14, family: 'Inter', weight: '500' }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#4b5563',
+                                font: { family: 'Inter', size: 12 },
+                                callback: function(value) {
+                                    const label = this.getLabelForValue(value);
+                                    if (label.length > 16) {
+                                        return label.split(' ').slice(0, 3).join(' ') + '...';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            new Chart(ctx, chartConfig);
+
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            
+            function setActiveTab(tabName) {
+                tabButtons.forEach(button => {
+                    if (button.dataset.tab === tabName) {
+                        button.classList.add('text-teal-600', 'border-b-2', 'border-teal-600');
+                        button.classList.remove('text-stone-500');
+                    } else {
+                        button.classList.remove('text-teal-600', 'border-b-2', 'border-teal-600');
+                        button.classList.add('text-stone-500');
+                    }
+                });
+                
+                tabPanels.forEach(panel => {
+                    if (panel.id === 'tab-' + tabName) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                });
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    setActiveTab(button.dataset.tab);
+                });
+            });
+
+            setActiveTab('portfolio');
+
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+
+            function changeActiveLink() {
+                let index = sections.length;
+                while(--index && window.scrollY + 100 < sections[index].offsetTop) {}
+                
+                navLinks.forEach((link) => link.classList.remove('active'));
+                
+                const activeLink = document.querySelector(`.nav-link[href="#${sections[index].id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            changeActiveLink();
+            window.addEventListener('scroll', changeActiveLink);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
