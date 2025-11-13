@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-Pay | Secure Payments</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles for the app */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Removes blue tap highlight on mobile */
+        }
+        
+        /* A class for smooth transitions */
+        .transition-all {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Animation for the QR scanner line */
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .scanner-line {
+            animation: scan 2.5s infinite linear;
+        }
+
+        /* Fade-in animation for modals and pages */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+
+    <!-- Mobile Phone Mockup Container -->
+    <div id="app-container" class="w-full max-w-sm h-[800px] max-h-[90vh] bg-gray-50 rounded-3xl shadow-2xl overflow-hidden relative flex flex-col">
+
+        <!-- ===== Main App Screen ===== -->
+        <div id="main-screen" class="flex flex-col h-full">
+            <!-- Header -->
+            <header class="bg-blue-600 text-white p-4 flex justify-between items-center rounded-t-3xl">
+                <h1 class="text-xl font-bold">G-Pay</h1>
+                <div class="flex items-center space-x-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                    <div class="w-8 h-8 bg-pink-200 rounded-full flex items-center justify-center font-bold text-pink-700">A</div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-grow p-5 overflow-y-auto no-scrollbar">
+                <!-- Balance Card -->
+                <div class="bg-white rounded-xl shadow-md p-5 mb-6 text-center">
+                    <p class="text-gray-500 text-sm">Total Balance</p>
+                    <div class="flex items-center justify-center space-x-2 mt-2">
+                        <p id="balance-amount" class="text-3xl font-bold text-gray-800">₹ 54,820.50</p>
+                        <button id="check-balance-btn" class="text-blue-600">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Core Actions Grid -->
+                <div class="grid grid-cols-4 gap-4 text-center text-xs text-gray-700 font-medium mb-8">
+                    <button id="scan-qr-btn" class="flex flex-col items-center space-y-2 p-2 rounded-lg hover:bg-blue-100 transition-all">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code"><path d="M3 3h3v3H3z"/><path d="M18 3h3v3h-3z"/><path d="M3 18h3v3H3z"/><path d="M18 18h3v3h-3z"/><path d="M9 3v18"/><path d="M3 9h18"/><path d="M9 9h6"/><path d="M9 15h6"/></svg>
+                        </div>
+                        <span>Scan QR</span>
+                    </button>
+                    <button id="pay-contact-btn" class="flex flex-col items-center space-y-2 p-2 rounded-lg hover:bg-blue-100 transition-all">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-contact"><path d="M17 18a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2"/><rect width="18" height="18" x="3" y="4" rx="2"/><circle cx="12" cy="10" r="2"/><line x1="8" y1="2" x2="8" y2="4"/><line x1="16" y1="2" x2="16" y2="4"/></svg>
+                        </div>
+                        <span>Pay Contact</span>
+                    </button>
+                    <button id="pay-phone-btn" class="flex flex-col items-center space-y-2 p-2 rounded-lg hover:bg-blue-100 transition-all">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                        </div>
+                        <span>Pay Phone</span>
+                    </button>
+                    <button id="bank-transfer-btn" class="flex flex-col items-center space-y-2 p-2 rounded-lg hover:bg-blue-100 transition-all">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+                        </div>
+                        <span>Bank Transfer</span>
+                    </button>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Recent Transactions</h2>
+                    <div id="transactions-list" class="space-y-3">
+                        <!-- Transactions will be dynamically inserted here -->
+                    </div>
+                </div>
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="bg-white border-t border-gray-200 p-2 flex justify-around rounded-b-3xl">
+                <button class="flex flex-col items-center text-blue-600 w-1/4 p-2 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span class="text-xs font-medium">Home</span>
+                </button>
+                <button id="history-btn" class="flex flex-col items-center text-gray-500 w-1/4 p-2 rounded-lg hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    <span class="text-xs font-medium">History</span>
+                </button>
+                 <button class="flex flex-col items-center text-gray-500 w-1/4 p-2 rounded-lg hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gem"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M12 22V9"/><path d="m3.5 8.5 17 0"/></svg>
+                    <span class="text-xs font-medium">Offers</span>
+                </button>
+                <button class="flex flex-col items-center text-gray-500 w-1/4 p-2 rounded-lg hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-round"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
+                    <span class="text-xs font-medium">Profile</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- ===== Payment Screen (Initially Hidden) ===== -->
+        <div id="payment-screen" class="hidden absolute inset-0 bg-gray-50 flex-col fade-in">
+            <!-- Payment Header -->
+            <header class="p-4 flex items-center border-b">
+                <button class="back-btn p-2 rounded-full hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </button>
+                <h2 class="text-lg font-semibold text-gray-800 ml-4">Send Money</h2>
+            </header>
+            <!-- Payment Form -->
+            <div class="flex-grow p-5 flex flex-col">
+                <div class="bg-white rounded-xl shadow-md p-5 mb-6">
+                    <label for="recipient-name" class="text-gray-500 text-sm">Recipient</label>
+                    <input type="text" id="recipient-name" class="w-full text-lg font-medium border-b-2 border-gray-200 focus:border-blue-500 outline-none py-2" placeholder="Enter name or phone">
+                </div>
+                <div class="bg-white rounded-xl shadow-md p-5 mb-6">
+                    <label for="payment-amount" class="text-gray-500 text-sm">Amount</label>
+                    <div class="flex items-center">
+                        <span class="text-3xl font-bold text-gray-800 mr-2">₹</span>
+                        <input type="number" id="payment-amount" class="w-full text-3xl font-bold text-gray-800 border-b-2 border-gray-200 focus:border-blue-500 outline-none py-1" placeholder="0">
+                    </div>
+                </div>
+                 <div class="bg-white rounded-xl shadow-md p-5">
+                    <label for="payment-note" class="text-gray-500 text-sm">Note</label>
+                    <input type="text" id="payment-note" class="w-full text-lg font-medium border-b-2 border-gray-200 focus:border-blue-500 outline-none py-2" placeholder="What's this for?">
+                </div>
+                <div class="flex-grow"></div>
+                <button id="confirm-payment-btn" class="w-full bg-blue-600 text-white font-bold py-4 rounded-full text-lg hover:bg-blue-700 transition-all disabled:bg-blue-300">Pay</button>
+            </div>
+        </div>
+        
+        <!-- ===== QR Scanner Screen (Initially Hidden) ===== -->
+        <div id="scanner-screen" class="hidden absolute inset-0 bg-black flex-col fade-in">
+            <header class="p-4 flex items-center z-10">
+                <button class="back-btn p-2 rounded-full bg-black/30 text-white hover:bg-black/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </button>
+            </header>
+            <div class="flex-grow flex items-center justify-center relative">
+                <div class="w-64 h-64 border-4 border-dashed border-gray-400 rounded-2xl relative overflow-hidden">
+                    <div class="absolute left-0 w-full h-1 bg-green-400 shadow-[0_0_15px_5px_rgba(74,222,128,0.7)] scanner-line"></div>
+                </div>
+                <p class="absolute bottom-16 text-white text-center">Scanning for QR code...</p>
+            </div>
+        </div>
+
+        <!-- ===== Full History Screen (Initially Hidden) ===== -->
+        <div id="history-screen" class="hidden absolute inset-0 bg-gray-50 flex-col fade-in">
+            <header class="p-4 flex items-center border-b">
+                <button class="back-btn p-2 rounded-full hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </button>
+                <h2 class="text-lg font-semibold text-gray-800 ml-4">Transaction History</h2>
+            </header>
+            <div id="full-history-list" class="flex-grow p-5 overflow-y-auto no-scrollbar space-y-3">
+                <!-- Full history will be dynamically inserted here -->
+            </div>
+        </div>
+        
+        <!-- ===== Processing Modal (Initially Hidden) ===== -->
+        <div id="processing-modal" class="hidden absolute inset-0 bg-black/60 flex items-center justify-center fade-in">
+            <div class="bg-white rounded-xl p-8 flex flex-col items-center space-y-4">
+                <div class="w-16 h-16 border-4 border-t-blue-500 border-gray-200 rounded-full animate-spin"></div>
+                <p class="text-gray-700 font-medium">Processing Payment...</p>
+            </div>
+        </div>
+        
+        <!-- ===== Success Modal (Initially Hidden) ===== -->
+        <div id="success-modal" class="hidden absolute inset-0 bg-black/60 flex items-center justify-center fade-in">
+            <div class="bg-white rounded-xl p-8 flex flex-col items-center space-y-4 text-center">
+                <div class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">Payment Successful!</h3>
+                <p id="success-details" class="text-gray-600"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const mainScreen = document.getElementById('main-screen');
+        const paymentScreen = document.getElementById('payment-screen');
+        const scannerScreen = document.getElementById('scanner-screen');
+        const historyScreen = document.getElementById('history-screen');
+        const processingModal = document.getElementById('processing-modal');
+        const successModal = document.getElementById('success-modal');
+        
+        const balanceAmountEl = document.getElementById('balance-amount');
+        const transactionsListEl = document.getElementById('transactions-list');
+        const fullHistoryListEl = document.getElementById('full-history-list');
+
+        // --- App State ---
+        let currentBalance = 54820.50;
+        let transactions = [
+            { id: 1, type: 'paid', name: 'Zomato', note: 'Dinner', amount: 450.00, date: '2024-07-02' },
+            { id: 2, type: 'received', name: 'Alice Johnson', note: 'Project payment', amount: 5000.00, date: '2024-07-02' },
+            { id: 3, type: 'paid', name: 'Starbucks', note: 'Coffee', amount: 320.50, date: '2024-07-01' },
+            { id: 4, type: 'paid', name: 'Netflix', note: 'Subscription', amount: 649.00, date: '2024-06-30' },
+            { id: 5, type: 'received', name: 'Bob Williams', note: 'Rent share', amount: 12000.00, date: '2024-06-28' },
+            { id: 6, type: 'paid', name: 'Uber', note: 'Ride to office', amount: 185.00, date: '2024-06-28' },
+        ];
+
+        // --- Helper Functions ---
+        const formatCurrency = (amount) => `₹ ${amount.toFixed(2)}`;
+        
+        const showScreen = (screen) => {
+            mainScreen.classList.add('hidden');
+            paymentScreen.classList.add('hidden');
+            scannerScreen.classList.add('hidden');
+            historyScreen.classList.add('hidden');
+            screen.classList.remove('hidden');
+            screen.classList.add('flex');
+        };
+
+        const showModal = (modal) => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        const hideModal = (modal) => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // --- Render Functions ---
+        const renderTransaction = (tx) => {
+            const isPaid = tx.type === 'paid';
+            const sign = isPaid ? '-' : '+';
+            const colorClass = isPaid ? 'text-red-500' : 'text-green-500';
+            const icon = isPaid 
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-left"><path d="M17 7 7 17"/><path d="M17 17H7V7"/></svg>`;
+
+            return `
+                <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center ${colorClass}">
+                            ${icon}
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">${tx.name}</p>
+                            <p class="text-xs text-gray-500">${tx.note}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold ${colorClass}">${sign}${formatCurrency(tx.amount)}</p>
+                        <p class="text-xs text-gray-400">${tx.date}</p>
+                    </div>
+                </div>
+            `;
+        };
+
+        const updateUI = () => {
+            // Update balance
+            balanceAmountEl.textContent = formatCurrency(currentBalance);
+            
+            // Update recent transactions list (show latest 4)
+            transactionsListEl.innerHTML = transactions.slice(0, 4).map(renderTransaction).join('');
+            
+            // Update full history list
+            fullHistoryListEl.innerHTML = transactions.map(renderTransaction).join('');
+        };
+
+        // --- Event Handlers ---
+        const handlePayment = () => {
+            const recipient = document.getElementById('recipient-name').value;
+            const amount = parseFloat(document.getElementById('payment-amount').value);
+            const note = document.getElementById('payment-note').value;
+
+            if (!recipient || !amount || amount <= 0) {
+                alert("Please enter a valid recipient and amount.");
+                return;
+            }
+
+            if (amount > currentBalance) {
+                alert("Insufficient balance!");
+                return;
+            }
+
+            showModal(processingModal);
+
+            setTimeout(() => {
+                // Update state
+                currentBalance -= amount;
+                const newTransaction = {
+                    id: transactions.length + 1,
+                    type: 'paid',
+                    name: recipient,
+                    note: note || 'Sent',
+                    amount: amount,
+                    date: new Date().toISOString().split('T')[0] // YYYY-MM-DD
+                };
+                transactions.unshift(newTransaction);
+
+                hideModal(processingModal);
+                document.getElementById('success-details').textContent = `You paid ${formatCurrency(amount)} to ${recipient}.`;
+                showModal(successModal);
+
+                setTimeout(() => {
+                    hideModal(successModal);
+                    showScreen(mainScreen);
+                    // Reset payment form
+                    document.getElementById('recipient-name').value = '';
+                    document.getElementById('payment-amount').value = '';
+                    document.getElementById('payment-note').value = '';
+                    updateUI();
+                }, 2000);
+
+            }, 2000); // Simulate network delay
+        };
+
+        // --- Event Listeners ---
+        document.querySelectorAll('#pay-contact-btn, #pay-phone-btn, #bank-transfer-btn').forEach(btn => {
+            btn.addEventListener('click', () => showScreen(paymentScreen));
+        });
+
+        document.getElementById('scan-qr-btn').addEventListener('click', () => {
+            showScreen(scannerScreen);
+            // Simulate scanning and finding a user
+            setTimeout(() => {
+                showScreen(paymentScreen);
+                document.getElementById('recipient-name').value = "Scanned User XYZ";
+            }, 3000);
+        });
+        
+        document.getElementById('history-btn').addEventListener('click', () => showScreen(historyScreen));
+
+        document.querySelectorAll('.back-btn').forEach(btn => {
+            btn.addEventListener('click', () => showScreen(mainScreen));
+        });
+
+        document.getElementById('confirm-payment-btn').addEventListener('click', handlePayment);
+
+        document.getElementById('check-balance-btn').addEventListener('click', (e) => {
+            const btn = e.currentTarget;
+            const amountEl = document.getElementById('balance-amount');
+            btn.classList.add('animate-spin');
+            amountEl.classList.add('blur-sm');
+
+            setTimeout(() => {
+                btn.classList.remove('animate-spin');
+                amountEl.classList.remove('blur-sm');
+            }, 1000);
+        });
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', updateUI);
+
+    </script>
+</body>
+</html>
