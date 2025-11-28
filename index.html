@@ -257,30 +257,45 @@
                 // Generate color class based on category or default
                 const colorClass = item.color || 'bg-indigo-100 text-indigo-600';
                 
+                // NEW: Iframe preview card structure with pointer-events-none to prevent touch
                 const cardHTML = `
-                    <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col">
-                        <!-- Card Header / Icon Placeholder -->
-                        <div class="h-32 ${item.color.replace('text', 'bg').replace('100', '50')} flex items-center justify-center relative overflow-hidden">
-                            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/grid-noise.png')]"></div>
-                            <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center text-3xl z-10">
+                    <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 transform hover:-translate-y-1 overflow-hidden flex flex-col h-full">
+                        <!-- Card Header / Iframe Preview Area -->
+                        <div class="h-56 bg-gray-50 relative overflow-hidden border-b border-gray-100 group-hover:h-60 transition-all duration-500">
+                            <!-- Live Iframe (Scaled down and Locked) -->
+                            <!-- scale-50 and w-[200%] creates a zoomed out effect -->
+                            <!-- pointer-events-none stops user from interacting with the iframe directly -->
+                            <iframe 
+                                src="${item.url}" 
+                                class="w-[200%] h-[200%] origin-top-left transform scale-50 pointer-events-none select-none grayscale-[30%] group-hover:grayscale-0 transition-all duration-500" 
+                                scrolling="no"
+                                loading="lazy"
+                                tabindex="-1">
+                            </iframe>
+                            
+                            <!-- Overlay Gradient for better text visibility if needed, and to catch clicks -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-auto cursor-default"></div>
+
+                            <!-- Floating Icon Badge -->
+                            <div class="absolute top-3 right-3 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-xl z-20">
                                 <i class="ph ph-browsers ${item.color.split(' ')[1]}"></i>
                             </div>
                         </div>
 
                         <!-- Card Body -->
-                        <div class="p-5 flex-grow">
+                        <div class="p-5 flex-grow flex flex-col relative z-20 bg-white">
                             <div class="flex justify-between items-start mb-2">
-                                <span class="text-xs font-bold uppercase tracking-wider ${item.color} px-2 py-1 rounded-md bg-opacity-20">${item.category}</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider ${item.color} px-2 py-1 rounded-md bg-opacity-20">${item.category}</span>
                             </div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">${item.title}</h3>
-                            <p class="text-gray-500 text-sm line-clamp-2">${item.desc}</p>
-                        </div>
-
-                        <!-- Card Footer -->
-                        <div class="p-5 pt-0 mt-auto">
-                            <button onclick="openPreview('${item.url}', '${item.title}')" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-medium py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-200 transition-all duration-300 flex items-center justify-center gap-2">
-                                <i class="ph ph-eye"></i> Live Preview
-                            </button>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">${item.title}</h3>
+                            <p class="text-gray-500 text-sm line-clamp-2 mb-4">${item.desc}</p>
+                            
+                            <!-- Card Footer Button -->
+                            <div class="mt-auto">
+                                <button onclick="openPreview('${item.url}', '${item.title}')" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-medium py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-200 transition-all duration-300 flex items-center justify-center gap-2 group-hover:translate-y-0">
+                                    <i class="ph ph-eye"></i> Open Full Preview
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
