@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavor Fusion Frenzy</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Game Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e; /* Deep purple background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            color: #e9e9e9;
+        }
+
+        .game-container {
+            max-width: 768px;
+            width: 100%;
+            background-color: #272744; /* Darker card background */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            border: 4px solid #f6c068; /* Chef's gold border */
+        }
+
+        /* Order Box Styling */
+        #order-display {
+            background-color: #f6c068; /* Bright header */
+            color: #1a1a2e;
+            border-radius: 12px;
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        #timer-bar {
+            height: 12px;
+            border-radius: 9999px;
+            transition: width 0.5s linear, background-color 0.5s;
+            margin-top: 0.5rem;
+        }
+
+        /* Ingredient Grid Styling */
+        .ingredient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .ingredient-card {
+            background-color: #3b3b64; /* Ingredient background */
+            padding: 0.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px; /* Ensure good touch target size */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .ingredient-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .ingredient-card.selected {
+            background-color: #8c73ff; /* Selected ingredient color */
+            border: 3px solid #f6c068;
+            transform: scale(1.05);
+        }
+
+        .ingredient-card.correct-flash {
+            animation: flashGreen 0.2s 3;
+        }
+
+        .ingredient-card.incorrect-flash {
+            animation: flashRed 0.2s 3;
+        }
+
+        .ingredient-icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+
+        /* Button Styling */
+        .action-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: transform 0.1s, opacity 0.3s;
+            box-shadow: 0 4px 0 0 #d97706; /* Darker shadow for 3D effect */
+        }
+
+        .action-button:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .cook-btn {
+            background-color: #f59e0b;
+            color: #1a1a2e;
+        }
+
+        .cook-btn:disabled {
+            background-color: #4b5563;
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #9ca3af;
+        }
+        
+        /* Utility Classes */
+        .hidden { display: none !important; }
+
+        /* Keyframe Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes flashGreen {
+            0%, 100% { background-color: #3b3b64; }
+            50% { background-color: #10b981; }
+        }
+        
+        @keyframes flashRed {
+            0%, 100% { background-color: #3b3b64; }
+            50% { background-color: #ef4444; }
+        }
+
+        /* Modal Styling */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #272744;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            border: 3px solid #f6c068;
+            animation: fadeInDown 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1 class="text-3xl font-extrabold text-center mb-4 text-white">Flavor Fusion Frenzy</h1>
+
+        <!-- Score and Level -->
+        <div class="flex justify-between items-center mb-4 p-2 bg-purple-700 rounded-lg shadow-inner">
+            <div class="text-lg font-bold">Score: <span id="score-value">0</span></div>
+            <div class="text-lg font-bold">Level: <span id="level-value">1</span></div>
+        </div>
+
+        <!-- Order Display -->
+        <div id="order-display">
+            <h2 id="dish-name" class="text-xl font-extrabold mb-2 text-center">Order Up!</h2>
+            <p class="text-sm font-semibold mb-2">Required Ingredients:</p>
+            <ul id="required-ingredients" class="flex flex-wrap gap-2 text-sm justify-center">
+                <!-- Ingredients will be listed here -->
+            </ul>
+            <!-- Timer Bar -->
+            <div id="timer-bar-container" class="w-full bg-gray-600 rounded-full mt-3">
+                <div id="timer-bar" class="w-full bg-green-500"></div>
+            </div>
+        </div>
+
+        <!-- Kitchen Counter / Ingredient Selection -->
+        <div id="ingredient-kitchen" class="ingredient-grid mb-6">
+            <!-- Ingredient Cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Action Button -->
+        <div class="text-center">
+            <button id="cook-button" class="action-button cook-btn w-full md:w-auto" disabled>
+                Cook & Serve!
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="text-3xl font-extrabold mb-4 text-red-500">Time's Up!</h3>
+            <p class="text-xl mb-4">You served <span id="final-dishes" class="font-bold text-yellow-400">0</span> dishes.</p>
+            <p class="text-2xl font-bold mb-6">Final Score: <span id="final-score" class="text-green-400">0</span></p>
+            <button onclick="window.location.reload()" class="action-button cook-btn">
+                Play Again
+            </button>
+        </div>
+    </div>
+    
+    <!-- Congratulations Modal (Level Clear/Round Clear) -->
+    <div id="congrats-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="text-3xl font-extrabold mb-4 text-green-500">Dish Served! Excellent!</h3>
+            <p class="text-xl mb-4">Time Bonus: <span id="time-bonus" class="font-bold text-yellow-400">0</span></p>
+            <button id="next-order-button" class="action-button cook-btn">
+                Next Order
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME DATA ---
+        const INGREDIENTS = {
+            chicken: { label: 'Chicken', icon: '🍗', complexity: 1 },
+            noodles: { label: 'Noodles', icon: '🍜', complexity: 1 },
+            bell_peppers: { label: 'Bell Peppers', icon: '🌶️', complexity: 1 },
+            soy_sauce: { label: 'Soy Sauce', icon: '🍶', complexity: 1 },
+            chili_flakes: { label: 'Chili Flakes', icon: '🔥', complexity: 2 },
+            rice: { label: 'Rice', icon: '🍚', complexity: 1 },
+            egg: { label: 'Egg', icon: '🥚', complexity: 1 },
+            onion: { label: 'Onion', icon: '🧅', complexity: 2 },
+            tomato: { label: 'Tomato', icon: '🍅', complexity: 2 },
+            cheese: { label: 'Cheese', icon: '🧀', complexity: 2 },
+            pasta: { label: 'Pasta', icon: '🍝', complexity: 1 },
+            meatballs: { label: 'Meatballs', icon: '🥩', complexity: 3 },
+            broth: { label: 'Broth', icon: '🥣', complexity: 3 },
+            tofu: { label: 'Tofu', icon: '◻️', complexity: 2 },
+            broccoli: { label: 'Broccoli', icon: '🥦', complexity: 2 }
+        };
+
+        const RECIPES = [
+            { name: "Simple Rice Bowl", ingredients: ['rice', 'egg', 'soy_sauce'], baseTime: 12, complexity: 1, dishIcon: '🍚' },
+            { name: "Cheesy Pasta", ingredients: ['pasta', 'tomato', 'cheese', 'onion'], baseTime: 18, complexity: 2, dishIcon: '🍝' },
+            { name: "Spicy Stir-fry", ingredients: ['chicken', 'noodles', 'bell_peppers', 'soy_sauce', 'chili_flakes'], baseTime: 25, complexity: 3, dishIcon: '🌶️' },
+            { name: "Veggie Broth", ingredients: ['broth', 'broccoli', 'tofu', 'onion'], baseTime: 20, complexity: 2, dishIcon: '🥣' },
+            { name: "Meatball Delight", ingredients: ['pasta', 'meatballs', 'tomato', 'cheese'], baseTime: 28, complexity: 3, dishIcon: '🥩' },
+        ];
+
+        // --- GAME STATE ---
+        let gameState = {
+            score: 0,
+            level: 1,
+            timeRemaining: 0,
+            maxTime: 0,
+            currentOrder: null,
+            selectedIngredients: new Set(),
+            timerInterval: null,
+            dishesServed: 0,
+            availableIngredients: new Set(),
+        };
+
+        // --- DOM REFERENCES ---
+        const $ = selector => document.querySelector(selector);
+        const dishNameEl = $('#dish-name');
+        const requiredIngredientsEl = $('#required-ingredients');
+        const kitchenEl = $('#ingredient-kitchen');
+        const cookButton = $('#cook-button');
+        const scoreValueEl = $('#score-value');
+        const levelValueEl = $('#level-value');
+        const timerBarEl = $('#timer-bar');
+        const gameOverModal = $('#game-over-modal');
+        const congratsModal = $('#congrats-modal');
+        const nextOrderButton = $('#next-order-button');
+        
+        // --- GAME LOGIC ---
+
+        /**
+         * Converts ingredient keys into HTML list items for the order display.
+         * @param {string[]} ingredientKeys - Array of ingredient keys.
+         * @param {Set<string>} selected - Set of currently selected ingredient keys.
+         * @returns {string} HTML string.
+         */
+        function renderRequiredIngredients(ingredientKeys, selected) {
+            return ingredientKeys.map(key => {
+                const ingredient = INGREDIENTS[key];
+                const isSelected = selected.has(key);
+                const colorClass = isSelected ? 'bg-green-700 text-white' : 'bg-white text-gray-800';
+                return `
+                    <li id="req-${key}" class="px-2 py-1 rounded-full ${colorClass} font-semibold shadow-md transition-colors duration-200">
+                        ${ingredient.icon} ${ingredient.label}
+                    </li>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Updates the main UI elements (Score, Level).
+         */
+        function updateUI() {
+            scoreValueEl.textContent = gameState.score;
+            levelValueEl.textContent = gameState.level;
+            
+            if (gameState.currentOrder) {
+                // Update required ingredients list
+                requiredIngredientsEl.innerHTML = renderRequiredIngredients(
+                    gameState.currentOrder.ingredients, 
+                    gameState.selectedIngredients
+                );
+            }
+
+            // Check if cooking is possible
+            cookButton.disabled = gameState.selectedIngredients.size !== gameState.currentOrder.ingredients.length;
+        }
+
+        /**
+         * Updates the timer bar visually.
+         */
+        function updateTimerBar() {
+            const percentage = (gameState.timeRemaining / gameState.maxTime) * 100;
+            timerBarEl.style.width = `${percentage}%`;
+            
+            // Change color based on remaining time
+            if (percentage > 50) {
+                timerBarEl.className = 'w-full bg-green-500 rounded-full';
+            } else if (percentage > 20) {
+                timerBarEl.className = 'w-full bg-yellow-500 rounded-full';
+            } else {
+                timerBarEl.className = 'w-full bg-red-500 rounded-full';
+            }
+        }
+
+        /**
+         * Handles the main game timer.
+         */
+        function startTimer() {
+            clearInterval(gameState.timerInterval);
+            updateTimerBar();
+
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeRemaining--;
+                updateTimerBar();
+
+                if (gameState.timeRemaining <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    showGameOver();
+                }
+            }, 1000);
+        }
+
+        /**
+         * Dynamically determines available ingredients based on level.
+         * Also adds a few 'distractor' ingredients to the pool.
+         */
+        function determineAvailableIngredients() {
+            // Get all ingredients from recipes up to current complexity level
+            let neededIngredients = new Set();
+            RECIPES.forEach(recipe => {
+                if (recipe.complexity <= gameState.level + 1) { // +1 to include ingredients for the next level up too
+                    recipe.ingredients.forEach(ing => neededIngredients.add(ing));
+                }
+            });
+
+            // Ensure the current order ingredients are available
+            if (gameState.currentOrder) {
+                gameState.currentOrder.ingredients.forEach(ing => neededIngredients.add(ing));
+            }
+
+            // Add distractors (up to 3 random ingredients not currently needed)
+            const allIngredientKeys = Object.keys(INGREDIENTS);
+            let distractorCount = Math.min(3 + gameState.level, allIngredientKeys.length - neededIngredients.size);
+            
+            let distractorKeys = allIngredientKeys.filter(key => !neededIngredients.has(key));
+            
+            // Shuffle and pick
+            distractorKeys.sort(() => 0.5 - Math.random());
+            distractorKeys.slice(0, distractorCount).forEach(key => neededIngredients.add(key));
+
+            gameState.availableIngredients = neededIngredients;
+        }
+
+        /**
+         * Renders the ingredients on the kitchen counter.
+         */
+        function renderKitchen() {
+            determineAvailableIngredients();
+            
+            const ingredientsArray = Array.from(gameState.availableIngredients)
+                .map(key => INGREDIENTS[key]);
+
+            // Shuffle the display order for variety
+            ingredientsArray.sort(() => 0.5 - Math.random());
+
+            kitchenEl.innerHTML = ingredientsArray.map(ing => `
+                <div id="ing-${ing.label.toLowerCase().replace(/\s/g, '_')}" 
+                     data-key="${ing.label.toLowerCase().replace(/\s/g, '_')}" 
+                     class="ingredient-card"
+                     onclick="selectIngredient('${ing.label.toLowerCase().replace(/\s/g, '_')}')">
+                    <span class="ingredient-icon">${ing.icon}</span>
+                    <span class="text-xs font-semibold mt-1">${ing.label}</span>
+                </div>
+            `).join('');
+
+            // Re-apply selection state
+            gameState.selectedIngredients.forEach(key => {
+                const el = $(`#ing-${key}`);
+                if (el) el.classList.add('selected');
+            });
+        }
+
+        /**
+         * Selects or deselects an ingredient.
+         * @param {string} key - The key of the ingredient.
+         */
+        window.selectIngredient = (key) => {
+            const ingredientEl = $(`#ing-${key}`);
+
+            if (gameState.selectedIngredients.has(key)) {
+                gameState.selectedIngredients.delete(key);
+                ingredientEl.classList.remove('selected');
+            } else {
+                gameState.selectedIngredients.add(key);
+                ingredientEl.classList.add('selected');
+            }
+
+            // Update the required list item color
+            const reqEl = $(`#req-${key}`);
+            if(reqEl) {
+                reqEl.classList.toggle('bg-green-700', gameState.selectedIngredients.has(key));
+                reqEl.classList.toggle('bg-white', !gameState.selectedIngredients.has(key));
+                reqEl.classList.toggle('text-white', gameState.selectedIngredients.has(key));
+                reqEl.classList.toggle('text-gray-800', !gameState.selectedIngredients.has(key));
+            }
+
+            updateUI();
+        };
+
+        /**
+         * Generates a new customer order based on the current level.
+         */
+        function generateOrder() {
+            const availableRecipes = RECIPES.filter(r => r.complexity <= gameState.level);
+            if (availableRecipes.length === 0) {
+                // If all recipes are exhausted, congratulate the player and reset/increase max level
+                gameState.level++;
+                return generateOrder(); 
+            }
+            
+            // Pick a random recipe
+            const recipe = availableRecipes[Math.floor(Math.random() * availableRecipes.length)];
+            
+            // Set order state
+            gameState.currentOrder = recipe;
+            gameState.maxTime = recipe.baseTime;
+            gameState.timeRemaining = recipe.baseTime;
+            gameState.selectedIngredients.clear();
+            
+            // Update UI elements
+            dishNameEl.innerHTML = `${recipe.dishIcon} ${recipe.name}`;
+            cookButton.disabled = true;
+
+            renderKitchen(); // Re-render kitchen with new ingredient pool
+            updateUI();
+            startTimer();
+        }
+
+        /**
+         * Handles the "Cook & Serve" action.
+         */
+        function cookDish() {
+            clearInterval(gameState.timerInterval);
+
+            // 1. Check for correctness
+            const required = new Set(gameState.currentOrder.ingredients);
+            const selected = gameState.selectedIngredients;
+
+            const isCorrect = 
+                required.size === selected.size && 
+                Array.from(selected).every(key => required.has(key));
+
+            let scoreChange = 0;
+            
+            if (isCorrect) {
+                // Success!
+                const timeBonus = gameState.timeRemaining * 10; // 10 points per second remaining
+                scoreChange = 100 + timeBonus;
+                gameState.score += scoreChange;
+                gameState.dishesServed++;
+
+                // Flash success on the order display
+                const orderDisplay = $('#order-display');
+                orderDisplay.style.transition = 'background-color 0.2s';
+                orderDisplay.style.backgroundColor = '#10b981'; // Green flash
+                setTimeout(() => {
+                    orderDisplay.style.backgroundColor = '#f6c068'; // Back to original
+                    orderDisplay.style.transition = '';
+                }, 500);
+
+                // Show success modal
+                $('#time-bonus').textContent = timeBonus;
+                congratsModal.classList.remove('hidden');
+
+            } else {
+                // Failure (Incorrect ingredients)
+                scoreChange = -50;
+                gameState.score = Math.max(0, gameState.score + scoreChange);
+
+                // Highlight correct/incorrect ingredients briefly
+                highlightIngredients(required, selected);
+
+                // Penalty: reduce time for next order
+                gameState.maxTime = Math.max(5, gameState.maxTime - 3);
+                
+                // Show message box (not alert)
+                dishNameEl.innerHTML = "❌ Wrong Ingredients! -50 Points ❌";
+                setTimeout(() => {
+                    dishNameEl.innerHTML = `${gameState.currentOrder.dishIcon} ${gameState.currentOrder.name}`;
+                    gameState.timeRemaining = gameState.maxTime; // Reset time for the same order
+                    startTimer();
+                }, 1500);
+            }
+
+            updateUI();
+            
+            if (!isCorrect) {
+                 gameState.selectedIngredients.clear(); // Clear selection on mistake
+                 renderKitchen(); // Re-render to clear selected state
+            }
+        }
+
+        /**
+         * Visual feedback for ingredient selection after an incorrect cook.
+         * @param {Set<string>} required - Correct ingredients.
+         * @param {Set<string>} selected - Player's selection.
+         */
+        function highlightIngredients(required, selected) {
+            // Flash correct ones green, incorrect ones red
+            selected.forEach(key => {
+                const el = $(`#ing-${key}`);
+                if (el) {
+                    el.classList.remove('selected');
+                    if (required.has(key)) {
+                        el.classList.add('correct-flash');
+                    } else {
+                        el.classList.add('incorrect-flash');
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                // Clean up classes after animation
+                selected.forEach(key => {
+                    const el = $(`#ing-${key}`);
+                    if (el) {
+                        el.classList.remove('correct-flash', 'incorrect-flash');
+                    }
+                });
+            }, 1000);
+        }
+
+        /**
+         * Starts the next order, handling level progression.
+         */
+        function nextOrder() {
+            congratsModal.classList.add('hidden');
+            
+            // Progression check (e.g., every 3 dishes served, increase level)
+            if (gameState.dishesServed % 3 === 0 && gameState.dishesServed > 0) {
+                gameState.level++;
+                // Increase base time slightly for higher levels
+                RECIPES.forEach(r => r.baseTime = r.baseTime + 1);
+            }
+
+            generateOrder();
+        }
+
+        /**
+         * Displays the Game Over modal.
+         */
+        function showGameOver() {
+            $('#final-score').textContent = gameState.score;
+            $('#final-dishes').textContent = gameState.dishesServed;
+            gameOverModal.classList.remove('hidden');
+        }
+
+        /**
+         * Initializes the game environment.
+         */
+        function initializeGame() {
+            // Event Listeners
+            cookButton.addEventListener('click', cookDish);
+            nextOrderButton.addEventListener('click', nextOrder);
+            
+            // Start the first order
+            generateOrder();
+        }
+
+        // Start the game once the window is fully loaded
+        window.onload = initializeGame;
+
+    </script>
+
+</body>
+</html>
+
