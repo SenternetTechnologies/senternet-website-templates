@@ -3,235 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senternet WhatsApp Sender - Media Ready</title>
+    <title>WhatsApp Link Generator | Senternet Technologies</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Use Inter font family -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #f0f2f5; /* Light WhatsApp background */
         }
-        .whatsapp-btn {
-            background-color: #25D366;
-            transition: background-color 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        /* Custom scrollbar for message input */
+        textarea::-webkit-scrollbar {
+            width: 8px;
         }
-        .whatsapp-btn:hover {
-            background-color: #128C7E;
+        textarea::-webkit-scrollbar-thumb {
+            background-color: #b3b3b3;
+            border-radius: 4px;
         }
-        .card {
-            background-color: #ffffff;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        textarea::-webkit-scrollbar-track {
+            background-color: #f0f2f5;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="min-h-screen flex flex-col items-center p-4 sm:p-6">
-        
-        <!-- Header -->
-        <header class="w-full max-w-4xl text-center py-6">
-            <h1 class="text-4xl font-extrabold text-gray-800">WhatsApp Bulk Message Sender (Media Ready)</h1>
-            <p class="text-gray-500 mt-2">Efficiently send personalized messages with image URLs for preview.</p>
+    <!-- Main Container - WhatsApp Chat Interface Style -->
+    <div class="w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden md:h-auto h-[90vh] flex flex-col">
+
+        <!-- Header - WhatsApp Clone Style -->
+        <header class="bg-[#075e54] text-white p-4 flex items-center justify-between shadow-md">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 mr-3 text-[#25d366]" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.16 2.05A9.97 9.97 0 0010 .02c-5.5 0-9.98 4.48-9.98 9.98 0 1.76.46 3.44 1.35 4.9L.02 20l5.06-1.32c1.45.8 3.08 1.22 4.92 1.22 5.5 0 9.98-4.48 9.98-9.98a9.97 9.97 0 00-2.82-7.05zM10 18.02c-1.63 0-3.2-.4-4.59-1.18l-.33-.2-.35.91-2.02.53.53-2.05-.2-.34a8 8 0 01-1.22-4.22c0-4.4 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.72-5.74c-.26-.13-.91-.45-1.05-.5-.14-.05-.24-.07-.35.07-.12.14-.45.5-.56.6-.1.1-.21.11-.39.05-.18-.05-2.22-.82-4.23-2.6-.3-.28-.5-.45-.66-.73-.16-.27-.02-.41.13-.56.12-.13.27-.34.39-.51.12-.17.16-.27.24-.46.08-.18.04-.34-.02-.48-.06-.14-.35-.85-.48-1.16-.13-.3-.26-.26-.35-.26-.1-.01-.22-.01-.35-.01-.13 0-.35.04-.54.2-.18.17-.7.68-.85.83-.15.15-.31.22-.48.22-.17 0-.34-.05-.48-.11-.14-.06-.32-.19-.67-.4-.35-.22-.96-.9-1.39-1.84-.44-.94-.25-1.38-.19-1.5-.06-.13.46-.46.85-.85.39-.39.52-.66.62-.82.1-.16.05-.31-.02-.45-.07-.15-.65-1.56-.89-2.12-.24-.56-.49-.48-.67-.48-.18 0-.39-.01-.59-.01-.19 0-.5.06-.77.34-.27.28-1.04 1.01-1.04 2.47 0 1.46 1.07 2.86 1.22 3.06.15.2.29.32.55.57.25.25 1.77 2.7 4.29 3.79 2.52 1.09 2.52.73 2.97.68.45-.05 1.45-.58 1.66-.7.21-.12.37-.18.42-.27.05-.09.13-.19.26-.26z"/></svg>
+                <h1 class="text-xl font-semibold">Senternet Link Tool</h1>
+            </div>
+            <span class="text-sm opacity-80 font-light">Aranthangi</span>
         </header>
 
-        <main class="w-full max-w-4xl space-y-6">
-            
-            <!-- Input Card -->
-            <div class="card p-6 rounded-xl">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Enter Data (Text & Media)</h2>
+        <!-- Main Content Area -->
+        <main class="flex-grow p-4 space-y-4 overflow-y-auto bg-gray-50">
 
-                <!-- Hidden Input for the initial number string -->
-                <input type="hidden" id="initialNumberString" value="994549955399401961359444164254996201866673389663666382853580950013889986959990179500098274944446192596771575119952051253875440746898403335597907824317883802083099945878369080089709842813131398844193947010269022960000738798403172199790932006868280828198847751778088095608944334325499804641218825463993638272460396298486018072539421730545648797909818739940452886875446285393900000798056257447988439494382207874778531874108944418158699412224997397262576917150509098855430249791964076960009944998844088889790640721892535847497101226887539993371994118714494459920529176812799904230772199406904088667351689908063862198403034079345576151822058376893600617009884150655893926056890030850469025901170984139313593848578848124189576984076861198405556539840947697812447474191599266268448970374790476490599520009709092290675638227390580560886059025860849988438229795669812349940015759709211000080562121238925260397967726828899527904059962831862965954894398436171727358041616906640447472003845889500745698984114807979768482839841044895994156708993237335198778099741770851879999941818569962988182628245932099626038978939382626733761597299943660499789445660960029562897908483819655743872638384942675982285179488840433988473057897108988599020805689974623848263826961679600233810868635356789398080998778796693782482072381241724029841221245960012370594433320458897811928807545896798847669539597090627969811790698430767889789848755988423530598404840839710425625807274240799411532729884619095979191689691769188417200777453">
-
-                <label for="numberInput" class="block text-sm font-medium text-gray-700 mb-2">
-                    Raw Numbers String
+            <!-- Number Input Card -->
+            <div class="bg-white p-5 rounded-xl shadow-lg border border-gray-100">
+                <label for="numbers" class="block text-sm font-medium text-gray-700 mb-2">
+                    Paste Contact Numbers (One per line)
                 </label>
-                <textarea id="numberInput" rows="4" 
-                          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 text-gray-900 mb-4" 
-                          placeholder="Paste a long string of 10-digit numbers here."></textarea>
-                
-                <label for="messageInput" class="block text-sm font-medium text-gray-700 mb-2">
-                    Message Text
-                </label>
-                <textarea id="messageInput" rows="3" 
-                          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 text-gray-900 mb-4" 
-                          placeholder="Type your marketing or informational message here."></textarea>
+                <textarea id="numbers" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out resize-none" placeholder="10-digit number (9876543210) or with country code (919876543210)"></textarea>
+            </div>
 
-                <!-- New Image URL Field -->
-                <label for="imageURLInput" class="block text-sm font-medium text-gray-700 mb-2">
-                    Optional: Image or Media URL (for preview in WhatsApp)
+            <!-- Message Input Card -->
+            <div class="bg-white p-5 rounded-xl shadow-lg border border-gray-100">
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                    Message to Send (URL Encoded automatically)
                 </label>
-                <input type="url" id="imageURLInput" 
-                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 text-gray-900" 
-                       placeholder="Paste a direct image link (e.g., .jpg, .png, or PDF URL) here.">
+                <textarea id="message" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out resize-none" placeholder="Hello from Senternet Technologies! We saw your enquiry..."></textarea>
+            </div>
 
-                
-                <button onclick="parseNumbers()" class="mt-4 w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150">
-                    Generate WhatsApp Links
+            <!-- Action Button -->
+            <div class="pt-2">
+                <button onclick="generateLinks()" class="w-full bg-[#25d366] text-white font-bold py-3 rounded-xl shadow-md hover:bg-[#1faa4b] transition duration-200 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50">
+                    Generate WhatsApp Chat Links
                 </button>
-
-                <div class="mt-4 text-sm text-gray-600 p-3 bg-yellow-50 rounded-lg">
-                    <span class="font-medium">Important Note:</span> Direct image upload is not possible. We include the Image URL in the message, and WhatsApp usually generates a preview for valid links.
-                </div>
             </div>
 
-            <!-- Output Card -->
-            <div class="card p-6 rounded-xl">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-4">2. Send Messages</h2>
-                
-                <div id="numberCount" class="text-lg font-medium text-gray-600 mb-4">
-                    Total Contacts Ready: <span id="contactCount" class="text-indigo-600">0</span>
-                </div>
-
-                <div id="contactList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
-                    <!-- Contact buttons will be generated here -->
-                    <p class="text-gray-500 italic" id="initialPrompt">Enter your message and click 'Generate WhatsApp Links' to see the list.</p>
-                </div>
+            <!-- Results Section -->
+            <div id="results-container" class="space-y-3 pt-4">
+                <!-- Links will be injected here -->
             </div>
-            
+
+            <!-- Footer for Branding -->
+            <div class="text-center text-xs text-gray-400 pt-4">
+                Powered by <span class="font-bold text-[#075e54]">SENTERNET TECHNOLOGIES</span>
+            </div>
+
         </main>
 
-        <!-- Footer with Senternet Technologies Details -->
-        <footer class="w-full max-w-4xl mt-12 pt-6 border-t border-gray-200 text-center text-sm text-gray-600">
-            <p>&copy; 2025 SENTERNET TECHNOLOGIES | Digital Marketing & Web Design Services</p>
-            <div class="mt-1 flex justify-center space-x-4">
-                <span class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-green-500 mr-1">
-                        <path d="M12.001 2.002c-5.522 0-9.999 4.477-9.999 9.999 0 1.761.458 3.425 1.258 4.887l-.92 3.366 3.473-.913c1.408.76 2.997 1.189 4.908 1.189h.001c5.523 0 10.001-4.477 10.001-9.999s-4.478-10.001-10.001-10.001zm0 18.001c-1.63 0-3.14-.492-4.407-1.355l-.317-.227-3.26 1.054 1.077-3.176-.237-.376c-.848-1.34-1.307-2.884-1.307-4.521 0-4.685 3.816-8.501 8.501-8.501s8.501 3.816 8.501 8.501-3.816 8.501-8.501 8.501z"/>
-                        <path d="M16.501 13.911c-.085-.139-.234-.21-.402-.288-.168-.077-.999-.491-1.154-.545-.155-.054-.27-.081-.384.081-.115.163-.443.545-.54.659-.098.114-.196.126-.364.081-.168-.054-.707-.259-1.341-.83-.497-.442-1.332-1.33-1.611-1.815-.279-.485.011-.45.247-.687.119-.115.259-.271.384-.427.126-.155.168-.259.236-.427.069-.168.034-.311-.011-.426-.045-.115-.384-.925-.526-1.253-.139-.328-.279-.26-.384-.265-.105-.006-.236-.006-.364-.006-.128 0-.333.045-.501.201-.168.155-.644.63-.644 1.542 0 .911.66 1.785.758 1.901.098.115 1.303 1.987 3.193 2.766 1.341.558 2.053.743 2.738.644.685-.099 1.058-.692 1.205-.989.147-.298.147-.558.102-.687-.045-.129-.114-.185-.242-.301z"/>
-                    </svg>
-                    WhatsApp: +91 81900 38085
-                </span>
-                <span class="mx-2 text-gray-400">|</span>
-                <span class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-red-500 mr-1">
-                        <path d="M.05 3.555v16.89h23.9V3.555H.05zm21.312 1.488L12.05 13.568 2.538 5.043h18.824zm-1.144 14.89h-18.78V6.01L12.05 15.01l9.168-9.001v13.914z"/>
-                    </svg>
-                    Email: senternettechnologies@gmail.com
-                </span>
-                <span class="mx-2 text-gray-400">|</span>
-                <span class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-blue-500 mr-1">
-                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 7.5a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H13.5v1.75a.75.75 0 01-1.5 0V8.25h-1.5a.75.75 0 010-1.5h1.5zM12 17.25a.75.75 0 00.75-.75V12a.75.75 0 00-1.5 0v4.5c0 .414.336.75.75.75z" clip-rule="evenodd" />
-                    </svg>
-                    Location: Aranthangi
-                </span>
+        <!-- Message Box Modal (for alerts/confirmations) -->
+        <div id="message-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full transform transition-all scale-100">
+                <h3 class="text-lg font-bold text-gray-800 mb-3" id="modal-title"></h3>
+                <p class="text-sm text-gray-600 mb-6" id="modal-message"></p>
+                <button onclick="closeModal()" class="w-full bg-[#075e54] text-white font-medium py-2 rounded-lg hover:bg-[#054a41] transition">
+                    OK
+                </button>
             </div>
-        </footer>
+        </div>
 
     </div>
 
     <script>
-        // Get the initial number string from the hidden input
-        const initialRawNumbers = document.getElementById('initialNumberString').value;
-        const numberInput = document.getElementById('numberInput');
-        const messageInput = document.getElementById('messageInput');
-        const imageURLInput = document.getElementById('imageURLInput'); // New input
-        const contactList = document.getElementById('contactList');
-        const contactCountSpan = document.getElementById('contactCount');
-
-        let contacts = [];
-        const COUNTRY_CODE = '91'; // Assuming Indian numbers
+        // Global variables for Firebase setup (required by the platform, even if not used)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         /**
-         * Parses the raw number string into an array of unique 10-digit numbers.
+         * Cleans a phone number by removing non-digit characters.
+         * @param {string} number - The raw phone number string.
+         * @returns {string} The cleaned, digit-only number string.
          */
-        function parseNumbers() {
-            const rawString = numberInput.value.replace(/\s+/g, ''); // Remove all spaces
-            if (!rawString) {
-                contacts = [];
-                renderContactList();
-                return;
-            }
-
-            const tempContacts = [];
-            // Regex to find sequences of 10 digits
-            const regex = /(\d{10})/g;
-            let match;
-            
-            while ((match = regex.exec(rawString)) !== null) {
-                // Ensure the number is exactly 10 digits
-                if (match[1].length === 10) {
-                    tempContacts.push(match[1]);
-                }
-            }
-
-            // 1. Remove duplicates
-            const uniqueContacts = [...new Set(tempContacts)];
-
-            // 2. Sort numbers in ascending order
-            contacts = uniqueContacts.sort(); 
-
-            renderContactList();
+        function cleanNumber(number) {
+            // Remove everything that is not a digit
+            return number.replace(/\D/g, '');
         }
 
         /**
-         * Renders the list of contacts with their respective WhatsApp buttons.
-         * Now includes the image URL in the message body.
+         * Displays a custom modal message instead of alert().
+         * @param {string} title - The title of the message box.
+         * @param {string} message - The content of the message.
          */
-        function renderContactList() {
-            const message = messageInput.value;
-            const imageUrl = imageURLInput.value.trim();
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('message-modal').classList.remove('hidden');
+        }
 
-            let fullMessage = message;
+        /**
+         * Closes the custom modal message.
+         */
+        function closeModal() {
+            document.getElementById('message-modal').classList.add('hidden');
+        }
 
-            // If an image URL is provided, append it to the message with newlines for separation
-            if (imageUrl) {
-                // Use %0A for newline character in URL encoding
-                fullMessage += "\n\n" + imageUrl; 
+        /**
+         * Generates and displays WhatsApp chat links based on user input.
+         */
+        function generateLinks() {
+            const numbersInput = document.getElementById('numbers').value;
+            const messageInput = document.getElementById('message').value;
+            const resultsContainer = document.getElementById('results-container');
+
+            // 1. Validate inputs
+            if (!numbersInput.trim()) {
+                showModal("Input Missing", "Dei, you need to paste at least one contact number first!");
+                return;
             }
-
-            contactList.innerHTML = '';
-            contactCountSpan.textContent = contacts.length;
-
-            if (contacts.length === 0) {
-                contactList.innerHTML = '<p class="text-gray-500 italic">No valid 10-digit contacts found. Please enter a raw number string above.</p>';
+            if (!messageInput.trim()) {
+                showModal("Input Missing", "Enga, enter the message you want to send in the chat!");
                 return;
             }
 
-            const encodedMessage = encodeURIComponent(fullMessage);
+            // 2. Process numbers
+            const rawNumbersArray = numbersInput.split('\n');
+            
+            // Clean numbers, filter out empty strings, and then apply country code logic
+            const processedNumbers = rawNumbersArray
+                .map(num => cleanNumber(num))
+                .filter(num => num.length > 0); 
+            
+            const uniqueProcessedNumbers = Array.from(new Set(
+                processedNumbers.map(num => {
+                    // If the cleaned number is exactly 10 digits, assume Indian number and prepend '91'
+                    if (num.length === 10) {
+                        return '91' + num;
+                    }
+                    // For all other lengths (e.g., 12 digits like 91XXXXXXXXXX, or other international codes), use as is
+                    return num;
+                })
+            )).filter(num => num.length >= 10); // Final filter to ensure we only proceed with valid phone numbers
 
-            // Create and append a div for each contact
-            contacts.forEach((number, index) => {
-                const whatsappLink = `https://wa.me/${COUNTRY_CODE}${number}?text=${encodedMessage}`;
-                
-                const contactDiv = document.createElement('div');
-                contactDiv.className = 'flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 rounded-lg transition duration-100';
-                
-                contactDiv.innerHTML = `
-                    <div class="flex items-center mb-2 sm:mb-0">
-                        <span class="text-xs font-mono text-gray-500 w-6">${index + 1}.</span>
-                        <span class="text-base font-semibold text-gray-800 ml-2">${number}</span>
+            if (uniqueProcessedNumbers.length === 0) {
+                showModal("Invalid Numbers", "Macha, none of the numbers looked valid. Please check if they are 10-digit or include a valid country code.");
+                return;
+            }
+
+            // 3. Encode message
+            const encodedMessage = encodeURIComponent(messageInput.trim());
+
+            // 4. Generate Links and HTML
+            let resultHtml = `
+                <div class="p-4 bg-[#dcf8c6] rounded-xl shadow-inner border border-green-200">
+                    <p class="text-sm font-semibold text-green-700">✅ Links Generated: ${uniqueProcessedNumbers.length} Unique Contacts</p>
+                    <p class="text-xs text-green-600 mt-1">Click the chat bubble to open the WhatsApp chat with the pre-filled message.</p>
+                </div>
+            `;
+
+            uniqueProcessedNumbers.forEach((number, index) => {
+                // WhatsApp API link format: https://wa.me/NUMBER?text=MESSAGE
+                const whatsappLink = `https://wa.me/${number}?text=${encodedMessage}`;
+
+                resultHtml += `
+                    <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-100">
+                        <span class="font-mono text-gray-700 text-sm md:text-base truncate">
+                            ${number}
+                        </span>
+                        <div class="flex space-x-2">
+                            <button onclick="copyToClipboard('${whatsappLink}')" class="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-150 ease-in-out focus:outline-none" title="Copy Link">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2"></path></svg>
+                            </button>
+                            <a href="${whatsappLink}" target="_blank" class="p-2 bg-[#25d366] text-white rounded-full hover:bg-[#1faa4b] transition duration-150 ease-in-out focus:outline-none" title="Open Chat">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-3a1 1 0 00-1-1H9a1 1 0 100 2h1a1 1 0 001-1zm1 4a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/></svg>
+                            </a>
+                        </div>
                     </div>
-                    <a href="${whatsappLink}" target="_blank" rel="noopener noreferrer" 
-                       class="whatsapp-btn text-white font-medium py-1 px-4 rounded-full text-sm flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mr-1">
-                            <path d="M12.001 2.002c-5.522 0-9.999 4.477-9.999 9.999 0 1.761.458 3.425 1.258 4.887l-.92 3.366 3.473-.913c1.408.76 2.997 1.189 4.908 1.189h.001c5.523 0 10.001-4.477 10.001-9.999s-4.478-10.001-10.001-10.001zm0 18.001c-1.63 0-3.14-.492-4.407-1.355l-.317-.227-3.26 1.054 1.077-3.176-.237-.376c-.848-1.34-1.307-2.884-1.307-4.521 0-4.685 3.816-8.501 8.501-8.501s8.501 3.816 8.501 8.501-3.816 8.501-8.501 8.501z"/>
-                            <path d="M16.501 13.911c-.085-.139-.234-.21-.402-.288-.168-.077-.999-.491-1.154-.545-.155-.054-.27-.081-.384.081-.115.163-.443.545-.54.659-.098.114-.196.126-.364.081-.168-.054-.707-.259-1.341-.83-.497-.442-1.332-1.33-1.611-1.815-.279-.485.011-.45.247-.687.119-.115.259-.271.384-.427.126-.155.168-.259.236-.427.069-.168.034-.311-.011-.426-.045-.115-.384-.925-.526-1.253-.139-.328-.279-.26-.384-.265-.105-.006-.236-.006-.364-.006-.128 0-.333.045-.501.201-.168.155-.644.63-.644 1.542 0 .911.66 1.785.758 1.901.098.115 1.303 1.987 3.193 2.766 1.341.558 2.053.743 2.738.644.685-.099 1.058-.692 1.205-.989.147-.298.147-.558.102-.687-.045-.129-.114-.185-.242-.301z"/>
-                        </svg>
-                        Send Message
-                    </a>
                 `;
-                contactList.appendChild(contactDiv);
             });
+
+            // 5. Update UI
+            resultsContainer.innerHTML = resultHtml;
         }
 
-        // Initial setup on page load
-        window.onload = function() {
-            // Set the initial raw numbers into the textarea
-            numberInput.value = initialRawNumbers;
+        /**
+         * Copies text to the clipboard using the execCommand fallback.
+         * @param {string} text - The text to copy.
+         */
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed'; // Avoid scrolling to bottom
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showModal("Link Copied!", "The chat link has been copied to your clipboard. You can paste it anywhere!");
+                } else {
+                    showModal("Copy Failed", "Sorry, copy command failed. Please copy the link manually.");
+                }
+            } catch (err) {
+                showModal("Copy Failed", "Sorry, copy command failed. Please copy the link manually.");
+            }
+            document.body.removeChild(textarea);
+        }
 
-            // Add change listener to the message and image URL inputs to re-render links immediately
-            messageInput.addEventListener('input', renderContactList);
-            imageURLInput.addEventListener('input', renderContactList);
-            
-            // Initial parse to show the extracted list
-            parseNumbers();
-        };
-
-        // Re-parse when the raw number input changes 
-        numberInput.addEventListener('input', parseNumbers);
     </script>
+
 </body>
 </html>
