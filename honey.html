@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Golden Hive - Pure Honey Shop</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Define custom colors and font for Tailwind */
+        :root {
+            --color-honey-gold: #FFC300;
+            --color-honey-dark: #A06A00;
+            --color-bee-brown: #6A4A3A;
+            --color-bg-light: #FFFBEB; /* Creamy background */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-light);
+        }
+
+        /* Honeycomb Cell Clip-Path for Hexagonal Shape */
+        .honeycomb-cell {
+            /* The hexagonal shape defined by 6 points (50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%) */
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem 1rem; /* Padding adjusted for the shape */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .honeycomb-cell:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+        }
+
+        /* Custom style for the Buy button */
+        .whatsapp-btn {
+            background-color: #25D366; /* WhatsApp Green */
+            transition: all 0.2s;
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.7);
+        }
+
+        /* Hero section background pattern (subtle honey drop effect) */
+        .hero-bg {
+            background-color: #FFAA00;
+            background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Ensure content inside the hexagon doesn't overflow */
+        .honeycomb-content {
+            z-index: 25;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Utility class for the honey gold color */
+        .text-honey-gold { color: var(--color-honey-gold); }
+        .bg-honey-gold { background-color: var(--color-honey-gold); }
+        .border-honey-dark { border-color: var(--color-honey-dark); }
+    </style>
+</head>
+<body>
+
+<div id="app" class="min-h-screen">
+    
+    <!-- Header/Navigation (Sticky for Mobile) -->
+    <header class="sticky top-0 z-50 shadow-lg bg-white/90 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto p-4 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold text-honey-gold tracking-tighter">The Golden Hive</h1>
+            <button onclick="scrollToSection('products')" class="px-3 py-1 bg-bee-brown text-white rounded-full text-sm font-semibold hover:bg-honey-dark transition">
+                Shop Honey
+            </button>
+        </div>
+    </header>
+
+    <!-- 1. Hero Section -->
+    <section class="hero-bg py-16 md:py-24 text-center text-white shadow-xl">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-4xl sm:text-6xl font-extrabold mb-4 leading-tight">
+                Pure, Natural, Liquid Gold
+            </h2>
+            <p class="text-lg sm:text-xl mb-8">
+                Harvested from untouched floral sources, our honey is nature's perfect sweetener. Experience the rich, raw taste of the hive.
+            </p>
+            <button onclick="scrollToSection('products')" class="px-8 py-3 bg-white text-honey-gold rounded-full font-bold shadow-2xl hover:bg-gray-100 transition transform hover:scale-105">
+                Explore Honeycomb Products
+            </button>
+        </div>
+    </section>
+
+    <!-- 2. Products Section (Honeycomb Grid) -->
+    <section id="products" class="py-12 md:py-20 px-4">
+        <div class="max-w-6xl mx-auto text-center">
+            <h3 class="text-3xl font-extrabold text-bee-brown mb-10">Our Nectar Collection</h3>
+
+            <!-- Honeycomb Grid Container -->
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-x-8 md:gap-y-12">
+                
+                <!-- Product 1: Wildflower Honey -->
+                <div class="col-span-1">
+                    <div class="honeycomb-cell bg-white border-4 border-honey-gold/50 shadow-lg" data-name="Wildflower Honey" data-price="450">
+                        <div class="honeycomb-content">
+                            <span class="text-5xl mb-2" role="img" aria-label="Honey Pot">🍯</span>
+                            <h4 class="text-lg font-bold text-bee-brown mt-2">Wildflower Honey</h4>
+                            <p class="text-sm text-gray-600 mb-4">₹450 / 500g</p>
+                            <button onclick="bookProduct(this)" class="whatsapp-btn text-white text-xs font-semibold py-2 px-4 rounded-full shadow-md">
+                                Order via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2: Eucalyptus Honey -->
+                <div class="col-span-1 mt-6 md:mt-0">
+                    <div class="honeycomb-cell bg-white border-4 border-honey-gold/50 shadow-lg" data-name="Eucalyptus Honey" data-price="550">
+                        <div class="honeycomb-content">
+                            <span class="text-5xl mb-2" role="img" aria-label="Leaf Icon">🍃</span>
+                            <h4 class="text-lg font-bold text-bee-brown mt-2">Eucalyptus Honey</h4>
+                            <p class="text-sm text-gray-600 mb-4">₹550 / 500g</p>
+                            <button onclick="bookProduct(this)" class="whatsapp-btn text-white text-xs font-semibold py-2 px-4 rounded-full shadow-md">
+                                Order via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3: Forest Honey -->
+                <div class="col-span-1">
+                    <div class="honeycomb-cell bg-white border-4 border-honey-gold/50 shadow-lg" data-name="Forest Honey" data-price="600">
+                        <div class="honeycomb-content">
+                            <span class="text-5xl mb-2" role="img" aria-label="Tree Icon">🌳</span>
+                            <h4 class="text-lg font-bold text-bee-brown mt-2">Acacia Forest Honey</h4>
+                            <p class="text-sm text-gray-600 mb-4">₹600 / 500g</p>
+                            <button onclick="bookProduct(this)" class="whatsapp-btn text-white text-xs font-semibold py-2 px-4 rounded-full shadow-md">
+                                Order via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4: Honeycomb Frame (Placeholder for a larger item) -->
+                <div class="col-span-1 mt-6 md:mt-0">
+                    <div class="honeycomb-cell bg-white border-4 border-honey-gold/50 shadow-lg" data-name="Raw Honeycomb Frame" data-price="999">
+                        <div class="honeycomb-content">
+                            <span class="text-5xl mb-2" role="img" aria-label="Honeycomb">🐝</span>
+                            <h4 class="text-lg font-bold text-bee-brown mt-2">Raw Honeycomb</h4>
+                            <p class="text-sm text-gray-600 mb-4">₹999 / 1 Frame</p>
+                            <button onclick="bookProduct(this)" class="whatsapp-btn text-white text-xs font-semibold py-2 px-4 rounded-full shadow-md">
+                                Order via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Features Section (Hexagonal Cards) -->
+    <section id="features" class="bg-honey-gold/30 py-16 px-4">
+        <div class="max-w-6xl mx-auto text-center">
+            <h3 class="text-3xl font-extrabold text-bee-brown mb-10">Why Choose Our Golden Hive?</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                
+                <!-- Feature 1: Raw & Unprocessed -->
+                <div class="honeycomb-cell bg-white border-2 border-honey-gold shadow-xl p-6 md:p-8">
+                    <div class="honeycomb-content">
+                        <svg class="w-12 h-12 mx-auto text-bee-brown mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2-3 .895-3 2 1.343 2 3 2m0-8V6m0 10v2" class="text-honey-dark"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16M4 12h16"></path></svg>
+                        <h4 class="text-lg font-bold text-bee-brown mb-2">Raw & Pure</h4>
+                        <p class="text-sm text-gray-700">Never heated or filtered. Keeps all natural enzymes and pollen intact.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Sustainable Sourcing -->
+                <div class="honeycomb-cell bg-white border-2 border-honey-gold shadow-xl p-6 md:p-8">
+                    <div class="honeycomb-content">
+                        <svg class="w-12 h-12 mx-auto text-bee-brown mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-9-6h2m16 0h2" class="text-honey-dark"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m14 4l4-4M17 12h2m-4 0h-2m-4 0h-2m-4 0h-2m-4 0H3"></path></svg>
+                        <h4 class="text-lg font-bold text-bee-brown mb-2">Bee-Friendly</h4>
+                        <p class="text-sm text-gray-700">We practice ethical and sustainable beekeeping that respects our pollinators.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 3: Doorstep Delivery -->
+                <div class="honeycomb-cell bg-white border-2 border-honey-gold shadow-xl p-6 md:p-8">
+                    <div class="honeycomb-content">
+                        <svg class="w-12 h-12 mx-auto text-bee-brown mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-4 4v12m-4-8h8m-4 0h.01M5 12h14" class="text-honey-dark"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.5l8 4.5v9l-8 4.5-8-4.5v-9l8-4.5z"></path></svg>
+                        <h4 class="text-lg font-bold text-bee-brown mb-2">Quick Delivery</h4>
+                        <p class="text-sm text-gray-700">Fast and secure delivery right to your home, nationwide.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Contact/Call to Action Footer -->
+    <footer class="bg-bee-brown text-white py-12 px-4 shadow-inner mt-10">
+        <div class="max-w-6xl mx-auto text-center">
+            <h4 class="text-3xl font-extrabold mb-4">Ready for the Golden Touch?</h4>
+            <p class="mb-6 text-gray-300">Book your jar of liquid gold now through a simple WhatsApp chat!</p>
+
+            <button onclick="contactWhatsApp()" class="whatsapp-btn text-white text-lg font-bold py-3 px-8 rounded-full shadow-2xl transition transform hover:scale-105">
+                Chat & Order Now
+            </button>
+            
+            <!-- Compliance Footer -->
+            <div class="mt-10 pt-6 border-t border-gray-600 text-sm text-gray-400">
+                <p>Website Design & Technical Support by SENTERNET TECHNOLOGIES</p>
+                <p>Location: Aranthangi | WhatsApp: +91 81900 38085 | Gmail: senternettechnologies@gmail.com</p>
+                <p class="mt-2 text-xs">&copy; 2025 The Golden Hive. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    // --- JavaScript for Interaction and WhatsApp Logic ---
+
+    // Target WhatsApp number (replace with the actual number if needed)
+    const WHATSAPP_NUMBER = '918190038085'; // Senternet contact number for demo
+
+    /**
+     * Scrolls smoothly to the target section ID.
+     * @param {string} sectionId - The ID of the section to scroll to.
+     */
+    function scrollToSection(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /**
+     * Generates a pre-filled WhatsApp link for a specific product.
+     * @param {HTMLElement} button - The button element clicked.
+     */
+    function bookProduct(button) {
+        const productCell = button.closest('.honeycomb-cell');
+        const productName = productCell.dataset.name;
+        const productPrice = productCell.dataset.price;
+        
+        // Pre-filled message for the customer
+        const message = `Hello, I would like to order the *${productName}* (₹${productPrice}). Please confirm the availability and total price, including shipping. Thank you!`;
+        
+        // URL encode the message
+        const encodedMessage = encodeURIComponent(message);
+        
+        // Generate the WhatsApp URL
+        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+        
+        // Open the link
+        window.open(whatsappUrl, '_blank');
+        
+        // Show a temporary visual confirmation (instead of alert)
+        showConfirmation(`Booking request sent for ${productName}! Opening WhatsApp...`);
+    }
+
+    /**
+     * Generates a generic contact WhatsApp link.
+     */
+    function contactWhatsApp() {
+        const message = "Hello, I have a general inquiry about your honey products. Can you please help me?";
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+
+        showConfirmation(`Opening WhatsApp chat for general inquiries...`);
+    }
+
+    /**
+     * Displays a temporary confirmation message at the top of the screen.
+     * @param {string} message - The message to display.
+     */
+    function showConfirmation(message) {
+        // Create the notification element
+        let notification = document.getElementById('app-notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'app-notification';
+            notification.className = 'fixed top-0 left-0 right-0 p-3 text-center bg-green-500 text-white font-semibold z-[100] transition-all duration-300 transform -translate-y-full shadow-lg';
+            document.body.appendChild(notification);
+        }
+
+        // Update content and show
+        notification.textContent = message;
+        notification.style.transform = 'translateY(0)';
+
+        // Hide after 3 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateY(-100%)';
+        }, 3000);
+    }
+</script>
+
+</body>
+</html>
+
