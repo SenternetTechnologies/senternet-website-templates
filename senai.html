@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senternet AI Post Studio</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1f2937, #0f172a);
+            min-height: 100vh;
+            color: #f3f4f6;
+        }
+        .container-card {
+            background-color: #111827;
+            border: 1px solid #374151;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+            transform: translateY(-2px);
+        }
+        #loading-indicator {
+            border-top-color: #3b82f6;
+            -webkit-animation: spin 1s ease-in-out infinite;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        textarea, .result-box {
+            background-color: #0f172a;
+            border-color: #374151;
+            color: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="flex flex-col items-center justify-center p-4 sm:p-8">
+        <!-- Main Application Card -->
+        <div class="container-card w-full max-w-4xl p-6 md:p-10 rounded-xl">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">
+                🤖 Senternet AI Post Studio
+            </h1>
+            <p class="text-center text-sm mb-8 text-gray-400">
+                Concept-Driven Content Generation by Sen AI (S.K. Version)
+            </p>
+
+            <!-- Input Area -->
+            <div class="mb-6">
+                <label for="post-prompt" class="block text-sm font-medium mb-2 text-gray-300">
+                    What concept should Sen AI create? (e.g., A minimalist logo showing digital growth for a web design company)
+                </label>
+                <textarea id="post-prompt" rows="3" class="w-full rounded-lg border focus:ring-blue-500 focus:border-blue-500 p-3" placeholder="Enter your creative concept here..."></textarea>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="flex justify-center mb-8">
+                <button id="generate-btn" class="btn-primary text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-blue-500/50 flex items-center" onclick="generatePost()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v2a1 1 0 11-2 0V4a1 1 0 011-1zm4.356 2.644a1 1 0 01.707.293l1.414 1.414a1 1 0 01-1.414 1.414l-1.414-1.414a1 1 0 01-.293-.707 1 1 0 011-1.414zM16 10a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM3 10a1 1 0 011 1h2a1 1 0 110-2H4a1 1 0 01-1 1zM7 16a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zm1.356-4.356a1 1 0 01.707.293l1.414 1.414a1 1 0 01-1.414 1.414l-1.414-1.414a1 1 0 01-.293-.707 1 1 0 011-1.414zM10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                    Generate Social Post
+                </button>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading-container" class="flex justify-center items-center h-20 hidden">
+                <div id="loading-indicator" class="w-8 h-8 border-4 border-solid rounded-full"></div>
+                <p class="ml-4 text-blue-400">Sen AI is crafting the magic... please wait.</p>
+            </div>
+
+            <!-- Result Display Area -->
+            <div id="result-area" class="mt-8 border-t border-gray-700 pt-6 hidden">
+                <h2 class="text-xl font-bold mb-4 text-blue-400">✨ Generated Post Concept:</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Image Card -->
+                    <div class="bg-gray-800 rounded-xl overflow-hidden p-4">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-200">Visual Asset (by Sen AI)</h3>
+                        <div class="aspect-square w-full bg-gray-900 rounded-lg flex items-center justify-center">
+                            <img id="post-image" src="" alt="Generated Social Media Visual" class="w-full h-full object-cover rounded-lg" onerror="this.onerror=null; this.src='https://placehold.co/500x500/1f2937/9ca3af?text=Image+Generation+Failed';" />
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 text-center">Note: This is a design concept image.</p>
+                    </div>
+
+                    <!-- Text Post Copy Card -->
+                    <div class="bg-gray-800 rounded-xl p-4 flex flex-col">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-200">Social Media Copy</h3>
+                        <div class="result-box p-3 rounded-lg flex-grow whitespace-pre-wrap text-sm">
+                            <p id="post-copy">The generated text will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Alt Text Output Card -->
+                <div class="mt-6 bg-gray-800 rounded-xl p-4">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-200">Image Alt Text (for SEO & Accessibility)</h3>
+                    <div class="result-box p-3 rounded-lg text-sm">
+                        <p id="alt-text-output">The descriptive alt text will be generated here.</p>
+                    </div>
+                </div>
+                
+                <p class="text-sm text-gray-400 mt-4 pt-4 border-t border-gray-700">
+                    <!-- Mandatory Senternet Details -->
+                    <strong class="text-blue-300">SENTERNET TECHNOLOGIES</strong><br>
+                    Location: Aranthangi | WhatsApp: +91 81900 38085 | Mail: senternettechnologies@gmail.com
+                </p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="mt-6 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-300 hidden">
+                An error occurred. Please try a different prompt or check the console for details.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- API & Config Setup ---
+        const IMAGE_MODEL_NAME = "imagen-4.0-generate-001";
+        const TEXT_MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
+        const API_KEY = ""; // Canvas environment will provide this
+        
+        const promptInput = document.getElementById('post-prompt');
+        const generateBtn = document.getElementById('generate-btn');
+        const loadingContainer = document.getElementById('loading-container');
+        const resultArea = document.getElementById('result-area');
+        const postImage = document.getElementById('post-image');
+        const postCopy = document.getElementById('post-copy');
+        const errorMessage = document.getElementById('error-message');
+        const altTextOutput = document.getElementById('alt-text-output'); // NEW: Alt text output element
+
+        /**
+         * Generic fetch wrapper with exponential backoff for API calls.
+         * @param {string} url - The API endpoint URL.
+         * @param {object} options - Fetch options (method, headers, body).
+         * @param {number} maxRetries - Maximum number of retries.
+         * @returns {Promise<object>} The JSON response.
+         */
+        async function fetchWithRetry(url, options, maxRetries = 3) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        // Throw error to trigger retry logic, or break if non-recoverable status
+                        if (response.status === 429 && i < maxRetries - 1) {
+                            throw new Error('Rate limit exceeded. Retrying...');
+                        }
+                        const errorBody = await response.text();
+                        throw new Error(`API Error ${response.status}: ${errorBody}`);
+                    }
+                    return response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        console.error("Max retries reached. Failing.", error);
+                        throw error;
+                    }
+                    // Exponential backoff
+                    const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                    console.warn(`Attempt ${i + 1} failed. Retrying in ${delay.toFixed(0)}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+        /**
+         * Step 1: Generate the image concept using Imagen 4.0.
+         * @param {string} prompt - The user's creative prompt.
+         * @returns {Promise<string>} Base64 image data string.
+         */
+        async function generateImageConcept(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL_NAME}:predict?key=${API_KEY}`;
+            const payload = { 
+                instances: { prompt: prompt }, 
+                parameters: { "sampleCount": 1 } 
+            };
+
+            const response = await fetchWithRetry(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const base64Data = response?.predictions?.[0]?.bytesBase64Encoded;
+            if (!base64Data) {
+                throw new Error("Image generation failed or returned no data.");
+            }
+            return base64Data;
+        }
+
+        /**
+         * Step 2: Generate the social media post copy and hashtags.
+         * @param {string} userPrompt - The original user prompt.
+         * @returns {Promise<string>} The formatted social media text.
+         */
+        async function generatePostCopy(userPrompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL_NAME}:generateContent?key=${API_KEY}`;
+            
+            const systemPrompt = `You are a world-class Digital Marketing Copywriter for 'SENTERNET TECHNOLOGIES', a Web Design and Digital Marketing agency. Your task is to generate a highly creative, concept-based, and attractive social media post copy (in English only) based on the user's creative concept.
+                The response must be a single block of text containing:
+                1. A catchy headline/hook.
+                2. A brief, engaging body explaining the concept or service.
+                3. A powerful Call-to-Action (CTA).
+                4. A list of relevant hashtags (e.g., #WebDesign #DigitalMarketing #Senternet).
+                DO NOT include the company's contact details in this generated text. ONLY provide the post copy and hashtags.`;
+
+            const userQuery = `Create an engaging social media post description for a design/concept generated from the following idea: "${userPrompt}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            const response = await fetchWithRetry(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const generatedText = response.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!generatedText) {
+                throw new Error("Text generation failed or returned empty content.");
+            }
+            return generatedText;
+        }
+        
+        /**
+         * Step 3: Generate the professional Alt Text for the image.
+         * @param {string} userPrompt - The original user prompt used for the image.
+         * @returns {Promise<string>} The concise, professional Alt Text.
+         */
+        async function generateAltText(userPrompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL_NAME}:generateContent?key=${API_KEY}`;
+            
+            const systemPrompt = `You are an expert in SEO and accessibility. Your task is to generate a concise, professional, and descriptive Alt Text (maximum 15 words) for a social media image generated from the user's prompt. Focus on describing the visual content accurately for screen readers and search engines.`;
+
+            const userQuery = `Based on the following image generation prompt, create the best Alt Text: "${userPrompt}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            const response = await fetchWithRetry(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const generatedText = response.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!generatedText) {
+                // Return a safe fallback if generation fails
+                return "A creative concept image for Senternet Technologies social media post.";
+            }
+            return generatedText.trim();
+        }
+
+        // --- Main Controller ---
+        async function generatePost() {
+            const prompt = promptInput.value.trim();
+            errorMessage.classList.add('hidden');
+            resultArea.classList.add('hidden');
+            altTextOutput.textContent = 'Generating...'; // Reset alt text field
+
+            if (!prompt) {
+                errorMessage.textContent = "Hey! Please enter a creative concept to generate the post.";
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            // Show loading state and disable button
+            loadingContainer.classList.remove('hidden');
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-50');
+
+            try {
+                // 1. Generate Image
+                const base64ImageData = await generateImageConcept(prompt);
+                postImage.src = `data:image/png;base64,${base64ImageData}`;
+                
+                // 2. Generate Post Copy
+                const postText = await generatePostCopy(prompt);
+                postCopy.textContent = postText;
+                
+                // 3. Generate Alt Text (NEW)
+                const altText = await generateAltText(prompt);
+                postImage.alt = altText; // Set the alt attribute
+                altTextOutput.textContent = altText; // Display the alt text
+
+                // 4. Show Result
+                resultArea.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Overall Generation Error:", error);
+                errorMessage.textContent = `Aiyooo! Generation failed: ${error.message}. Please check your prompt and try again.`;
+                errorMessage.classList.remove('hidden');
+                // Use a placeholder if image failed
+                postImage.src = 'https://placehold.co/500x500/1f2937/9ca3af?text=Generation+Error'; 
+                postImage.alt = "Error generating visual asset."; // Set a fallback alt text
+                postCopy.textContent = "Could not generate creative copy due to an internal error.";
+                altTextOutput.textContent = "Failed to generate professional alt text.";
+            } finally {
+                // Hide loading state and enable button
+                loadingContainer.classList.add('hidden');
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-50');
+            }
+        }
+
+        // Prevent form submission on enter key
+        promptInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                generatePost();
+            }
+        });
+
+    </script>
+
+</body>
+</html>
