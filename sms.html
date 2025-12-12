@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS/WhatsApp Link Generator | Senternet Technologies</title>
+    <title>Persistent SMS/WhatsApp Link Generator | Senternet Technologies</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Use Inter font family -->
@@ -24,14 +24,11 @@
         textarea::-webkit-scrollbar-track {
             background-color: #f3f4f6;
         }
-
-        /* Custom transition class for click feedback */
+        
+        /* Transition for smooth color change */
         .result-card {
-            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            background-color: white; /* Default background */
-        }
-        .result-card.clicked {
-            background-color: #bae6fd; /* light-sky-blue / Blue 200 */
+            transition: background-color 0.4s ease-in-out, box-shadow 0.3s ease-in-out;
+            /* Default background is white, but will be set by JS on generate */
         }
     </style>
 </head>
@@ -124,10 +121,13 @@
     </div>
 
     <script>
-        // Global variables for Firebase setup (required by the platform, even if not used)
+        // --- MANDATORY FIREBASE BOILERPLATE (Not used for current feature, but required) ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // --- END FIREBASE BOILERPLATE ---
+        
+        const LOCAL_STORAGE_KEY_PREFIX = 'senternet_link_status_';
 
         /**
          * Cleans a phone number by removing non-digit characters.
@@ -135,7 +135,6 @@
          * @returns {string} The cleaned, digit-only number string.
          */
         function cleanNumber(number) {
-            // Remove everything that is not a digit
             return number.replace(/\D/g, '');
         }
 
@@ -158,28 +157,65 @@
         }
 
         /**
-         * Opens the link and applies a temporary visual feedback to the parent card.
-         * @param {string} link - The SMS or WhatsApp link to open.
-         * @param {string} elementId - The ID of the card element to highlight.
+         * Saves the selected channel preference to localStorage for persistence.
+         * @param {string} number - The phone number.
+         * @param {string} channel - The selected channel ('sms' or 'wa').
          */
-        function openLinkWithFeedback(link, elementId) {
-            const card = document.getElementById(elementId);
-            if (card) {
-                // 1. Apply the clicked style (sky blue background)
-                card.classList.add('clicked');
-                card.classList.add('shadow-xl');
-                
-                // 2. Open the link (The browser will handle the SMS or WA redirection)
-                window.open(link, '_blank');
+        function saveStatus(number, channel) {
+            localStorage.setItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`, channel);
+        }
 
-                // 3. Remove the clicked style after a short delay for visual feedback
-                setTimeout(() => {
-                    card.classList.remove('clicked');
-                    card.classList.remove('shadow-xl');
-                }, 1500); // Highlight for 1.5 seconds
+        /**
+         * Loads the selected channel preference from localStorage.
+         * @param {string} number - The phone number.
+         * @returns {string|null} The saved channel ('sms', 'wa'), or null.
+         */
+        function loadStatus(number) {
+            return localStorage.getItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`);
+        }
+
+        /**
+         * Applies the correct permanent color class based on the channel.
+         * @param {HTMLElement} cardElement - The result card div.
+         * @param {string} channel - The channel ('sms' or 'wa').
+         */
+        function applyColorClass(cardElement, channel) {
+            // Remove all channel-specific colors first
+            cardElement.classList.remove('bg-yellow-100', 'bg-green-100', 'bg-white');
+            cardElement.classList.add('shadow-lg'); // Always keep shadow for highlighted state
+
+            if (channel === 'sms') {
+                cardElement.classList.add('bg-yellow-100');
+            } else if (channel === 'wa') {
+                cardElement.classList.add('bg-green-100');
+            } else {
+                // Default color if no status or reset
+                cardElement.classList.add('bg-white', 'shadow-md');
+                cardElement.classList.remove('shadow-lg');
             }
         }
 
+        /**
+         * Opens the link, records the click, and applies permanent visual feedback.
+         * This function is attached to the SMS and WhatsApp buttons.
+         * @param {string} link - The SMS or WhatsApp link to open.
+         * @param {string} number - The phone number associated with the link.
+         * @param {string} channel - The channel clicked ('sms' or 'wa').
+         * @param {string} elementId - The ID of the card element.
+         */
+        function handleLinkClick(link, number, channel, elementId) {
+            const card = document.getElementById(elementId);
+            if (card) {
+                // 1. Record the status for persistence
+                saveStatus(number, channel);
+
+                // 2. Apply the permanent color
+                applyColorClass(card, channel);
+
+                // 3. Open the link
+                window.open(link, '_blank');
+            }
+        }
 
         /**
          * Generates and displays SMS and WhatsApp text message links based on user input.
@@ -201,22 +237,19 @@
 
             // 2. Process numbers
             const rawNumbersArray = numbersInput.split('\n');
-            
-            // Clean numbers, filter out empty strings, and then apply country code logic
             const processedNumbers = rawNumbersArray
                 .map(num => cleanNumber(num))
                 .filter(num => num.length > 0);
             
             const uniqueProcessedNumbers = Array.from(new Set(
                 processedNumbers.map(num => {
-                    // If the cleaned number is exactly 10 digits, assume Indian number and prepend '91'
+                    // Prepend '91' for 10-digit numbers (Indian context)
                     if (num.length === 10) {
                         return '91' + num;
                     }
-                    // For all other lengths (e.g., 12 digits like 91XXXXXXXXXX, or other international codes), use as is
                     return num;
                 })
-            )).filter(num => num.length >= 10); // Final filter to ensure we only proceed with valid phone numbers
+            )).filter(num => num.length >= 10);
 
             if (uniqueProcessedNumbers.length === 0) {
                 showModal("Invalid Numbers", "Macha, none of the numbers looked valid. Please check if they are 10-digit or include a valid country code.");
@@ -230,22 +263,30 @@
             let resultHtml = `
                 <div class="p-4 bg-indigo-50 rounded-xl shadow-inner border border-indigo-200">
                     <p class="text-sm font-semibold text-indigo-700">✅ Links Generated: ${uniqueProcessedNumbers.length} Unique Contacts</p>
-                    <p class="text-xs text-indigo-600 mt-1">Click the icons to open your phone's default messaging app with the pre-filled message.</p>
+                    <p class="text-xs text-indigo-600 mt-1">Click the icons to open your phone's default messaging app. Status is saved per number.</p>
                 </div>
             `;
 
             uniqueProcessedNumbers.forEach((number, index) => {
-                // Unique ID for the result card for click feedback
                 const cardId = `result-card-${index}`;
+                // Check saved status for this number
+                const savedChannel = loadStatus(number);
+                
+                // Set initial color class based on saved status (default to white)
+                let initialColorClass = 'bg-white shadow-md border border-gray-100';
+                if (savedChannel === 'sms') {
+                    initialColorClass = 'bg-yellow-100 shadow-lg border border-yellow-200';
+                } else if (savedChannel === 'wa') {
+                    initialColorClass = 'bg-green-100 shadow-lg border border-green-200';
+                }
 
                 // SMS link format: sms:NUMBER?body=MESSAGE
                 const smsLink = `sms:${number}?body=${encodedMessage}`;
-                
                 // WhatsApp link format: https://wa.me/COUNTRYCODE+NUMBER?text=MESSAGE
                 const waLink = `https://wa.me/${number}?text=${encodedMessage}`;
 
                 resultHtml += `
-                    <div id="${cardId}" class="result-card flex items-center justify-between p-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out border border-gray-100">
+                    <div id="${cardId}" class="result-card flex items-center justify-between p-3 rounded-lg ${initialColorClass}">
                         <span class="font-mono text-gray-700 text-sm md:text-base truncate">
                             ${number}
                         </span>
@@ -254,12 +295,14 @@
                             <button onclick="copyToClipboard('${smsLink}')" class="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-150 ease-in-out focus:outline-none" title="Copy SMS Link">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v2"></path></svg>
                             </button>
-                            <!-- Open SMS App Button (Uses click feedback) -->
-                            <button onclick="openLinkWithFeedback('${smsLink}', '${cardId}')" class="p-2 bg-yellow-600 text-white rounded-full hover:bg-yellow-700 transition duration-150 ease-in-out focus:outline-none" title="Open SMS Text App">
+                            
+                            <!-- Open SMS App Button (Uses persistent click handler) -->
+                            <button onclick="handleLinkClick('${smsLink}', '${number}', 'sms', '${cardId}')" class="p-2 bg-yellow-600 text-white rounded-full hover:bg-yellow-700 transition duration-150 ease-in-out focus:outline-none" title="Open SMS Text App">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                             </button>
-                            <!-- Open WhatsApp App Button (Uses click feedback) -->
-                            <button onclick="openLinkWithFeedback('${waLink}', '${cardId}')" class="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition duration-150 ease-in-out focus:outline-none" title="Open WhatsApp">
+                            
+                            <!-- Open WhatsApp App Button (Uses persistent click handler) -->
+                            <button onclick="handleLinkClick('${waLink}', '${number}', 'wa', '${cardId}')" class="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition duration-150 ease-in-out focus:outline-none" title="Open WhatsApp">
                                 <!-- WhatsApp Icon (Inline SVG) -->
                                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.24 21.75L7.3 20.45C8.75 21.24 10.38 21.64 12.04 21.64C17.5 21.64 21.95 17.19 21.95 11.73C21.95 6.27 17.5 2 12.04 2ZM17.19 16.14C16.92 16.71 16.09 17.13 15.68 17.21C15.27 17.3 14.67 17.31 13.91 17.11C13.15 16.92 12.04 16.57 10.63 15.68C9.21 14.8 8.08 13.6 7.27 12.33C6.55 11.23 6.13 10.19 6.22 9.68C6.31 9.17 6.94 8.76 7.21 8.2C7.48 7.64 7.66 7.58 7.91 7.58C8.16 7.58 8.44 7.58 8.68 7.58C8.88 7.58 9.07 7.74 9.21 8.08C9.35 8.41 9.77 9.42 9.85 9.68C9.94 9.94 10.02 10.25 9.92 10.45C9.83 10.65 9.75 10.74 9.61 10.91C9.47 11.08 9.35 11.25 9.24 11.45C9.13 11.65 9.02 11.77 9.17 12.03C9.32 12.29 10.09 13.43 11.19 14.39C12.04 15.14 12.69 15.34 12.94 15.49C13.19 15.64 13.43 15.61 13.59 15.41C13.75 15.21 14.24 14.65 14.54 14.28C14.84 13.91 15.11 13.85 15.38 13.99C15.65 14.13 16.98 14.77 17.25 14.89C17.52 15.01 17.69 15.08 17.77 15.23C17.85 15.38 17.85 15.8 17.58 16.14Z"/>
