@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Link Generator | Senternet Technologies</title>
+    <title>WhatsApp chat links | Senternet Technologies</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Use Inter font family -->
@@ -43,26 +43,48 @@
         <!-- Main Content Area -->
         <main class="flex-grow p-4 space-y-4 overflow-y-auto bg-gray-50">
 
-            <!-- Number Input Card -->
+            <!-- Number Input Card (Step 1) -->
             <div class="bg-white p-5 rounded-xl shadow-lg border border-gray-100">
+                <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                    <span class="bg-[#075e54] text-white w-7 h-7 flex items-center justify-center rounded-full mr-3 text-sm font-extrabold">1</span>
+                    Paste Contact Numbers
+                </h2>
                 <label for="numbers" class="block text-sm font-medium text-gray-700 mb-2">
-                    Paste Contact Numbers (One per line)
+                    One number per line (WhatsApp format preferred)
                 </label>
-                <textarea id="numbers" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out resize-none" placeholder="10-digit number (9876543210) or with country code (919876543210)"></textarea>
+                <textarea id="numbers" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out resize-none" placeholder="919876543210 or 9876543210 (will auto-add '91')"></textarea>
+
+                <!-- Checklist for Numbers List -->
+                <div class="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                    <h3 class="text-sm font-semibold text-green-700 mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        Checklist for Numbers (Important)
+                    </h3>
+                    <ul class="text-xs text-gray-600 space-y-1 ml-4 list-disc list-outside">
+                        <li>Ensure each number is on a new line.</li>
+                        <li>Non-digit characters (like dashes, spaces) will be automatically removed.</li>
+                        <li>For 10-digit numbers (e.g., in India), the tool automatically prepends the country code '91'.</li>
+                        <li>If the number already includes a country code (e.g., 91xxxxxxxxx), it will be used as is.</li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- Message Input Card -->
+            <!-- Message Input Card (Step 2) -->
             <div class="bg-white p-5 rounded-xl shadow-lg border border-gray-100">
+                <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                    <span class="bg-[#075e54] text-white w-7 h-7 flex items-center justify-center rounded-full mr-3 text-sm font-extrabold">2</span>
+                    Type Your Message
+                </h2>
                 <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
                     Message to Send (URL Encoded automatically)
                 </label>
                 <textarea id="message" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out resize-none" placeholder="Hello from Senternet Technologies! We saw your enquiry..."></textarea>
             </div>
 
-            <!-- Action Button -->
+            <!-- Action Button (Step 3) -->
             <div class="pt-2">
                 <button onclick="generateLinks()" class="w-full bg-[#25d366] text-white font-bold py-3 rounded-xl shadow-md hover:bg-[#1faa4b] transition duration-200 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50">
-                    Generate WhatsApp Chat Links
+                    <span class="mr-2">➡️</span> STEP 3: Generate WhatsApp Chat Links
                 </button>
             </div>
 
@@ -149,7 +171,7 @@
             // Clean numbers, filter out empty strings, and then apply country code logic
             const processedNumbers = rawNumbersArray
                 .map(num => cleanNumber(num))
-                .filter(num => num.length > 0); 
+                .filter(num => num.length > 0);
             
             const uniqueProcessedNumbers = Array.from(new Set(
                 processedNumbers.map(num => {
