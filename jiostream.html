@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JioStream Clone - Senternet Technologies</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter Font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Deep dark background */
+            color: #e5e7eb; /* Light gray text */
+        }
+        /* Custom scrollbar for better look in dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #3f3f46; /* Gray-700 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: #1f2937; /* Gray-800 */
+        }
+        .content-card:hover .play-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-gray-900 bg-opacity-95 backdrop-blur-sm shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center space-x-6">
+                <h1 class="text-3xl font-extrabold text-white">
+                    <span class="text-indigo-500">Jio</span>Stream
+                </h1>
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden sm:flex space-x-6 text-sm font-semibold">
+                    <button class="nav-tab text-indigo-400 border-b-2 border-indigo-500 pb-1.5 transition duration-150" data-category="All">Home</button>
+                    <button class="nav-tab text-gray-400 hover:text-white transition duration-150" data-category="Movies">Movies</button>
+                    <button class="nav-tab text-gray-400 hover:text-white transition duration-150" data-category="Shows">Shows</button>
+                    <button class="nav-tab text-gray-400 hover:text-white transition duration-150" data-category="Sports">Sports</button>
+                </nav>
+            </div>
+
+            <!-- Search and User -->
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <input type="text" id="search-input-desktop" placeholder="Search for titles..." class="pl-10 pr-4 py-2 text-sm bg-gray-800 text-white rounded-lg border border-gray-700 focus:ring-indigo-500 focus:border-indigo-500 w-64 transition duration-200">
+                    <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <button class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-800 transition duration-150">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search and Tabs -->
+        <div class="sm:hidden px-4 pb-3">
+            <div class="relative mb-3">
+                <input type="text" id="search-input-mobile" placeholder="Search for titles..." class="w-full pl-10 pr-4 py-2 text-sm bg-gray-800 text-white rounded-lg border border-gray-700 focus:ring-indigo-500 focus:border-indigo-500">
+                <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <nav class="flex justify-between space-x-1 overflow-x-auto text-sm font-semibold">
+                <button class="nav-tab px-3 py-1 rounded-full bg-indigo-600 text-white flex-shrink-0 transition duration-150" data-category="All">Home</button>
+                <button class="nav-tab px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 flex-shrink-0 transition duration-150" data-category="Movies">Movies</button>
+                <button class="nav-tab px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 flex-shrink-0 transition duration-150" data-category="Shows">Shows</button>
+                <button class="nav-tab px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 flex-shrink-0 transition duration-150" data-category="Sports">Sports</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <section id="hero-section" class="mb-10 rounded-xl overflow-hidden shadow-2xl relative h-64 sm:h-96">
+            <img src="https://placehold.co/1200x400/1e3a8a/ffffff?text=The+Biggest+Blockbuster+Is+Here" alt="Featured Content" class="w-full h-full object-cover opacity-70">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent p-6 flex flex-col justify-end">
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-2">The Billionaire's Code</h2>
+                <p class="text-gray-300 mb-4 max-w-lg hidden sm:block">A gripping new series where a young hacker uncovers a massive corporate conspiracy that spans continents.</p>
+                <button onclick="openPlayerModal('The Billionaire\'s Code', 'Series')" class="w-fit flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-full transition duration-300 shadow-lg shadow-indigo-500/50">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                    Watch Now
+                </button>
+            </div>
+        </section>
+
+        <!-- Content Grid/Results -->
+        <section>
+            <h2 id="section-title" class="text-2xl font-bold text-white mb-6">Trending Now</h2>
+            <div id="content-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-6">
+                <!-- Content Cards will be injected here by JavaScript -->
+                <div class="col-span-full text-center py-10 hidden" id="no-results-message">
+                    <svg class="w-12 h-12 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-xl font-semibold text-gray-400">Sorry, no results found.</p>
+                    <p class="text-gray-500">Try a different search term or category.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Video Player Modal -->
+    <div id="player-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[100] hidden items-center justify-center p-4" onclick="closePlayerModal()">
+        <div class="bg-gray-900 rounded-xl shadow-2xl w-full max-w-4xl max-h-full overflow-y-auto" onclick="event.stopPropagation()">
+            <!-- Close Button -->
+            <button onclick="closePlayerModal()" class="absolute top-4 right-4 text-white hover:text-indigo-400 transition duration-150 z-10 p-2 bg-gray-800 rounded-full">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <!-- Video/Content Area (Simulated) -->
+            <div class="relative w-full aspect-video bg-black rounded-t-xl overflow-hidden">
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-800/80">
+                    <svg class="w-16 h-16 text-indigo-500 mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                    <p class="text-white text-xl font-semibold mb-2">Playing: <span id="modal-content-title" class="text-indigo-400"></span></p>
+                    <p class="text-gray-400 text-sm">This is a simulated player for the clone app.</p>
+                </div>
+            </div>
+
+            <!-- Content Info -->
+            <div class="p-6">
+                <h3 id="modal-info-title" class="text-3xl font-bold text-white mb-2"></h3>
+                <p id="modal-info-type" class="text-sm font-medium text-gray-400 mb-4"></p>
+                <p class="text-gray-300">A detailed description of the content would go here. Watch the full episode or movie now exclusively on JioStream (Clone App). The future of entertainment is here.</p>
+                <button class="mt-4 w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-3 rounded-lg transition duration-300">
+                    Resume Watching
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 mt-12 p-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <h3 class="text-2xl font-extrabold text-white mb-4"><span class="text-indigo-500">Jio</span>Stream</h3>
+            <div class="text-sm text-gray-400 space-y-2">
+                <p>Designed and Developed by: <span class="text-indigo-400 font-semibold">SENTERNET TECHNOLOGIES</span></p>
+                <p>Location: Aranthangi, Pudukkottai</p>
+                <p>
+                    Contact:
+                    <span class="text-white font-medium">WhatsApp: +91 81900 38085</span> |
+                    <span class="text-white font-medium">Gmail: senternettechnologies@gmail.com</span>
+                </p>
+                <p class="pt-4 text-xs">&copy; 2025 JioStream Clone. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- MOCK DATA ---
+        const mockContent = [
+            { id: 1, title: "The Hidden City", type: "Movie", category: "Movies", tags: "action, adventure, blockbuster", year: 2024, img: "https://placehold.co/400x600/1E3A8A/ffffff?text=Movie+1" },
+            { id: 2, title: "Cricket Premier League (IPL)", type: "Sports", category: "Sports", tags: "live, cricket, match", year: 2025, img: "https://placehold.co/400x600/D97706/ffffff?text=IPL+Live" },
+            { id: 3, title: "The Quantum Leap", type: "Show", category: "Shows", tags: "scifi, drama, original", year: 2023, img: "https://placehold.co/400x600/4F46E5/ffffff?text=Show+1" },
+            { id: 4, title: "Mega Blockbuster 2", type: "Movie", category: "Movies", tags: "comedy, family, hit", year: 2023, img: "https://placehold.co/400x600/8B5CF6/ffffff?text=Movie+2" },
+            { id: 5, title: "Football Euro Championship", type: "Sports", category: "Sports", tags: "football, euro, live", year: 2024, img: "https://placehold.co/400x600/10B981/ffffff?text=Football" },
+            { id: 6, title: "Comedy Kings Reloaded", type: "Show", category: "Shows", tags: "comedy, standup, new", year: 2024, img: "https://placehold.co/400x600/F59E0B/ffffff?text=Show+2" },
+            { id: 7, title: "Sci-Fi Horror: Unknown", type: "Movie", category: "Movies", tags: "horror, scifi, thriller", year: 2022, img: "https://placehold.co/400x600/EF4444/ffffff?text=Movie+3" },
+            { id: 8, title: "The Detective Agency", type: "Show", category: "Shows", tags: "crime, thriller, suspense", year: 2023, img: "https://placehold.co/400x600/06B6D4/ffffff?text=Show+3" },
+            { id: 9, title: "Hockey World Series", type: "Sports", category: "Sports", tags: "hockey, live, series", year: 2024, img: "https://placehold.co/400x600/F97316/ffffff?text=Hockey" },
+            { id: 10, title: "Kids Adventure Club", type: "Show", category: "Shows", tags: "kids, animation, cartoon", year: 2024, img: "https://placehold.co/400x600/EC4899/ffffff?text=Kids+Show" },
+            { id: 11, title: "Historic Saga: Rajputs", type: "Movie", category: "Movies", tags: "history, war, drama", year: 2021, img: "https://placehold.co/400x600/14B8A6/ffffff?text=Rajput+Saga" },
+            { id: 12, title: "Latest Film Festival Hits", type: "Movie", category: "Movies", tags: "indie, drama, award", year: 2024, img: "https://placehold.co/400x600/9CA3AF/ffffff?text=Indie+Film" },
+        ];
+
+        let currentCategory = 'All';
+        const contentGrid = document.getElementById('content-grid');
+        const searchInputDesktop = document.getElementById('search-input-desktop');
+        const searchInputMobile = document.getElementById('search-input-mobile');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const sectionTitle = document.getElementById('section-title');
+        const playerModal = document.getElementById('player-modal');
+        const noResultsMessage = document.getElementById('no-results-message');
+
+        // --- Content Card HTML Generator ---
+        function createContentCard(content) {
+            const card = document.createElement('div');
+            card.className = 'content-card relative group cursor-pointer rounded-lg overflow-hidden shadow-xl transition-transform transform hover:scale-[1.05] active:scale-[0.98] duration-300';
+            card.setAttribute('onclick', `openPlayerModal('${content.title}', '${content.type}')`);
+
+            const html = `
+                <div class="aspect-[2/3] bg-gray-800">
+                    <img src="${content.img}" alt="${content.title}" class="w-full h-full object-cover transition duration-300 group-hover:opacity-80" onerror="this.onerror=null;this.src='https://placehold.co/400x600/1F2937/ffffff?text=Poster+Missing';">
+                </div>
+                <!-- Play Overlay Icon -->
+                <div class="play-icon absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <svg class="w-16 h-16 text-indigo-400 transform scale-75 group-hover:scale-100 transition duration-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                </div>
+                <!-- Title Footer -->
+                <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent">
+                    <p class="text-sm font-semibold text-white truncate">${content.title}</p>
+                    <p class="text-xs text-gray-400">${content.type} &bull; ${content.year}</p>
+                </div>
+            `;
+            card.innerHTML = html;
+            return card;
+        }
+
+        // --- Filter and Render Logic ---
+        function renderContent() {
+            const searchQuery = (searchInputDesktop.value || searchInputMobile.value).toLowerCase();
+            contentGrid.innerHTML = '';
+            
+            const filteredContent = mockContent.filter(content => {
+                const categoryMatch = currentCategory === 'All' || content.category === currentCategory;
+                const searchMatch = searchQuery === '' ||
+                                    content.title.toLowerCase().includes(searchQuery) ||
+                                    content.tags.toLowerCase().includes(searchQuery);
+                return categoryMatch && searchMatch;
+            });
+
+            if (filteredContent.length === 0) {
+                noResultsMessage.classList.remove('hidden');
+                sectionTitle.textContent = "No Content Found";
+            } else {
+                noResultsMessage.classList.add('hidden');
+                sectionTitle.textContent = currentCategory === 'All' ? "Trending Now" : `${currentCategory} Selection`;
+                
+                filteredContent.forEach(content => {
+                    contentGrid.appendChild(createContentCard(content));
+                });
+            }
+        }
+
+        // --- Event Handlers ---
+
+        function handleCategoryClick(event) {
+            const newCategory = event.target.getAttribute('data-category');
+            if (newCategory) {
+                currentCategory = newCategory;
+                
+                // Update active tab styles
+                navTabs.forEach(tab => {
+                    tab.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-500', 'border-b-2', 'pb-1.5');
+                    tab.classList.add('bg-gray-800', 'text-gray-400', 'hover:bg-gray-700');
+                    tab.classList.remove('text-indigo-400', 'border-b-2', 'border-indigo-500', 'hover:text-white', 'pb-1.5');
+                });
+
+                // Apply active style based on viewport
+                if (window.innerWidth >= 640) { // sm: breakpoint for desktop tabs
+                    event.target.classList.add('text-indigo-400', 'border-b-2', 'border-indigo-500', 'pb-1.5', 'hover:text-white');
+                    event.target.classList.remove('text-gray-400');
+                } else { // Mobile tabs
+                    event.target.classList.add('bg-indigo-600', 'text-white');
+                    event.target.classList.remove('bg-gray-800', 'text-gray-400', 'hover:bg-gray-700');
+                }
+                
+                renderContent();
+            }
+        }
+
+        function handleSearch() {
+            // Ensure search is applied consistently regardless of which input was used
+            renderContent();
+        }
+
+        function openPlayerModal(title, type) {
+            document.getElementById('modal-content-title').textContent = title;
+            document.getElementById('modal-info-title').textContent = title;
+            document.getElementById('modal-info-type').textContent = type + ' Content';
+            playerModal.classList.remove('hidden');
+            playerModal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
+        }
+
+        function closePlayerModal() {
+            playerModal.classList.add('hidden');
+            playerModal.classList.remove('flex');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Initial Render
+            renderContent();
+
+            // 2. Attach Category Listeners
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', handleCategoryClick);
+            });
+
+            // 3. Attach Search Listeners (Debounced for better performance, but simplified here)
+            searchInputDesktop.addEventListener('input', handleSearch);
+            searchInputMobile.addEventListener('input', handleSearch);
+
+            // 4. Set Initial Active Tab (Default: All/Home)
+            // Need to manually trigger the style update for the initial state
+            const initialTab = document.querySelector('.nav-tab[data-category="All"]');
+            if (initialTab) {
+                // Determine initial active style based on screen size on load
+                if (window.innerWidth >= 640) {
+                    initialTab.classList.remove('text-gray-400', 'hover:text-white');
+                    initialTab.classList.add('text-indigo-400', 'border-b-2', 'border-indigo-500', 'pb-1.5');
+                } else {
+                    initialTab.classList.remove('bg-gray-800', 'text-gray-400', 'hover:bg-gray-700');
+                    initialTab.classList.add('bg-indigo-600', 'text-white');
+                }
+            }
+
+            // 5. Handle responsiveness for tab styles on resize (important for mobile)
+            window.addEventListener('resize', () => {
+                const activeTab = document.querySelector(`.nav-tab[data-category="${currentCategory}"]`);
+                // Reapply styles based on current screen size
+                navTabs.forEach(tab => {
+                    tab.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-500', 'border-b-2', 'pb-1.5');
+                    tab.classList.add('bg-gray-800', 'text-gray-400', 'hover:bg-gray-700');
+                    tab.classList.remove('text-indigo-400');
+                });
+
+                if (activeTab) {
+                    if (window.innerWidth >= 640) {
+                        activeTab.classList.remove('bg-gray-800', 'text-gray-400', 'hover:bg-gray-700');
+                        activeTab.classList.add('text-indigo-400', 'border-b-2', 'border-indigo-500', 'pb-1.5', 'hover:text-white');
+                    } else {
+                        activeTab.classList.remove('text-indigo-400', 'border-b-2', 'border-indigo-500', 'pb-1.5', 'hover:text-white');
+                        activeTab.classList.add('bg-indigo-600', 'text-white');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
