@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENTERNET Camera App</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        /* Custom Styles to enhance the mobile app appearance */
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        }
+
+        /* Enforce a pseudo-mobile container for desktop viewing */
+        #camera-app {
+            transition: border-radius 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            #camera-app {
+                border: 10px solid #222;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* Hide scrollbars just for visual purity */
+        #camera-app {
+            scrollbar-width: none; /* Firefox */
+        }
+        #camera-app::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+    </style>
+</head>
+<body class="bg-gray-800 antialiased">
+
+<div class="h-screen w-screen bg-black flex items-center justify-center">
+    
+    <!-- Camera App Container (Simulating a modern smartphone screen) -->
+    <div id="camera-app" class="relative w-full h-full md:w-[400px] md:h-[800px] overflow-hidden bg-gray-900 shadow-2xl rounded-none md:rounded-3xl flex flex-col">
+        
+        <!-- 1. Viewfinder Area (The "Live Feed") -->
+        <div id="viewfinder" class="flex-grow relative bg-center bg-cover transition-transform duration-300" 
+             style="background-image: url('https://images.unsplash.com/photo-1621361541348-1b203a9856f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MDcxNzJ8MHwxfHNlYXJjaHw3fHx0cm9waWNhbCUyMGZvcmVzdHxlbnwwfHx8fDE3MTc0MTk1MjF8MA&ixlib=rb-4.0.3&q=80&w=1080');">
+            
+            <!-- 1a. Top Status Bar -->
+            <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center text-white z-20">
+                <span id="flash-status" class="flex items-center space-x-1 text-sm bg-black/40 backdrop-blur-sm rounded-full px-3 py-1 cursor-pointer hover:bg-black/60 transition">
+                    <i class="fas fa-bolt"></i>
+                    <span>Auto</span>
+                </span>
+                <span id="hdr-status" class="text-sm font-bold bg-black/40 backdrop-blur-sm rounded-full px-3 py-1 cursor-pointer hover:bg-black/60 transition">
+                    <i class="fas fa-magic"></i> HDR
+                </span>
+            </div>
+
+            <!-- 1b. Central Focus Ring Simulation -->
+            <div id="focus-ring" class="absolute w-20 h-20 border-2 border-yellow-400 rounded-full pointer-events-none opacity-0 transition-all duration-500 ease-out"
+                 style="transform: translate(-50%, -50%) scale(1.1);">
+            </div>
+
+            <!-- 1c. Zoom Control Slider/Indicator -->
+            <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-2 z-20">
+                <span id="zoom-indicator" class="text-white text-lg font-mono bg-black/50 px-3 py-1 rounded-full shadow-lg">1.0x</span>
+                <div class="flex space-x-4 text-white text-sm">
+                    <button class="zoom-level transition duration-150 p-2 rounded-full font-bold bg-black/40 backdrop-blur-sm shadow-xl" data-zoom="0.5">0.5x</button>
+                    <button class="zoom-level transition duration-150 p-2 rounded-full font-bold bg-black/70 backdrop-blur-sm shadow-2xl scale-110" data-zoom="1.0">1x</button>
+                    <button class="zoom-level transition duration-150 p-2 rounded-full font-bold bg-black/40 backdrop-blur-sm shadow-xl" data-zoom="3.0">3x</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Control Bar Area -->
+        <div class="bg-black text-white p-4 pt-6 relative">
+            
+            <!-- 2a. Mode Selector -->
+            <div class="flex justify-center space-x-6 mb-4 text-gray-400 text-sm">
+                <button class="mode-btn transition duration-150 hover:text-white" data-mode="video">VIDEO</button>
+                <button id="photo-mode-btn" class="mode-btn transition duration-150 text-white font-bold scale-110" data-mode="photo">PHOTO</button>
+                <button class="mode-btn transition duration-150 hover:text-white" data-mode="portrait">PORTRAIT</button>
+            </div>
+
+            <!-- 2b. Main Shutter Controls -->
+            <div class="flex justify-around items-center h-24">
+                
+                <!-- Gallery Button (Simulated Preview) -->
+                <button class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-lg text-white shadow-xl ring-1 ring-gray-600">
+                    <i class="fas fa-image"></i>
+                </button>
+
+                <!-- Shutter Button -->
+                <button id="shutter-button" class="w-20 h-20 bg-white rounded-full p-1 shadow-2xl active:scale-90 transition-transform duration-100">
+                    <!-- Inner circle changes based on mode -->
+                    <div id="shutter-inner" class="w-full h-full rounded-full bg-black border-4 border-black transition-all duration-300"></div>
+                </button>
+
+                <!-- Camera Switch Button -->
+                <button class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl text-white shadow-xl hover:bg-gray-700 transition">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const shutterButton = document.getElementById('shutter-button');
+        const shutterInner = document.getElementById('shutter-inner');
+        const modeButtons = document.querySelectorAll('.mode-btn');
+        const zoomLevels = document.querySelectorAll('.zoom-level');
+        const zoomIndicator = document.getElementById('zoom-indicator');
+        const viewfinder = document.getElementById('viewfinder');
+        const focusRing = document.getElementById('focus-ring');
+
+        let currentMode = 'photo';
+        let currentZoom = 1.0;
+
+        // --- Mode Switching Logic ---
+        const updateMode = (newMode) => {
+            currentMode = newMode;
+            
+            // Update mode button styles
+            modeButtons.forEach(btn => {
+                btn.classList.remove('text-white', 'font-bold', 'scale-110');
+                btn.classList.add('text-gray-400');
+                if (btn.dataset.mode === newMode) {
+                    btn.classList.add('text-white', 'font-bold', 'scale-110');
+                    btn.classList.remove('text-gray-400');
+                }
+            });
+
+            // Update shutter appearance based on mode
+            if (newMode === 'video') {
+                shutterInner.classList.remove('bg-black', 'border-4', 'border-black');
+                shutterInner.classList.add('bg-red-600', 'border-0', 'rounded-lg', 'w-1/3', 'h-1/3', 'm-auto', 'video-ready');
+                shutterButton.classList.remove('p-1');
+                shutterButton.classList.add('p-0', 'flex', 'items-center', 'justify-center');
+            } else {
+                // Photo/Portrait mode style
+                shutterInner.classList.remove('bg-red-600', 'border-0', 'rounded-lg', 'w-1/3', 'h-1/3', 'm-auto', 'video-ready', 'bg-red-800');
+                shutterInner.classList.add('bg-black', 'border-4', 'border-black');
+                shutterButton.classList.add('p-1');
+                shutterButton.classList.remove('p-0', 'flex', 'items-center', 'justify-center');
+            }
+        };
+
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', () => updateMode(btn.dataset.mode));
+        });
+
+        // Initialize mode
+        updateMode('photo');
+
+        // --- Shutter/Capture Logic ---
+        shutterButton.addEventListener('click', () => {
+            if (currentMode === 'photo' || currentMode === 'portrait') {
+                // Simulate screen flash
+                const flash = document.createElement('div');
+                flash.className = 'absolute inset-0 bg-white opacity-0 z-30 transition-opacity duration-75';
+                viewfinder.appendChild(flash);
+
+                // Flash effect timing
+                setTimeout(() => { flash.style.opacity = '1'; }, 5); 
+                setTimeout(() => { flash.style.opacity = '0'; }, 50); 
+                setTimeout(() => { viewfinder.removeChild(flash); }, 150);
+                
+                console.log(`${currentMode} taken!`);
+            
+            } else if (currentMode === 'video') {
+                // Toggle recording state
+                const isRecording = shutterInner.classList.contains('bg-red-800');
+                if (isRecording) {
+                    shutterInner.classList.remove('bg-red-800');
+                    shutterInner.classList.add('bg-red-600');
+                    alert("Video recording stopped.");
+                } else {
+                    shutterInner.classList.remove('bg-red-600');
+                    shutterInner.classList.add('bg-red-800');
+                    alert("Video recording started.");
+                }
+            }
+
+            // Simulate vibration
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        });
+
+        // --- Zoom Logic ---
+        const updateZoom = (zoom) => {
+            currentZoom = parseFloat(zoom).toFixed(1);
+            zoomIndicator.textContent = `${currentZoom}x`;
+            
+            // Visually scale the viewfinder content
+            viewfinder.style.transform = `scale(${currentZoom})`;
+
+            // Update zoom button styling
+            zoomLevels.forEach(btn => {
+                btn.classList.remove('bg-black/70', 'scale-110');
+                btn.classList.add('bg-black/40');
+                if (btn.dataset.zoom === currentZoom) {
+                    btn.classList.add('bg-black/70', 'scale-110');
+                    btn.classList.remove('bg-black/40');
+                }
+            });
+        };
+
+        zoomLevels.forEach(btn => {
+            btn.addEventListener('click', () => updateZoom(btn.dataset.zoom));
+        });
+        
+        // Initialize zoom scale
+        updateZoom(1.0);
+
+        // --- Focus Simulation Logic (Tapping the screen) ---
+        viewfinder.addEventListener('click', (e) => {
+            if (e.target.closest('#zoom-control') || e.target.closest('.zoom-level')) return;
+
+            const rect = viewfinder.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Position the focus ring
+            focusRing.style.left = `${x}px`;
+            focusRing.style.top = `${y}px`;
+            
+            // Trigger animation
+            focusRing.style.transition = 'none';
+            focusRing.style.opacity = '1';
+            focusRing.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            
+            // Use requestAnimationFrame to ensure style changes are applied before re-transitioning
+            requestAnimationFrame(() => {
+                focusRing.style.transition = 'transform 0.1s ease-out, opacity 0.5s ease-in';
+                focusRing.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+            
+            // Hide the ring after a delay
+            setTimeout(() => {
+                focusRing.style.opacity = '0';
+            }, 700);
+        });
+    });
+</script>
+
+</body>
+</html>
