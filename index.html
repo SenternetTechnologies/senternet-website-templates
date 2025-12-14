@@ -3,146 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senternet Technologies - Template WebApp Ecosystem</title>
+    <title>Senternet webapps collections - Premium Web App Ecosystem</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Phosphor Icons for modern look -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         /* Base Styles */
         html { scroll-behavior: smooth; }
         .font-inter { font-family: 'Inter', sans-serif; }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f0f4f8; }
-        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 4px; }
+        /* Custom Scrollbar - Clean and bright */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f0f4f8; } /* Light track */
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 5px; border: 2px solid #f0f4f8; } /* Primary color thumb */
         ::-webkit-scrollbar-thumb:hover { background: #3f39c0; }
 
         /* Loader */
         .loader {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #4f46e5;
+            border-top: 4px solid #34d399; /* Neon Green spinner */
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            animation: spin 1s linear infinite;
+            animation: spin 1s cubic-bezier(0.5, 0.2, 0.5, 0.8) infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Card Hover Effect */
-        .card-hover:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
+        /* Template Card Styling */
+        .template-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        .template-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); /* Softer shadow for light theme */
+            z-index: 10;
         }
 
-        /* Responsive Grid for Categories - 3 items per row on large screens */
-        .template-grid-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+        /* Iframe Preview Container (Scaled Down) */
+        .iframe-container {
+            height: 200px;
+            background: #eef2ff; /* Light indigo background */
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem 0.75rem 0 0;
+            border-bottom: 2px solid #4f46e5; /* Primary color accent line */
+        }
+        .iframe-preview {
+            width: 250%; 
+            height: 250%;
+            transform: scale(0.4);
+            transform-origin: top left;
+            pointer-events: none;
+            filter: grayscale(80%) blur(1px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .template-card:hover .iframe-preview {
+            filter: grayscale(0%) blur(0px);
+            transform: scale(0.42); /* Slight zoom on hover */
+        }
+
+        /* Sticky Filter Panel */
+        @media (min-width: 1024px) {
+            .sticky-filter {
+                position: sticky;
+                top: 96px; /* Below Navbar */
+                height: calc(100vh - 120px);
+                overflow-y: auto;
+            }
         }
     </style>
 </head>
 <body class="bg-gray-50 font-inter text-slate-800">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-lg sticky top-0 z-40 border-b border-indigo-100">
+    <nav class="bg-white shadow-lg sticky top-0 z-50 border-b border-indigo-100/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-2">
-                    <div class="bg-indigo-600 text-white p-2 rounded-xl shadow-md">
-                        <i class="ph ph-infinity text-xl"></i>
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-600 text-white p-3 rounded-full shadow-lg shadow-indigo-400/50">
+                        <i class="ph ph-cube-focus text-2xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-extrabold text-slate-900 tracking-wider">SENTERNET TEMPLATES</h1>
-                        <p class="text-xs text-gray-500 font-medium">Innovative WebApp Collection</p>
+                        <h1 class="text-2xl font-extrabold text-slate-900 tracking-wider">SENTERNET TECHNOLOGIES WEB COLLECTION</h1>
+                        <p class="text-xs text-indigo-600 font-medium">By Senthilkumar k, Aranthangi</p>
                     </div>
                 </div>
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="mailto:senternettechnologies@gmail.com" class="text-gray-500 hover:text-indigo-600 transition p-2 rounded-full hover:bg-indigo-50">
                         <i class="ph ph-envelope-simple text-2xl"></i>
                     </a>
-                    <button onclick="openRegisterModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl flex items-center gap-2 text-sm font-bold transition shadow-md shadow-indigo-300 transform hover:scale-105">
-                        <i class="ph ph-user-circle-plus text-lg"></i> Register Now
+                    <button onclick="openRegisterModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full flex items-center gap-2 text-sm font-bold transition shadow-xl shadow-indigo-300 transform hover:scale-105">
+                        <i class="ph ph-rocket text-lg"></i> Start Project
                     </button>
                 </div>
+                <button class="md:hidden text-gray-700 p-2" onclick="toggleMobileMenu()">
+                    <i id="menu-icon" class="ph ph-list text-3xl"></i>
+                </button>
             </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden p-4 bg-indigo-50 border-t border-indigo-200">
+            <button onclick="openRegisterModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm font-bold transition">
+                <i class="ph ph-rocket text-lg"></i> Start Project
+            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="bg-indigo-800 text-white pt-16 pb-20 px-4 relative overflow-hidden">
+    <header class="pt-16 pb-12 px-4 relative overflow-hidden bg-indigo-600 border-b border-indigo-700">
         <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div class="max-w-7xl mx-auto text-center relative z-10">
-            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Your Next Digital Masterpiece Awaits</h2>
-            <p class="text-indigo-200 max-w-3xl mx-auto text-lg mb-8">
-                Explore high-quality, responsive web templates from Senternet Technologies, Aranthangi. Find the perfect design, preview it live, and connect with us to buy.
+            <span class="text-sm font-semibold text-white uppercase tracking-widest bg-black/10 px-4 py-1 rounded-full border border-white/50">PREMIUM ASSETS</span>
+            <h2 class="text-5xl md:text-6xl font-black mb-4 mt-3 tracking-tighter text-white">
+                Crafting Digital Excellence
+            </h2>
+            <p class="text-indigo-200 max-w-4xl mx-auto text-lg mb-8">
+                Explore our curated collection of professional, performance-optimized, and fully responsive web application templates. Designed in Aranthangi for the global market.
             </p>
-            <div class="flex justify-center gap-4">
-                <a href="#templates-main" class="bg-yellow-400 text-indigo-900 hover:bg-yellow-500 font-bold px-8 py-3 rounded-full shadow-xl transition transform hover:-translate-y-1">
-                    View Templates
-                </a>
-                <button onclick="openRegisterModal()" class="bg-white/20 border border-white/30 text-white hover:bg-white/30 font-semibold px-8 py-3 rounded-full transition">
-                    Get Free Consultation
-                </button>
-            </div>
+            <a href="#template-grid-section" class="bg-yellow-400 text-indigo-900 hover:bg-yellow-500 font-bold px-8 py-3 rounded-full shadow-xl transition transform hover:-translate-y-1 inline-flex items-center gap-2">
+                <i class="ph ph-grid-four text-lg"></i> Discover Templates
+            </a>
         </div>
     </header>
-<marquee> Here we provide Paid API for users, so viewers sometime cant use API contained webapps.</marquee>
-    <!-- Main Grid Content -->
-    <main id="templates-main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 -mt-8 relative z-20">
-        
-        <!-- Search and Filters -->
-        <div class="bg-white p-6 rounded-2xl shadow-xl mb-8 border border-gray-100">
-            <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            
+            <!-- Sticky Filter Panel (lg: block) -->
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky-filter bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4 text-indigo-600 flex items-center gap-2">
+                        <i class="ph ph-funnel text-2xl"></i> Filters & Search
+                    </h3>
+
+                    <!-- Search Input -->
+                    <div class="relative mb-6">
+                        <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400"></i>
+                        <input type="text" id="search-input-desktop" oninput="filterTemplates()" placeholder="Search by name, creator, or ID..." 
+                               class="w-full pl-12 pr-4 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="mb-6">
+                        <label for="category-filter-desktop" class="block text-sm font-medium text-gray-600 mb-2">Category Selection</label>
+                        <div class="relative">
+                            <i class="ph ph-folder-open absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400 pointer-events-none"></i>
+                            <select id="category-filter-desktop" onchange="filterTemplates()"
+                                    class="appearance-none w-full pl-12 pr-8 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm cursor-pointer">
+                                <option value="">All Categories</option>
+                            </select>
+                            <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-lg text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <!-- Stats / Contact CTA -->
+                    <div class="mt-8 pt-4 border-t border-gray-200">
+                         <p class="text-sm text-gray-500">Total Available Templates:</p>
+                         <p class="text-3xl font-black text-slate-900" id="total-count">20+</p>
+                         <a href="https://wa.me/918190038085" target="_blank" class="mt-4 w-full flex justify-center items-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-bold transition shadow-lg shadow-green-300">
+                            <i class="ph ph-whatsapp-logo text-xl"></i> Instant Contact
+                        </a>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Main Template Grid -->
+            <div class="lg:col-span-9">
                 
-                <!-- Search Input -->
-                <div class="relative flex-grow">
-                    <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400"></i>
-                    <input type="text" id="search-input" oninput="filterTemplates()" placeholder="Search templates by title, description, or creator..." 
-                           class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
+                <!-- Mobile Filter/Search (lg: hidden) -->
+                <div class="lg:hidden bg-white p-4 rounded-xl shadow-lg mb-6 border border-gray-200">
+                    <button class="w-full flex items-center justify-center gap-2 py-2 text-indigo-600 font-semibold" onclick="toggleMobileFilters()">
+                        <i class="ph ph-funnel text-xl"></i> Show Filters
+                    </button>
+                    <div id="mobile-filters-panel" class="hidden pt-4 border-t border-gray-200 mt-4">
+                         <!-- Search Input -->
+                        <div class="relative mb-4">
+                            <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-500"></i>
+                            <input type="text" id="search-input-mobile" oninput="filterTemplates()" placeholder="Search by name, creator, or ID..." 
+                                class="w-full pl-12 pr-4 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
+                        </div>
+                        <!-- Category Filter -->
+                        <div class="relative">
+                            <i class="ph ph-folder-open absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-500 pointer-events-none"></i>
+                            <select id="category-filter-mobile" onchange="filterTemplates()"
+                                    class="appearance-none w-full pl-12 pr-8 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm cursor-pointer">
+                                <option value="">All Categories</option>
+                            </select>
+                            <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-lg text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Category Filter -->
-                <div class="relative w-full md:w-auto">
-                    <i class="ph ph-folder-open absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400 pointer-events-none"></i>
-                    <select id="category-filter" onchange="filterTemplates()"
-                            class="appearance-none w-full pl-12 pr-8 py-3 border border-gray-200 rounded-xl bg-white focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm cursor-pointer">
-                        <option value="">All Categories</option>
-                        <!-- Options populated by JS -->
-                    </select>
-                    <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-lg text-gray-400 pointer-events-none"></i>
+                <!-- Template Sections Container -->
+                <div id="template-sections" class="flex flex-col gap-10" id="template-grid-section">
+                    <!-- Template Sections will be injected here by JS -->
+                </div>
+
+                <div id="no-results" class="hidden text-center py-20 bg-white rounded-xl mt-8 border border-gray-200">
+                    <i class="ph ph-archive text-8xl text-gray-300 mb-4 opacity-50"></i>
+                    <p class="text-2xl text-slate-900 font-bold">No Templates Found</p>
+                    <p class="text-gray-500 mt-2">Try adjusting your search or selecting a different category.</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Template Sections Container -->
-        <div id="template-sections" class="flex flex-col gap-12">
-            <!-- Template Sections will be injected here by JS -->
         </div>
+    </div>
 
-        <div id="no-results" class="hidden text-center py-16">
-            <i class="ph ph-archive text-6xl text-gray-300 mb-4"></i>
-            <p class="text-xl text-gray-600 font-semibold">No Templates Found</p>
-            <p class="text-gray-500 mt-2">Try adjusting your search or selecting a different category.</p>
-        </div>
-
-    </main>
 
     <!-- Footer -->
     <footer class="bg-slate-900 text-white mt-16 py-10">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="font-extrabold text-indigo-400 text-xl tracking-wider">SENTERNET TECHNOLOGIES</p>
-            <p class="text-gray-400 text-sm mt-1">Aranthangi, Pudukkottai</p>
-            <p class="text-gray-400 text-xs mt-4">For immediate inquiries, connect with Senthil:</p>
-            <div class="flex justify-center gap-6 mt-4">
-                <a href="tel:+918190038085" class="text-gray-400 hover:text-indigo-400 transition flex items-center gap-1"><i class="ph ph-phone text-xl"></i> +91 81900 38085</a>
-                <a href="mailto:senternettechnologies@gmail.com" class="text-gray-400 hover:text-indigo-400 transition flex items-center gap-1"><i class="ph ph-envelope text-xl"></i> Mail Us</a>
+            <p class="font-extrabold text-white text-2xl tracking-wider">SENTERNET TECHNOLOGIES</p>
+            <p class="text-green-400 text-sm mt-1">Aranthangi, Pudukkottai | Crafting Digital Future</p>
+            <p class="text-gray-400 text-xs mt-4">For Consultation & Purchases:</p>
+            <div class="flex justify-center gap-8 mt-4">
+                <a href="tel:+918190038085" class="text-gray-300 hover:text-indigo-400 transition flex items-center gap-2 font-medium">
+                    <i class="ph ph-phone-call text-xl text-indigo-400"></i> +91 81900 38085
+                </a>
+                <a href="mailto:senternettechnologies@gmail.com" class="text-gray-300 hover:text-indigo-400 transition flex items-center gap-2 font-medium">
+                    <i class="ph ph-envelope text-xl text-indigo-400"></i> senternettechnologies@gmail.com
+                </a>
             </div>
-            <p class="text-gray-500 text-xs mt-6">&copy; 2025 Senternet Technologies. All rights reserved.</p>
+            <p class="text-gray-500 text-xs mt-8">&copy; 2025 Senternet Technologies. All rights reserved.</p>
         </div>
     </footer>
 
@@ -155,8 +240,8 @@
                     <i class="ph ph-arrow-left text-xl"></i>
                 </button>
                 <div>
-                    <h3 id="modal-title" class="font-bold text-slate-900 text-base md:text-lg">Template Preview</h3>
-                    <p class="text-xs text-green-600 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> Live Interactive Demo</p>
+                    <h3 id="modal-title" class="font-bold text-slate-900 text-base md:text-xl">Template Preview</h3>
+                    <p class="text-xs text-green-600 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live Interactive Demo</p>
                 </div>
             </div>
             
@@ -164,7 +249,7 @@
                 <button onclick="refreshIframe()" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Refresh">
                     <i class="ph ph-arrow-clockwise text-xl"></i>
                 </button>
-                <button onclick="closePreview()" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-sm">
+                <button onclick="closePreview()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg shadow-red-300/50">
                     <i class="ph ph-x text-lg"></i> Close
                 </button>
             </div>
@@ -172,33 +257,33 @@
 
         <!-- Iframe Container -->
         <div class="w-full h-[calc(100%-4rem)] bg-gray-100 relative">
-            <div id="loader" class="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 hidden transition-opacity duration-200">
+            <div id="loader" class="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-10 hidden transition-opacity duration-200">
                 <div class="loader"></div>
             </div>
             <iframe id="preview-frame" class="w-full h-full border-0" src=""></iframe>
         </div>
     </div>
     
-    <!-- Registration Modal -->
+    <!-- Registration/Consultation Modal -->
     <div id="register-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center p-4" onclick="if(event.target.id === 'register-modal') closeRegisterModal()">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all modal-enter-active">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-indigo-700"><i class="ph ph-user-plus text-2xl mr-2"></i> Free Consultation</h3>
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all border border-indigo-500/50">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-2xl font-bold text-indigo-700"><i class="ph ph-handshake text-2xl mr-2"></i> Free Consultation</h3>
                 <button onclick="closeRegisterModal()" class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition">
                     <i class="ph ph-x text-xl"></i>
                 </button>
             </div>
             <form id="register-form" onsubmit="handleRegisterSubmit(event)">
                 <div class="space-y-4">
-                    <input type="text" id="reg-username" placeholder="Your Name" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-                    <input type="number" id="reg-age" placeholder="Your Age" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-                    <input type="text" id="reg-qualification" placeholder="Qualification (e.g., MCA, B.E.)" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-                    <input type="text" id="reg-location" placeholder="Current Location" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="text" id="reg-username" placeholder="Your Name" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
+                    <input type="number" id="reg-age" placeholder="Your Age" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
+                    <input type="text" id="reg-qualification" placeholder="Qualification (e.g., MCA, B.E.)" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
+                    <input type="text" id="reg-location" placeholder="Current Location" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                 </div>
-                <button type="submit" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-green-200 flex items-center justify-center gap-2">
-                    <i class="ph ph-whatsapp-logo text-xl"></i> Connect on WhatsApp
+                <button type="submit" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-xl shadow-green-300/50 flex items-center justify-center gap-2">
+                    <i class="ph ph-whatsapp-logo text-xl"></i> Connect with our CEO (Senthil)
                 </button>
-                <p class="text-xs text-gray-500 text-center mt-3">We will contact you via WhatsApp for consultation.</p>
+                <p class="text-xs text-gray-500 text-center mt-3">We will initiate a chat on WhatsApp for personalized project discussion.</p>
             </form>
         </div>
     </div>
@@ -209,65 +294,75 @@
         const WHATSAPP_NUMBER = '918190038085'; // Senthilkumar's WhatsApp number
 
         const templates = [
-            // Added creator name and price_in_inr
-            { id: 'Contactssender', title: 'Contacts Sender Tool', url: 'contacts.html', desc: 'A bulk message sender tool for direct, spam-free communication.', category: 'Business Tools', color: 'text-green-600', creator: 'Haritha', price_in_inr: 999 },
-  { id: 'jio stream', title: 'Jio stream basic template ', url: 'jiostream.html', desc: 'template for jio stream app.', category: 'Media', color: 'text-green-600', creator: 'Saran', price_in_inr: 99 },
-             { id: 'Contactssmssender', title: 'SMS / whatsapp Message Sender Tool', url: 'sms.html', desc: 'A bulk message sender tool for direct Whatsapp / SMS, spam-free communication for Normal SMS & whatsapp.', category: 'Business Tools', color: 'text-green-600', creator: 'Senternet technologies', price_in_inr: 999 },
-            { id: 'honeyselling', title: 'Honey Selling Website', url: 'honey.html', desc: 'Simple, conversion-focused landing page for premium honey products.', category: 'Product Selling', color: 'text-cyan-600', creator: 'Kumar', price_in_inr: 199 },
-            { id: 'home', title: 'Senternet Home Landing', url: 'home.html', desc: 'The official company landing page template with a service overview structure.', category: 'Business Tools', color: 'text-blue-600', creator: 'Senthil', price_in_inr: 299 },
-            { id: 'paint', title: 'Lumina Paints Webapp', url: 'lumina.html', desc: 'Allows customers to check color mixing, visualize paints on walls, and place orders.', category: 'Product Selling', color: 'text-indigo-600', creator: 'Santhosh', price_in_inr: 599 },
-            { id: 'senai', title: 'Sen AI - Post Generator', url: 'senai.html', desc: 'AI tool for generating creative social media posts (text, image, description).', category: 'AI Tools', color: 'text-rose-600', creator: 'Swetha', price_in_inr: 799 },
-            { id: 'riya', title: 'Riya Mehandi Portfolio', url: 'riya.html', desc: 'Artistic case study and portfolio showcase for Mehandi designs.', category: 'Portfolio', color: 'text-pink-600', creator: 'Sathish', price_in_inr: 149 },
-            { id: 'os', title: 'Sen Windows OS Clone', url: 'sen-os.html', desc: 'An experimental web-based operating system simulation concept UI.', category: 'Experimental', color: 'text-sky-600', creator: 'Surya', price_in_inr: 999 },
-{ id: 'camera', title: 'Sen camera basic template', url: 'camera.html', desc: 'An experimental web-based camera simulation concept UI.', category: 'Experimental', color: 'text-sky-600', creator: 'Surya', price_in_inr: 99 },
-            { id: 'gpay', title: 'G-Pay Clone UI', url: 'gpay.html', desc: 'A sleek UI replication of the Google Pay payment interface for fintech concepts.', category: 'Fintech', color: 'text-emerald-600', creator: 'Kumar', price_in_inr: 199 },
-            { id: 'youtube', title: 'YouTube Clone UI', url: 'youtube.html', desc: 'Video streaming platform UI template with a fully responsive grid layout.', category: 'Media', color: 'text-red-600', creator: 'Shanthi', price_in_inr: 249 },
-            { id: 'portfolio', title: 'Developer Portfolio', url: 'portfolio1.html', desc: 'A professional personal branding site template for modern developers.', category: 'Portfolio', color: 'text-purple-600', creator: 'Santhosh', price_in_inr: 149 },
-            { id: 'roller', title: 'Roller Menu Boutique', url: 'rollermenu.html', desc: 'An interactive scrolling menu concept for high-end fashion boutiques or restaurants.', category: 'E-commerce', color: 'text-amber-600', creator: 'Anitha', price_in_inr: 399 },
-            { id: 'articans', title: 'Articans Gallery', url: 'articans.html', desc: 'A creative arts and craft gallery showcase template.', category: 'Gallery', color: 'text-orange-600', creator: 'Saran', price_in_inr: 199 },
-{ id: 'maths', title: 'Horse allocation riddle🐎', url: 'horse.html', desc: 'simple riddle calculation of allocating horse.', category: 'Riddle', color: 'text-orange-600', creator: 'Senthil', price_in_inr: 59 },
-            { id: 'FlightBooking', title: 'Flight Booking App', url: 'FlightBookingApp.html', desc: 'A basic-level flight ticket booking template for travel agencies.', category: 'Travel', color: 'text-yellow-600', creator: 'Arun', price_in_inr: 349 },
-{ id: 'to do list', title: 'to do list', url: 'todo.html', desc: 'An to do list webapp concept UI.', category: 'Experimental', color: 'text-sky-600', creator: 'Surya', price_in_inr: 12 },
+            // Using bright theme colors for template categories
+            { id: 'Contactssender', title: 'Contacts Sender Tool', url: 'contacts.html', desc: 'A bulk message sender tool for direct, spam-free communication.', category: 'Business Tools', color: 'text-green-600', creator: 'Haritha (Digital Mkt.)', price_in_inr: 999 },
+            { id: 'Contactssmssender', title: 'SMS / WhatsApp Sender Tool', url: 'sms.html', desc: 'A bulk message sender tool for direct WhatsApp / SMS, spam-free communication for Normal SMS & WhatsApp.', category: 'Business Tools', color: 'text-green-600', creator: 'Senthil (CEO)', price_in_inr: 999 },
+            { id: 'home', title: 'Senternet Home Landing', url: 'home.html', desc: 'The official company landing page template with a service overview structure.', category: 'Business Tools', color: 'text-indigo-600', creator: 'Senthil (CEO)', price_in_inr: 299 },
+            
+            { id: 'honeyselling', title: 'Honey Selling Website', url: 'honey.html', desc: 'Simple, conversion-focused landing page for premium honey products.', category: 'E-commerce', color: 'text-amber-600', creator: 'Kumar (Web Designer)', price_in_inr: 199 },
+            { id: 'roller', title: 'Roller Menu Boutique', url: 'rollermenu.html', desc: 'An interactive scrolling menu concept for high-end fashion boutiques or restaurants.', category: 'E-commerce', color: 'text-amber-600', creator: 'Anitha (Backend Worker)', price_in_inr: 399 },
+            
+            { id: 'paint', title: 'Lumina Paints Webapp', url: 'lumina.html', desc: 'Allows customers to check color mixing, visualize paints on walls, and place orders.', category: 'Product Showcase', color: 'text-pink-600', creator: 'Santhosh (Web Dev)', price_in_inr: 599 },
+            
+            { id: 'senai', title: 'Sen AI - Post Generator', url: 'senai.html', desc: 'AI tool for generating creative social media posts (text, image, description).', category: 'AI Tools', color: 'text-rose-600', creator: 'Swetha (Digital Mkt.)', price_in_inr: 799 },
+            
+            { id: 'riya', title: 'Riya Mehandi Portfolio', url: 'riya.html', desc: 'Artistic case study and portfolio showcase for Mehandi designs.', category: 'Portfolio', color: 'text-purple-600', creator: 'Sathish (Graphic Designer)', price_in_inr: 149 },
+            { id: 'portfolio', title: 'Developer Portfolio', url: 'portfolio1.html', desc: 'A professional personal branding site template for modern developers.', category: 'Portfolio', color: 'text-purple-600', creator: 'Santhosh (Web Dev)', price_in_inr: 149 },
+            
+            { id: 'os', title: 'Sen Windows OS Clone', url: 'sen-os.html', desc: 'An experimental web-based operating system simulation concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 999 },
+            { id: 'camera', title: 'Sen camera basic template', url: 'camera.html', desc: 'An experimental web-based camera simulation concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 99 },
+            { id: 'to do list', title: 'To Do List App', url: 'todo.html', desc: 'A modern, simple to-do list web app concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 12 },
+            { id: 'jio stream', title: 'Jio stream basic template', url: 'jiostream.html', desc: 'Template for Jio Stream app - modern media UI replication.', category: 'Media/UI', color: 'text-red-600', creator: 'Saran (SMM)', price_in_inr: 99 },
+            { id: 'youtube', title: 'YouTube Clone UI', url: 'youtube.html', desc: 'Video streaming platform UI template with a fully responsive grid layout.', category: 'Media/UI', color: 'text-red-600', creator: 'Shanthi (Digital Mkt.)', price_in_inr: 249 },
+            
+            { id: 'gpay', title: 'G-Pay Clone UI', url: 'gpay.html', desc: 'A sleek UI replication of the Google Pay payment interface for fintech concepts.', category: 'Fintech/UI', color: 'text-emerald-600', creator: 'Kumar (Web Designer)', price_in_inr: 199 },
+            { id: 'FlightBooking', title: 'Flight Booking App', url: 'FlightBookingApp.html', desc: 'A basic-level flight ticket booking template for travel agencies.', category: 'Travel', color: 'text-yellow-600', creator: 'Arun (Design)', price_in_inr: 349 },
+            
+            { id: 'articans', title: 'Articans Gallery', url: 'articans.html', desc: 'A creative arts and craft gallery showcase template.', category: 'Gallery', color: 'text-orange-600', creator: 'Saran (SMM)', price_in_inr: 199 },
+            { id: 'maths', title: 'Horse allocation riddle🐎', url: 'horse.html', desc: 'Simple riddle calculation of allocating horse.', category: 'Riddle', color: 'text-orange-600', creator: 'Senthil (CEO)', price_in_inr: 59 },
 
-            { id: 'Chess Offline game', title: 'chess offline - Game', url: 'chess.html', desc: 'A simple "chess" basic game template for interactive content.', category: 'Games', color: 'text-pink-900', creator: 'Siva', price_in_inr: 39 },
-            { id: 'Flavour fusion game', title: 'Flavour Fusion - Game', url: 'flavourfusion.html', desc: 'A simple "cook and serve" basic game template for interactive content.', category: 'Games', color: 'text-pink-900', creator: 'Siva', price_in_inr: 299 }
+            { id: 'Chess Offline game', title: 'Chess Offline - Game', url: 'chess.html', desc: 'A simple "chess" basic game template for interactive content.', category: 'Games', color: 'text-fuchsia-600', creator: 'Siva (Product Mkt.)', price_in_inr: 39 },
+            { id: 'Flavour fusion game', title: 'Flavour Fusion - Game', url: 'flavourfusion.html', desc: 'A simple "cook and serve" basic game template for interactive content.', category: 'Games', color: 'text-fuchsia-600', creator: 'Siva (Product Mkt.)', price_in_inr: 299 }
         ];
 
-        // --- DOM ELEMENTS ---
+        // --- DOM ELEMENTS (Identical to dark mode, just referencing bright elements) ---
         const sectionsContainer = document.getElementById('template-sections');
-        const countSpan = document.getElementById('count');
         const modal = document.getElementById('preview-modal');
         const iframe = document.getElementById('preview-frame');
         const modalTitle = document.getElementById('modal-title');
         const loader = document.getElementById('loader');
-        const searchInput = document.getElementById('search-input');
-        const categoryFilter = document.getElementById('category-filter');
-        const registerModal = document.getElementById('register-modal');
         const noResultsDiv = document.getElementById('no-results');
+        const registerModal = document.getElementById('register-modal');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileFilterPanel = document.getElementById('mobile-filters-panel');
+
+        const searchInputDesktop = document.getElementById('search-input-desktop');
+        const categoryFilterDesktop = document.getElementById('category-filter-desktop');
+        const searchInputMobile = document.getElementById('search-input-mobile');
+        const categoryFilterMobile = document.getElementById('category-filter-mobile');
+        const totalCountDisplay = document.getElementById('total-count');
 
         // --- UTILITY FUNCTIONS ---
         
-        // Group templates by category
         function groupTemplatesByCategory(filteredTemplates) {
             return filteredTemplates.reduce((groups, item) => {
                 const category = item.category || 'Uncategorized';
-                if (!groups[category]) {
-                    groups[category] = [];
-                }
+                if (!groups[category]) { groups[category] = []; }
                 groups[category].push(item);
                 return groups;
             }, {});
         }
 
-        // Generate template card HTML
+        // Generate template card HTML (Updated for light theme styling)
         function generateCardHTML(item) {
-            // Determine icon class based on category
             let iconClass = 'ph-browsers';
-            if (item.category === 'Games') iconClass = 'ph-game-controller';
-            else if (item.category === 'AI Tools') iconClass = 'ph-brain';
-            else if (item.category === 'E-commerce') iconClass = 'ph-shopping-bag';
-            else if (item.category === 'Fintech') iconClass = 'ph-wallet';
-            else if (item.category === 'Portfolio') iconClass = 'ph-user-list';
+            if (item.category.includes('Games')) iconClass = 'ph-game-controller';
+            else if (item.category.includes('AI Tools')) iconClass = 'ph-brain';
+            else if (item.category.includes('E-commerce')) iconClass = 'ph-storefront';
+            else if (item.category.includes('Fintech')) iconClass = 'ph-currency-circle-dollar';
+            else if (item.category.includes('Portfolio')) iconClass = 'ph-user-list';
+            else if (item.category.includes('Experimental')) iconClass = 'ph-flask-gear';
 
             const priceFormatted = new Intl.NumberFormat('en-IN', {
                 style: 'currency',
@@ -276,45 +371,47 @@
             }).format(item.price_in_inr);
 
             return `
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 flex flex-col h-full overflow-hidden">
-                    <!-- Card Header / Iframe Preview Area -->
-                    <div class="h-48 bg-gray-50 relative overflow-hidden border-b border-gray-100">
-                        <!-- Live Iframe (Scaled down) -->
+                <div class="template-card bg-white rounded-xl shadow-lg border border-gray-200 flex flex-col h-full overflow-hidden">
+                    
+                    <!-- Iframe Preview Area -->
+                    <div class="iframe-container">
                         <iframe src="${item.url}" 
-                            class="w-[200%] h-[200%] origin-top-left transform scale-50 pointer-events-none select-none grayscale-[30%] hover:grayscale-0 transition-all duration-500" 
+                            class="iframe-preview" 
                             scrolling="no" loading="lazy" tabindex="-1">
                         </iframe>
-                        <!-- Floating Icon Badge -->
-                        <div class="absolute top-3 right-3 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center text-xl z-20">
-                            <i class="ph ${iconClass} ${item.color}"></i>
+                        <div class="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 z-10">
+                             <span class="text-xs font-bold text-white p-2 rounded bg-indigo-600/80 shadow-md">LIVE PREVIEW</span>
                         </div>
                     </div>
 
                     <!-- Card Body -->
                     <div class="p-5 flex-grow flex flex-col relative z-20 bg-white">
-                        <span class="text-[10px] font-bold uppercase tracking-wider ${item.color} bg-opacity-10 px-2 py-1 rounded-md self-start">${item.category}</span>
-                        <h3 class="text-xl font-bold text-gray-900 mt-2 mb-1">${item.title}</h3>
+                        <span class="text-xs font-bold uppercase tracking-wider ${item.color} bg-indigo-50 px-3 py-1 rounded-full self-start flex items-center gap-1">
+                            <i class="ph ${iconClass} text-base"></i> ${item.category.split('/')[0]}
+                        </span>
+                        
+                        <h3 class="text-xl font-bold text-slate-900 mt-3 mb-1 line-clamp-1">${item.title}</h3>
                         <p class="text-gray-500 text-sm line-clamp-2 mb-4">${item.desc}</p>
                         
                         <!-- Price and Creator -->
-                        <div class="flex justify-between items-center text-sm text-gray-700 font-semibold mb-4 border-t pt-3 mt-auto">
-                            <p class="flex items-center gap-1 text-indigo-600">
-                                <i class="ph ph-wallet-fill text-lg"></i> ${priceFormatted}
+                        <div class="flex justify-between items-center text-sm font-semibold mb-4 border-t border-gray-200 pt-3 mt-auto">
+                            <p class="flex items-center gap-1 text-indigo-600 text-lg font-black">
+                                ${priceFormatted} <span class="text-xs font-medium text-gray-400">Only</span>
                             </p>
-                            <p class="text-gray-500">
-                                <i class="ph ph-user-circle text-lg mr-0.5"></i> By: ${item.creator}
+                            <p class="text-gray-500 text-xs text-right">
+                                Crafted by: <br><span class="text-slate-800 font-medium">${item.creator}</span>
                             </p>
                         </div>
                         
                         <!-- Actions -->
                         <div class="flex gap-3">
                             <button onclick="openPreview('${item.url}', '${item.title}')" 
-                                class="flex-1 bg-slate-900 hover:bg-indigo-700 text-white font-medium py-2 px-3 rounded-lg text-sm transition-colors shadow-lg shadow-gray-200">
-                                <i class="ph ph-eye text-lg mr-1"></i> Preview
+                                class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 px-3 rounded-xl text-sm transition-colors shadow-lg shadow-gray-300 flex justify-center items-center gap-2">
+                                <i class="ph ph-eye text-lg"></i> Preview Demo
                             </button>
                             <button onclick="openBuyChat('${item.title}', '${item.id}', '${item.price_in_inr}')"
-                                class="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-3 rounded-lg text-sm transition-colors shadow-lg shadow-green-200">
-                                <i class="ph ph-shopping-cart simple text-lg mr-1"></i> Buy Now
+                                class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-3 rounded-xl text-sm transition-colors shadow-lg shadow-green-300/50 flex justify-center items-center gap-2">
+                                <i class="ph ph-whatsapp-logo text-lg"></i> Buy/Customize
                             </button>
                         </div>
                     </div>
@@ -322,10 +419,11 @@
             `;
         }
 
-        // Render the filtered and grouped templates
+        // Render templates - logic is the same, but styling elements changed in HTML
         function renderTemplates(filteredTemplates) {
             sectionsContainer.innerHTML = '';
-            
+            totalCountDisplay.innerText = filteredTemplates.length;
+
             if (filteredTemplates.length === 0) {
                 noResultsDiv.classList.remove('hidden');
                 return;
@@ -341,13 +439,13 @@
                 sectionDiv.className = 'category-section';
 
                 sectionDiv.innerHTML = `
-                    <div class="flex items-center justify-between mb-4 mt-6">
-                        <h4 class="text-2xl font-extrabold text-slate-800 border-l-4 border-indigo-600 pl-3">
+                    <div class="flex items-center justify-between mb-6 border-b border-indigo-200 pb-3">
+                        <h4 class="text-3xl font-extrabold text-slate-800">
                             ${category} 
                         </h4>
-                        <span class="text-sm font-medium text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">${groupedTemplates[category].length} Templates</span>
+                        <span class="text-sm font-medium text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">${groupedTemplates[category].length} Assets</span>
                     </div>
-                    <div class="template-grid-section">
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         ${groupedTemplates[category].map(generateCardHTML).join('')}
                     </div>
                 `;
@@ -355,29 +453,43 @@
             });
         }
 
-        // Populate category filter dropdown
-        function populateCategoryFilter() {
+        // Populate category filter dropdowns (Same logic)
+        function populateCategoryFilters() {
             const categories = [...new Set(templates.map(t => t.category))].sort();
-            categoryFilter.innerHTML = '<option value="">All Categories</option>';
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category;
-                option.textContent = category;
-                categoryFilter.appendChild(option);
-            });
+            
+            const optionsHtml = categories.map(category => 
+                `<option value="${category}">${category}</option>`
+            ).join('');
+            
+            const allOption = '<option value="">All Categories</option>';
+            
+            categoryFilterDesktop.innerHTML = allOption + optionsHtml;
+            categoryFilterMobile.innerHTML = allOption + optionsHtml;
         }
 
-        // Filter logic for search and category
+        // Filter logic (Same logic)
         window.filterTemplates = function() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            const selectedCategory = categoryFilter.value;
+            const isDesktop = window.innerWidth >= 1024;
+            const searchInput = isDesktop ? searchInputDesktop : searchInputMobile;
+            const categoryFilter = isDesktop ? categoryFilterDesktop : categoryFilterMobile;
+
+            const searchTerm = (searchInput?.value || '').toLowerCase().trim();
+            const selectedCategory = categoryFilter?.value || '';
+
+            if (isDesktop) {
+                searchInputMobile.value = searchTerm;
+                categoryFilterMobile.value = selectedCategory;
+            } else {
+                searchInputDesktop.value = searchTerm;
+                categoryFilterDesktop.value = selectedCategory;
+            }
 
             const filtered = templates.filter(item => {
                 const matchesSearch = !searchTerm || 
                                       item.title.toLowerCase().includes(searchTerm) ||
                                       item.desc.toLowerCase().includes(searchTerm) ||
-                                      item.category.toLowerCase().includes(searchTerm) ||
-                                      item.creator.toLowerCase().includes(searchTerm);
+                                      item.creator.toLowerCase().includes(searchTerm) ||
+                                      item.id.toLowerCase().includes(searchTerm);
                 
                 const matchesCategory = !selectedCategory || item.category === selectedCategory;
 
@@ -387,9 +499,23 @@
             renderTemplates(filtered);
         };
 
-        // --- MODAL FUNCTIONS ---
+        // --- MOBILE UI FUNCTIONS (Same logic) ---
+        window.toggleMobileMenu = function() {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.replace('ph-x', 'ph-list');
+            } else {
+                menuIcon.classList.replace('ph-list', 'ph-x');
+            }
+        };
 
-        // Preview Modal
+        window.toggleMobileFilters = function() {
+            mobileFilterPanel.classList.toggle('hidden');
+        };
+
+
+        // --- MODAL FUNCTIONS (Same logic) ---
+
         window.openPreview = function(url, title) {
             modalTitle.innerText = title;
             modal.classList.remove('hidden');
@@ -410,11 +536,14 @@
         window.refreshIframe = function() {
             if(iframe.src && iframe.src !== 'about:blank') {
                 loader.classList.remove('hidden');
-                iframe.src = iframe.src;
+                const currentUrl = iframe.src;
+                iframe.src = 'about:blank'; 
+                setTimeout(() => {
+                    iframe.src = currentUrl; 
+                }, 50);
             }
         };
 
-        // Registration Modal
         window.openRegisterModal = function() {
             registerModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -432,16 +561,14 @@
             const qual = document.getElementById('reg-qualification').value;
             const loc = document.getElementById('reg-location').value;
 
-            const message = `New Template Consultation Request:%0A- Name: ${name}%0A- Age: ${age}%0A- Qualification: ${qual}%0A- Location: ${loc}%0A%0AI am requesting a free consultation for a web app template.`;
+            const message = `*New Senternet Project Consultation Request* (From Template Forge):%0A%0A- *Name*: ${name}%0A- *Age*: ${age}%0A- *Qualification*: ${qual}%0A- *Location*: ${loc}%0A%0AHello Senthil! I am requesting a free consultation to discuss a new web app project/template customization.`;
             
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
             
-            // Open WhatsApp chat
             window.open(whatsappUrl, '_blank');
             closeRegisterModal();
         };
 
-        // Buy Template WhatsApp Chat
         window.openBuyChat = function(title, id, price) {
             const priceFormatted = new Intl.NumberFormat('en-IN', {
                 style: 'currency',
@@ -449,23 +576,24 @@
                 maximumFractionDigits: 0,
             }).format(price);
             
-            const message = `Template Purchase Inquiry:%0AHello Senternet team! I am interested in buying the template:%0A- Title: ${title}%0A- ID: ${id}%0A- Price: ${priceFormatted}%0A%0APlease provide payment and next steps.`;
+            const message = `*Template Purchase/Customization Inquiry* (From Template Forge):%0A%0AHello Senternet Team! I am interested in buying/customizing the following asset:%0A- *Title*: ${title}%0A- *ID*: ${id}%0A- *Price*: ${priceFormatted}%0A%0APlease provide payment and next steps, or discuss customization options.`;
             
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
             
-            // Open WhatsApp chat
             window.open(whatsappUrl, '_blank');
         };
 
 
         // --- INITIALIZATION ---
         window.onload = function() {
-            populateCategoryFilter();
+            populateCategoryFilters();
             renderTemplates(templates);
-            // Count update is now dynamic based on filtering, but we'll set the initial count too
-            document.getElementById('count').innerText = templates.length;
+            totalCountDisplay.innerText = templates.length;
         };
+        
+        window.onresize = filterTemplates;
 
     </script>
 </body>
 </html>
+
