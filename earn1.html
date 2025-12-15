@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Mandatory for responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Screen Data Entry Portal</title>
+    <!-- Load Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Set body and html to take full viewport height and remove all margins/paddings */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Dark background */
+            overflow: hidden; /* Prevent any scroll bars on the main page */
+        }
+        /* Ensure the main container takes 100% of the viewport height and width */
+        #app-container {
+            height: 100vh;
+            width: 100vw;
+            /* Using grid/flex not necessary anymore since it's just one element */
+        }
+        /* Make the iframe take up 100% of its container (which is 100vh x 100vw) */
+        .responsive-iframe {
+            height: 100%;
+            width: 100%;
+            border: none;
+            /* Removed shadow and rounded corners for a true full-screen experience */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Container is now dedicated entirely to the iframe -->
+    <div id="app-container" class="text-white">
+        
+        <!-- Main Content Area: The Iframe Container -->
+        <!-- Removed p-1 padding and ensured it takes full height/width -->
+        <main class="h-full w-full overflow-hidden">
+            <!-- The iframe is set to fill the entire available space, edge-to-edge -->
+            <iframe
+                src="https://script.google.com/macros/s/AKfycbwlk2uRWquYZZIrDPDNmngObij4g3SIXbuYQX2-xfY_Pv23CvNo4LQLLy3HRQQPexBc2A/exec"
+                title="Online Data Entry Application - Full Screen"
+                class="responsive-iframe bg-white"
+                loading="lazy"
+            ></iframe>
+        </main>
+
+    </div>
+    
+</body>
+</html>
+
