@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <!-- Mandatory for responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Screen Data Entry Portal</title>
+    <title>Secured Data Entry Portal</title>
     <!-- Load Tailwind CSS for modern, responsive styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -17,30 +17,83 @@
             background-color: #0d1117; /* Dark background */
             overflow: hidden; /* Prevent any scroll bars on the main page */
         }
-        /* Ensure the main container takes 100% of the viewport height and width */
+        
+        /* Container for the main app (iframe) - initially hidden */
         #app-container {
             height: 100vh;
             width: 100vw;
-            /* Using grid/flex not necessary anymore since it's just one element */
+            display: none; /* Crucial: Start hidden until PIN is entered */
         }
-        /* Make the iframe take up 100% of its container (which is 100vh x 100vw) */
+        
+        /* Full screen overlay for the PIN entry */
+        #pin-lock-screen {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1f2937 0%, #0d1117 100%);
+        }
+
+        /* Iframe styling for the content */
         .responsive-iframe {
             height: 100%;
             width: 100%;
             border: none;
-            /* Removed shadow and rounded corners for a true full-screen experience */
+        }
+
+        /* Custom scrollbar for better aesthetics, if needed inside the iframe */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Main Container is now dedicated entirely to the iframe -->
-    <div id="app-container" class="text-white">
-        
-        <!-- Main Content Area: The Iframe Container -->
-        <!-- Removed p-1 padding and ensured it takes full height/width -->
+    <!-- PIN LOCK SCREEN - VISIBLE BY DEFAULT -->
+    <div id="pin-lock-screen">
+        <div class="p-8 md:p-10 bg-gray-800 rounded-xl shadow-2xl text-white max-w-sm w-11/12 transform transition-all duration-500 hover:scale-[1.01] border-t-4 border-teal-500">
+            <h1 class="text-2xl font-bold text-center mb-6 text-teal-400">Secure Access Required</h1>
+            <p class="text-center text-sm text-gray-400 mb-6">Please enter your application PIN to proceed to the Data Entry Portal.</p>
+
+            <!-- PIN Input Field -->
+            <input 
+                type="password" 
+                id="pin-input" 
+                placeholder="Enter PIN (e.g., s**54***09)" 
+                class="w-full p-3 mb-4 text-lg bg-gray-700 border border-gray-600 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition-shadow text-center tracking-widest"
+                maxlength="6"
+                onkeypress="if(event.key === 'Enter') checkPin()"
+            />
+
+            <!-- Error Message Display -->
+            <div id="error-message" class="text-red-400 text-center mb-4 font-medium h-6"></div>
+            
+            <!-- Submit Button -->
+            <button 
+                onclick="checkPin()"
+                class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 transform active:scale-95 text-lg"
+            >
+                UNLOCK PORTAL
+            </button>
+
+            <!-- Footer/Branding -->
+            <div class="mt-8 text-center text-xs text-gray-500">
+                Secured by SENTERNET TECHNOLOGIES
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER (IFRAME) - INITIALLY HIDDEN -->
+    <div id="app-container">
         <main class="h-full w-full overflow-hidden">
-            <!-- The iframe is set to fill the entire available space, edge-to-edge -->
             <iframe
                 src="https://script.google.com/macros/s/AKfycbwlk2uRWquYZZIrDPDNmngObij4g3SIXbuYQX2-xfY_Pv23CvNo4LQLLy3HRQQPexBc2A/exec"
                 title="Online Data Entry Application - Full Screen"
@@ -48,8 +101,43 @@
                 loading="lazy"
             ></iframe>
         </main>
-
     </div>
+    
+    <script>
+        const CORRECT_PIN = "sn666";
+        const pinInput = document.getElementById('pin-input');
+        const errorMessage = document.getElementById('error-message');
+        const lockScreen = document.getElementById('pin-lock-screen');
+        const appContainer = document.getElementById('app-container');
+
+        // Function to handle the PIN validation
+        function checkPin() {
+            const enteredPin = pinInput.value.trim().toLowerCase();
+            errorMessage.textContent = ''; // Clear previous errors
+
+            if (enteredPin === CORRECT_PIN) {
+                // Pin is correct: Hide lock screen and show app container
+                lockScreen.style.display = 'none';
+                appContainer.style.display = 'block';
+                pinInput.value = ''; // Clear input for security
+            } else {
+                // Pin is incorrect: Show error message
+                errorMessage.textContent = '⛔ Incorrect PIN. Please try again.';
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        }
+        
+        // Focus on the input field when the page loads for quick entry
+        window.onload = function() {
+            pinInput.focus();
+        };
+
+        // Added this for Firebase logging, though Firestore is not used, it's a good practice.
+        // if (typeof firebaseConfig !== 'undefined') {
+        //     setLogLevel('Debug');
+        // }
+    </script>
     
 </body>
 </html>
