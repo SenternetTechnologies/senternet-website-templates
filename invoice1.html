@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvoiceFlow - Business Invoice Generator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for a clean, professional print view */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #invoice-container, #invoice-container * {
+                visibility: visible;
+            }
+            #invoice-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .invoice-preview-card {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .border-indigo-600 {
+                border-color: #4f46e5 !important;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="min-h-screen p-4 md:p-8">
+        <header class="text-center mb-8 no-print">
+            <h1 class="text-4xl font-extrabold text-indigo-700">InvoiceFlow</h1>
+            <p class="text-gray-500">Professional Invoicing for Small Businesses</p>
+            <div id="auth-info" class="text-sm mt-2 text-gray-600"></div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex justify-center space-x-4 mb-8 no-print">
+            <button id="nav-create" class="px-6 py-2 rounded-lg font-semibold transition-colors duration-200 bg-indigo-600 text-white hover:bg-indigo-700">
+                Create New Invoice
+            </button>
+            <button id="nav-list" class="px-6 py-2 rounded-lg font-semibold transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300">
+                View Saved Invoices
+            </button>
+        </nav>
+
+        <!-- Message Box -->
+        <div id="message-box" class="fixed top-4 right-4 z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+            <!-- Messages will be injected here -->
+        </div>
+
+        <!-- Invoice Creator View -->
+        <div id="view-create" class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Input Form (Left Side) -->
+            <div class="lg:w-1/2 p-6 bg-white rounded-xl shadow-lg no-print h-fit">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Invoice Details</h2>
+
+                <!-- Client Info -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-indigo-600 mb-3">Client Information</h3>
+                    <input type="text" id="client-name" placeholder="Client Name / Company" class="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    <textarea id="client-address" placeholder="Client Address (Street, City, Zip)" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+
+                <!-- Invoice Meta Info -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label for="invoice-number" class="block text-sm font-medium text-gray-700">Invoice #</label>
+                        <input type="text" id="invoice-number" value="INV-0001" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="invoice-date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="invoice-date" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="tax-rate" class="block text-sm font-medium text-gray-700">Tax Rate (%)</label>
+                        <input type="number" id="tax-rate" value="0.0" min="0" step="0.5" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="currency" class="block text-sm font-medium text-gray-700">Currency</label>
+                        <input type="text" id="currency" value="$" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Line Items -->
+                <h3 class="text-lg font-semibold text-indigo-600 mb-3">Line Items</h3>
+                <div id="line-items-container" class="space-y-4 mb-6">
+                    <!-- Line items will be injected here -->
+                </div>
+                <button id="add-item-btn" class="w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold rounded-lg transition-colors duration-200 border border-indigo-300">
+                    + Add New Line Item
+                </button>
+
+                <!-- Notes/Payment Terms -->
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold text-indigo-600 mb-3">Notes / Payment Terms</h3>
+                    <textarea id="notes" placeholder="e.g., Payment due within 30 days. Thank you for your business!" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 space-y-4">
+                    <button id="save-invoice-btn" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-200">
+                        <span id="save-text">Save Invoice</span>
+                        <span id="save-spinner" class="hidden animate-spin h-5 w-5 border-4 border-white border-t-transparent rounded-full ml-2"></span>
+                    </button>
+                    <button id="print-invoice-btn" class="w-full py-3 bg-gray-800 text-white font-bold rounded-lg shadow-md hover:bg-gray-900 transition-colors duration-200">
+                        Print / Download PDF
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Invoice Preview (Right Side) -->
+            <div class="lg:w-1/2">
+                <div id="invoice-container" class="bg-white p-8 md:p-12 rounded-xl shadow-2xl border-t-8 border-indigo-600 invoice-preview-card">
+                    <!-- Preview content will be rendered here -->
+                    <div id="invoice-preview" class="min-h-[600px] flex items-center justify-center text-gray-400">
+                        Start adding details to see your invoice preview here.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Invoices View -->
+        <div id="view-list" class="hidden">
+            <div class="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">Saved Invoices</h2>
+                
+                <!-- Loading State -->
+                <div id="list-loading" class="flex justify-center items-center py-12 text-indigo-600">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading saved invoices...
+                </div>
+                
+                <!-- Invoice List Table -->
+                <div id="invoice-list-container" class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoice-list-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Invoices will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- No Invoices State -->
+                <div id="list-empty" class="hidden text-center py-12 text-gray-500">
+                    <p>You haven't saved any invoices yet.</p>
+                    <button class="mt-4 text-indigo-600 hover:text-indigo-800 font-semibold" onclick="switchView('create')">
+                        Start creating your first invoice!
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInAnonymously, 
+            signInWithCustomToken, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            addDoc, 
+            setDoc, 
+            deleteDoc, 
+            onSnapshot, 
+            collection, 
+            query, 
+            where, 
+            orderBy,
+            getDocs,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase variables
+        let app;
+        let db;
+        let auth;
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Core Application Logic ---
+
+        // Helper for displaying user messages (no window.alert)
+        function showMessage(message, type = 'success') {
+            const box = document.getElementById('message-box');
+            const color = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+            const html = `
+                <div class="p-4 rounded-lg shadow-xl text-white ${color} mb-3 animate-slide-in">
+                    ${message}
+                </div>
+            `;
+            
+            box.innerHTML = html;
+            box.style.opacity = '1';
+            box.style.pointerEvents = 'auto';
+
+            setTimeout(() => {
+                box.style.opacity = '0';
+                box.style.pointerEvents = 'none';
+                box.innerHTML = '';
+            }, 5000);
+        }
+
+        // Helper to format currency
+        function formatCurrency(amount, currency = '$') {
+            const num = parseFloat(amount);
+            if (isNaN(num)) return `${currency}0.00`;
+            return `${currency}${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        }
+
+        // --- View Switching ---
+        window.switchView = (viewName) => {
+            document.getElementById('view-create').classList.add('hidden');
+            document.getElementById('view-list').classList.add('hidden');
+            document.getElementById('nav-create').classList.remove('bg-indigo-600', 'text-white');
+            document.getElementById('nav-create').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('nav-list').classList.remove('bg-indigo-600', 'text-white');
+            document.getElementById('nav-list').classList.add('bg-gray-200', 'text-gray-700');
+            
+            if (viewName === 'create') {
+                document.getElementById('view-create').classList.remove('hidden');
+                document.getElementById('nav-create').classList.add('bg-indigo-600', 'text-white');
+            } else if (viewName === 'list') {
+                document.getElementById('view-list').classList.remove('hidden');
+                document.getElementById('nav-list').classList.add('bg-indigo-600', 'text-white');
+            }
+        }
+        
+        document.getElementById('nav-create').addEventListener('click', () => switchView('create'));
+        document.getElementById('nav-list').addEventListener('click', () => switchView('list'));
+        
+        // Start on the create view
+        switchView('create');
+
+
+        // --- Invoice Data Model and Calculator ---
+
+        const currencyEl = document.getElementById('currency');
+        const taxRateEl = document.getElementById('tax-rate');
+        const itemsContainer = document.getElementById('line-items-container');
+        const invoicePreviewEl = document.getElementById('invoice-preview');
+
+        // Function to create a new line item row HTML
+        function createItemRow(desc = '', qty = 1, unitPrice = 0) {
+            const row = document.createElement('div');
+            row.className = 'flex items-center space-x-2';
+            row.innerHTML = `
+                <input type="text" class="item-desc p-2 border border-gray-300 rounded-lg flex-grow" placeholder="Description" value="${desc}">
+                <input type="number" class="item-qty w-16 p-2 border border-gray-300 rounded-lg text-right" min="1" value="${qty}">
+                <input type="number" class="item-price w-24 p-2 border border-gray-300 rounded-lg text-right" min="0" step="0.01" value="${unitPrice.toFixed(2)}">
+                <span class="item-total w-20 text-right font-semibold text-gray-700"></span>
+                <button type="button" class="remove-item-btn p-2 text-red-500 hover:text-red-700 transition-colors duration-200" title="Remove Item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            `;
+
+            row.querySelector('.remove-item-btn').addEventListener('click', () => {
+                row.remove();
+                updateInvoice();
+            });
+
+            // Add change listener to all inputs
+            row.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', updateInvoice);
+            });
+
+            return row;
+        }
+
+        // Add initial line item
+        itemsContainer.appendChild(createItemRow("Web Development Service", 1, 500.00));
+        document.getElementById('add-item-btn').addEventListener('click', () => {
+            itemsContainer.appendChild(createItemRow('', 1, 0.00));
+            updateInvoice();
+        });
+        
+        // Get all elements that trigger an update
+        const updateElements = [
+            document.getElementById('client-name'),
+            document.getElementById('client-address'),
+            document.getElementById('invoice-number'),
+            document.getElementById('invoice-date'),
+            document.getElementById('notes'),
+            currencyEl,
+            taxRateEl
+        ];
+
+        updateElements.forEach(el => {
+            el.addEventListener('input', updateInvoice);
+        });
+        
+        // Set default invoice date to today
+        document.getElementById('invoice-date').valueAsDate = new Date();
+
+
+        // Main calculation and UI update function
+        function updateInvoice() {
+            const currency = currencyEl.value || '$';
+            const taxRate = parseFloat(taxRateEl.value) / 100 || 0;
+            let subtotal = 0;
+            const items = [];
+
+            // 1. Process Line Items
+            itemsContainer.querySelectorAll('.flex.items-center.space-x-2').forEach(row => {
+                const descEl = row.querySelector('.item-desc');
+                const qtyEl = row.querySelector('.item-qty');
+                const priceEl = row.querySelector('.item-price');
+                const totalEl = row.querySelector('.item-total');
+
+                const desc = descEl.value.trim();
+                const qty = parseInt(qtyEl.value) || 0;
+                const price = parseFloat(priceEl.value) || 0;
+                const itemTotal = qty * price;
+                
+                subtotal += itemTotal;
+                
+                totalEl.textContent = formatCurrency(itemTotal, currency);
+                
+                if (desc) { // Only add non-empty items to the data structure
+                    items.push({ description: desc, quantity: qty, unitPrice: price, total: itemTotal });
+                }
+            });
+
+            // 2. Calculate Totals
+            const taxAmount = subtotal * taxRate;
+            const grandTotal = subtotal + taxAmount;
+
+            // 3. Render Preview
+            renderInvoicePreview(subtotal, taxAmount, grandTotal, currency, items);
+
+            return {
+                clientName: document.getElementById('client-name').value.trim(),
+                clientAddress: document.getElementById('client-address').value.trim(),
+                invoiceNumber: document.getElementById('invoice-number').value.trim(),
+                invoiceDate: document.getElementById('invoice-date').value,
+                taxRate: taxRate * 100, // store as percentage (e.g., 5.0)
+                currency,
+                notes: document.getElementById('notes').value.trim(),
+                items,
+                totals: {
+                    subtotal: subtotal,
+                    taxAmount: taxAmount,
+                    grandTotal: grandTotal
+                }
+            };
+        }
+        
+        function renderInvoicePreview(subtotal, taxAmount, grandTotal, currency, items) {
+            const clientName = document.getElementById('client-name').value.trim();
+            const clientAddress = document.getElementById('client-address').value.trim().replace(/\n/g, '<br>');
+            const invoiceNumber = document.getElementById('invoice-number').value.trim();
+            const invoiceDate = document.getElementById('invoice-date').value;
+            const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
+            const notes = document.getElementById('notes').value.trim();
+            
+            const itemRows = items.map(item => `
+                <tr class="border-b">
+                    <td class="py-3 px-4 text-left">${item.description}</td>
+                    <td class="py-3 px-4 text-center">${item.quantity}</td>
+                    <td class="py-3 px-4 text-right">${formatCurrency(item.unitPrice, currency)}</td>
+                    <td class="py-3 px-4 text-right font-semibold">${formatCurrency(item.total, currency)}</td>
+                </tr>
+            `).join('');
+
+            const html = `
+                <div class="flex justify-between items-start mb-12">
+                    <div>
+                        <h1 class="text-4xl font-extrabold text-indigo-700">INVOICE</h1>
+                        <p class="text-lg font-semibold text-gray-600 mt-1"># ${invoiceNumber}</p>
+                    </div>
+                    <div class="text-right">
+                        <h2 class="text-2xl font-bold text-gray-800">Your Business Name</h2>
+                        <p class="text-sm text-gray-500">123 Main St, Suite 100<br>Business City, 90210</p>
+                        <p class="text-sm text-gray-500">info@yourbusiness.com</p>
+                    </div>
+                </div>
+
+                <!-- Date & Bill To -->
+                <div class="flex justify-between mb-8">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-600 uppercase">Bill To:</p>
+                        <p class="font-bold text-lg text-gray-800">${clientName || '[Client Name]'}</p>
+                        <p class="text-sm text-gray-600">${clientAddress || '[Client Address]'}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-gray-600 uppercase">Date Issued:</p>
+                        <p class="text-base font-medium text-gray-800">${invoiceDate || new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+
+                <!-- Items Table -->
+                <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg mb-8">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-indigo-50">
+                            <tr>
+                                <th class="py-3 px-4 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider w-1/2">Description</th>
+                                <th class="py-3 px-4 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider">Qty</th>
+                                <th class="py-3 px-4 text-right text-xs font-medium text-indigo-700 uppercase tracking-wider">Unit Price</th>
+                                <th class="py-3 px-4 text-right text-xs font-medium text-indigo-700 uppercase tracking-wider">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200 text-sm">
+                            ${itemRows || '<tr><td colspan="4" class="text-center py-4 text-gray-400">No line items added.</td></tr>'}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Totals -->
+                <div class="flex justify-end">
+                    <div class="w-full sm:w-1/2 md:w-1/3 space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Subtotal:</span>
+                            <span class="font-medium text-gray-800">${formatCurrency(subtotal, currency)}</span>
+                        </div>
+                        <div class="flex justify-between border-t pt-2">
+                            <span class="text-gray-600">Tax (${taxRate}%):</span>
+                            <span class="font-medium text-gray-800">${formatCurrency(taxAmount, currency)}</span>
+                        </div>
+                        <div class="flex justify-between border-t-2 border-indigo-600 pt-3">
+                            <span class="text-lg font-bold text-gray-800">TOTAL DUE:</span>
+                            <span class="text-lg font-bold text-indigo-600">${formatCurrency(grandTotal, currency)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Notes -->
+                ${notes ? `<div class="mt-12 p-4 bg-gray-50 rounded-lg text-sm text-gray-600 border-l-4 border-indigo-300">
+                    <p class="font-semibold">Notes / Terms:</p>
+                    <p>${notes}</p>
+                </div>` : ''}
+
+                <div class="text-center mt-12 text-sm text-gray-400 border-t pt-4">
+                    Thank you for your business.
+                </div>
+            `;
+            
+            invoicePreviewEl.innerHTML = html;
+        }
+
+        // --- Print Functionality ---
+        document.getElementById('print-invoice-btn').addEventListener('click', () => {
+            window.print();
+        });
+
+        // --- Firebase Initialization and Auth ---
+
+        async function initializeFirebase() {
+            try {
+                // Global variables are provided by the canvas environment
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+                if (Object.keys(firebaseConfig).length === 0) {
+                    throw new Error("Firebase config not available. Cannot connect to database.");
+                }
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                document.getElementById('auth-info').textContent = "Connecting to InvoiceFlow storage...";
+                
+                // Auth
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        isAuthReady = true;
+                        document.getElementById('auth-info').innerHTML = `User ID: <span class="font-mono text-xs">${userId}</span> | Data is saved automatically.`;
+                        // Start listening for invoices once auth is ready
+                        listenForInvoices();
+                    } else {
+                        userId = null;
+                        isAuthReady = true;
+                        document.getElementById('auth-info').textContent = "Signed in anonymously. Data is private.";
+                        // Still call listener, which will show empty state
+                        listenForInvoices(); 
+                    }
+                });
+                
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                showMessage(`Database error: ${error.message}. Features requiring storage are disabled.`, 'error');
+                document.getElementById('auth-info').textContent = "Database Error. Check console for details.";
+            }
+        }
+        
+        // --- Firestore Operations ---
+        
+        function getInvoiceCollectionRef() {
+            if (!db || !userId) return null;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            // Use private user-specific collection
+            const collectionPath = `artifacts/${appId}/users/${userId}/invoices`;
+            return collection(db, collectionPath);
+        }
+
+        async function saveInvoice() {
+            const saveBtn = document.getElementById('save-invoice-btn');
+            const saveText = document.getElementById('save-text');
+            const saveSpinner = document.getElementById('save-spinner');
+
+            saveText.textContent = 'Saving...';
+            saveSpinner.classList.remove('hidden');
+            saveBtn.disabled = true;
+
+            try {
+                if (!isAuthReady || !userId) {
+                    throw new Error("Authentication not complete. Cannot save.");
+                }
+
+                const invoiceData = updateInvoice();
+                if (!invoiceData.clientName || invoiceData.items.length === 0) {
+                    throw new Error("Client Name and at least one line item are required to save an invoice.");
+                }
+                
+                const colRef = getInvoiceCollectionRef();
+                if (!colRef) throw new Error("Could not get database collection reference.");
+
+                // Use the invoice number as a predictable document ID for easy retrieval/update logic
+                const docId = invoiceData.invoiceNumber.replace(/[^a-zA-Z0-9-]/g, '');
+                const docRef = doc(colRef, docId);
+
+                await setDoc(docRef, {
+                    ...invoiceData,
+                    // Use serverTimestamp for tracking when it was last saved
+                    lastSaved: serverTimestamp() 
+                });
+                
+                showMessage(`Invoice ${invoiceData.invoiceNumber} successfully saved!`);
+
+            } catch (error) {
+                console.error("Error saving invoice:", error);
+                showMessage(`Failed to save invoice: ${error.message}`, 'error');
+            } finally {
+                saveText.textContent = 'Save Invoice';
+                saveSpinner.classList.add('hidden');
+                saveBtn.disabled = false;
+            }
+        }
+        
+        document.getElementById('save-invoice-btn').addEventListener('click', saveInvoice);
+
+        // --- Real-time Listener for Invoice List ---
+
+        function listenForInvoices() {
+            if (!isAuthReady || !userId) return;
+
+            const listBody = document.getElementById('invoice-list-body');
+            const loadingEl = document.getElementById('list-loading');
+            const emptyEl = document.getElementById('list-empty');
+            
+            const colRef = getInvoiceCollectionRef();
+            if (!colRef) return;
+
+            // Query: all documents in the user's invoices collection, sorted by invoice number
+            const q = query(colRef);
+
+            // Set up real-time listener
+            onSnapshot(q, (snapshot) => {
+                const invoices = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    // Deserialize items if needed, though they are stored as arrays of objects here
+                    invoices.push({ id: doc.id, ...data });
+                });
+
+                // Sort by invoice date (latest first) in memory since we avoided orderBy in query
+                invoices.sort((a, b) => new Date(b.invoiceDate) - new Date(a.invoiceDate)); 
+
+                renderInvoiceList(invoices);
+                
+                loadingEl.classList.add('hidden');
+                if (invoices.length === 0) {
+                    emptyEl.classList.remove('hidden');
+                } else {
+                    emptyEl.classList.add('hidden');
+                }
+
+            }, (error) => {
+                console.error("Error listening to invoices:", error);
+                showMessage(`Error loading invoice list: ${error.message}`, 'error');
+                loadingEl.classList.add('hidden');
+            });
+        }
+        
+        // Function to load a saved invoice into the creator form
+        function loadInvoice(invoice) {
+            switchView('create');
+
+            // 1. Set main fields
+            document.getElementById('client-name').value = invoice.clientName || '';
+            document.getElementById('client-address').value = invoice.clientAddress || '';
+            document.getElementById('invoice-number').value = invoice.invoiceNumber || '';
+            document.getElementById('invoice-date').value = invoice.invoiceDate || new Date().toISOString().split('T')[0];
+            document.getElementById('tax-rate').value = invoice.taxRate || 0;
+            document.getElementById('currency').value = invoice.currency || '$';
+            document.getElementById('notes').value = invoice.notes || '';
+
+            // 2. Clear existing items and load new ones
+            itemsContainer.innerHTML = '';
+            
+            if (invoice.items && Array.isArray(invoice.items)) {
+                invoice.items.forEach(item => {
+                    itemsContainer.appendChild(createItemRow(item.description, item.quantity, item.unitPrice));
+                });
+            } else {
+                // Add a default item if none are present
+                itemsContainer.appendChild(createItemRow("Web Development Service", 1, 500.00));
+            }
+
+            // 3. Force UI recalculation
+            updateInvoice();
+            showMessage(`Invoice ${invoice.invoiceNumber} loaded into creator.`, 'success');
+        }
+
+        // Function to delete an invoice
+        async function deleteInvoice(invoiceId, invoiceNumber) {
+            const confirmed = window.confirm(`Are you sure you want to delete invoice ${invoiceNumber}? This action cannot be undone.`);
+            if (!confirmed) return;
+
+            try {
+                if (!isAuthReady || !userId) throw new Error("Authentication not complete. Cannot delete.");
+                
+                const colRef = getInvoiceCollectionRef();
+                if (!colRef) throw new Error("Could not get database collection reference.");
+
+                await deleteDoc(doc(colRef, invoiceId));
+                showMessage(`Invoice ${invoiceNumber} successfully deleted.`, 'success');
+            } catch (error) {
+                console.error("Error deleting invoice:", error);
+                showMessage(`Failed to delete invoice: ${error.message}`, 'error');
+            }
+        }
+
+
+        // Function to render the list view UI
+        function renderInvoiceList(invoices) {
+            const listBody = document.getElementById('invoice-list-body');
+            listBody.innerHTML = ''; // Clear previous list
+            
+            invoices.forEach(invoice => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const totalDue = formatCurrency(invoice.totals.grandTotal, invoice.currency);
+                const date = invoice.invoiceDate ? new Date(invoice.invoiceDate).toLocaleDateString() : 'N/A';
+                const clientName = invoice.clientName || 'Unknown Client';
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">${invoice.invoiceNumber}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${clientName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 text-right">${totalDue}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                        <button data-id="${invoice.id}" class="load-btn text-indigo-600 hover:text-indigo-900 transition-colors duration-200" title="Load and Edit">Load</button>
+                        <button data-id="${invoice.id}" class="delete-btn text-red-600 hover:text-red-900 transition-colors duration-200" title="Delete Invoice">Delete</button>
+                    </td>
+                `;
+                
+                // Add event listeners for load and delete buttons
+                row.querySelector('.load-btn').addEventListener('click', () => loadInvoice(invoice));
+                row.querySelector('.delete-btn').addEventListener('click', () => deleteInvoice(invoice.id, invoice.invoiceNumber));
+
+                listBody.appendChild(row);
+            });
+        }
+
+        // Initialize the application
+        initializeFirebase();
+        // Initial call to set up the preview
+        updateInvoice(); 
+        
+    </script>
+</body>
+</html>
