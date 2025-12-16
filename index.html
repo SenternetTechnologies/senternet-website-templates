@@ -295,33 +295,71 @@ DIGITAL COMMUNICATION PORTAL            </h2>
 
         const templates = [
             // Using bright theme colors for template categories
+            <!--business tools-->
             { id: 'Contactssender', title: 'Contacts Sender Tool', url: 'contacts.html', desc: 'A bulk message sender tool for direct, spam-free communication.', category: 'Business Tools', color: 'text-green-600', creator: 'Haritha (Digital Mkt.)', price_in_inr: 999 },
-            { id: 'Contactssmssender', title: 'SMS / WhatsApp Sender Tool', url: 'sms.html', desc: 'A bulk message sender tool for direct WhatsApp / SMS, spam-free communication for Normal SMS & WhatsApp.', category: 'Business Tools', color: 'text-green-600', creator: 'Senthil (CEO)', price_in_inr: 999 },
+            { id: 'Contactssender', title: 'SMS / WhatsApp Sender Tool', url: 'sms.html', desc: 'A bulk message sender tool for direct WhatsApp / SMS, spam-free communication for Normal SMS & WhatsApp.', category: 'Business Tools', color: 'text-green-600', creator: 'Senthil (CEO)', price_in_inr: 999 },
             { id: 'home', title: 'Senternet Home Landing', url: 'home.html', desc: 'The official company landing page template with a service overview structure.', category: 'Business Tools', color: 'text-indigo-600', creator: 'Senthil (CEO)', price_in_inr: 299 },
-            
+
+
+
+            <!--ecommerce-->
             { id: 'honeyselling', title: 'Honey Selling Website', url: 'honey.html', desc: 'Simple, conversion-focused landing page for premium honey products.', category: 'E-commerce', color: 'text-amber-600', creator: 'Kumar (Web Designer)', price_in_inr: 199 },
             { id: 'roller', title: 'Roller Menu Boutique', url: 'rollermenu.html', desc: 'An interactive scrolling menu concept for high-end fashion boutiques or restaurants.', category: 'E-commerce', color: 'text-amber-600', creator: 'Anitha (Backend Worker)', price_in_inr: 399 },
-            
+
+
+
+            <!--products showcase-->
             { id: 'paint', title: 'Lumina Paints Webapp', url: 'lumina.html', desc: 'Allows customers to check color mixing, visualize paints on walls, and place orders.', category: 'Product Showcase', color: 'text-pink-600', creator: 'Santhosh (Web Dev)', price_in_inr: 599 },
-            
+
+
+
+            <!--ai tools-->
             { id: 'senai', title: 'Sen AI - Post Generator', url: 'senai.html', desc: 'AI tool for generating creative social media posts (text, image, description).', category: 'AI Tools', color: 'text-rose-600', creator: 'Swetha (Digital Mkt.)', price_in_inr: 799 },
-            
+
+
+
+            <!--portofolio-->
             { id: 'riya', title: 'Riya Mehandi Portfolio', url: 'riya.html', desc: 'Artistic case study and portfolio showcase for Mehandi designs.', category: 'Portfolio', color: 'text-purple-600', creator: 'Sathish (Graphic Designer)', price_in_inr: 149 },
             { id: 'portfolio', title: 'Developer Portfolio', url: 'portfolio1.html', desc: 'A professional personal branding site template for modern developers.', category: 'Portfolio', color: 'text-purple-600', creator: 'Santhosh (Web Dev)', price_in_inr: 149 },
-            
+
+
+
+            <!--experimental-->
             { id: 'os', title: 'Sen Windows OS Clone', url: 'sen-os.html', desc: 'An experimental web-based operating system simulation concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 999 },
             { id: 'camera', title: 'Sen camera basic template', url: 'camera.html', desc: 'An experimental web-based camera simulation concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 99 },
             { id: 'to do list', title: 'To Do List App', url: 'todo.html', desc: 'A modern, simple to-do list web app concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 12 },
+
+
+
+            <!--media-->
             { id: 'jio stream', title: 'Jio stream basic template', url: 'jiostream.html', desc: 'Template for Jio Stream app - modern media UI replication.', category: 'Media/UI', color: 'text-red-600', creator: 'Saran (SMM)', price_in_inr: 99 },
             { id: 'youtube', title: 'YouTube Clone UI', url: 'youtube.html', desc: 'Video streaming platform UI template with a fully responsive grid layout.', category: 'Media/UI', color: 'text-red-600', creator: 'Shanthi (Digital Mkt.)', price_in_inr: 249 },
+
+
+
+            <!--finance-->
+            { id: 'gpay', title: 'G-Pay Clone UI', url: 'gpay.html', desc: 'A sleek UI replication of the Google Pay payment interface for fintech concepts.', category: 'Finance', color: 'text-emerald-600', creator: 'Kumar (Web Designer)', price_in_inr: 199 },
+          
             
-            { id: 'gpay', title: 'G-Pay Clone UI', url: 'gpay.html', desc: 'A sleek UI replication of the Google Pay payment interface for fintech concepts.', category: 'Fintech/UI', color: 'text-emerald-600', creator: 'Kumar (Web Designer)', price_in_inr: 199 },
+            <!--travel-->
             { id: 'FlightBooking', title: 'Flight Booking App', url: 'FlightBookingApp.html', desc: 'A basic-level flight ticket booking template for travel agencies.', category: 'Travel', color: 'text-yellow-600', creator: 'Arun (Design)', price_in_inr: 349 },
-            
+
+
+
+            <!--gallery-->
             { id: 'articans', title: 'Articans Gallery', url: 'articans.html', desc: 'A creative arts and craft gallery showcase template.', category: 'Gallery', color: 'text-orange-600', creator: 'Saran (SMM)', price_in_inr: 199 },
+          
+            
+            <!--riddle-->
             { id: 'maths', title: 'Horse allocation riddle🐎', url: 'horse.html', desc: 'Simple riddle calculation of allocating horse.', category: 'Riddle', color: 'text-orange-600', creator: 'Senthil (CEO)', price_in_inr: 59 },
 
-{ id: 'earn money online data entry', title: 'earn money Data entry work', url: 'earn1.html', desc: 'here you can just make data entry for given datas, also here you can check and validate datas of workers.', category: 'job', color: 'text-orange-600', creator: 'Senthil (CEO)', price_in_inr: 50 },
+
+
+            <!--job-->
+            { id: 'earn money online data entry', title: 'earn money Data entry work', url: 'earn1.html', desc: 'here you can just make data entry for given datas, also here you can check and validate datas of workers.', category: 'job', color: 'text-orange-600', creator: 'Senthil (CEO)', price_in_inr: 50 },
+          
+            
+            <!--Games-->
             { id: 'Chess Offline game', title: 'Chess Offline - Game', url: 'chess.html', desc: 'A simple "chess" basic game template for interactive content.', category: 'Games', color: 'text-fuchsia-600', creator: 'Siva (Product Mkt.)', price_in_inr: 39 },
             { id: 'Flavour fusion game', title: 'Flavour Fusion - Game', url: 'flavourfusion.html', desc: 'A simple "cook and serve" basic game template for interactive content.', category: 'Games', color: 'text-fuchsia-600', creator: 'Siva (Product Mkt.)', price_in_inr: 299 }
         ];
