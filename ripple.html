@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experimental Water Ripple Simulation</title>
+    <!-- Load Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for the ripple simulation */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Dark background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #water-canvas {
+            cursor: crosshair;
+            box-shadow: 0 10px 30px rgba(0, 200, 255, 0.2);
+            border-radius: 12px;
+            /* The canvas itself should be block and centered */
+            display: block;
+            touch-action: none; /* Prevent default touch behavior (like scrolling) */
+        }
+        .container-card {
+            background-color: #161b22;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid #30363d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-card text-white max-w-4xl w-[90vw]">
+        <h1 class="text-3xl font-bold mb-2 text-blue-400">💧 Water Ripple Experiment</h1>
+        <p class="text-gray-400 mb-6">Click or drag your mouse on the surface below to create waves using the double-buffer wave equation. The resolution is intentionally low for performance and visual effect.</p>
+        
+        <div id="canvas-container" class="flex justify-center items-center">
+            <canvas id="water-canvas"></canvas>
+        </div>
+
+        <div class="mt-4 text-center text-sm text-gray-500">
+            <span id="stats">Warming up...</span>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- CONSTANTS AND CONFIGURATION ---
+        const WIDTH_PX = 400;       // Visual width of the canvas
+        const HEIGHT_PX = 400;      // Visual height of the canvas
+        const RESOLUTION = 4;       // Resolution factor (higher = more detail, slower). Simulation grid will be WIDTH/RES x HEIGHT/RES.
+        const DAMPING = 0.99;       // How quickly the waves decay (0.9 to 1.0)
+        const CANVAS = document.getElementById('water-canvas');
+        const CTX = CANVAS.getContext('2d');
+        const STATS_EL = document.getElementById('stats');
+
+        // Set the canvas display dimensions
+        CANVAS.width = WIDTH_PX;
+        CANVAS.height = HEIGHT_PX;
+
+        // --- WATER SIMULATION CLASS ---
+
+        class WaterRippler {
+            constructor(width, height, damping) {
+                this.cols = Math.floor(width / RESOLUTION);
+                this.rows = Math.floor(height / RESOLUTION);
+                this.damping = damping;
+                
+                // The size of the simulation array
+                this.size = this.cols * this.rows;
+
+                // Create two buffers (arrays) to hold the height map.
+                // We use Float32Array for better performance with large numerical data.
+                this.buffer1 = new Float32Array(this.size).fill(0); // Current state
+                this.buffer2 = new Float32Array(this.size).fill(0); // Next state (calculated from current)
+
+                // The image data buffer for drawing to the canvas
+                this.imageData = CTX.createImageData(this.cols, this.rows);
+                this.pixelData = this.imageData.data; // Reference to the underlying data array
+
+                this.isPointerDown = false;
+                this.lastX = -1;
+                this.lastY = -1;
+            }
+
+            /**
+             * Applies a disturbance (a drop) to the current buffer.
+             * @param {number} x - X coordinate in simulation grid space.
+             * @param {number} y - Y coordinate in simulation grid space.
+             * @param {number} amount - The height (pressure) of the drop.
+             */
+            disturb(x, y, amount) {
+                // Bounds checking
+                if (x < 1 || x >= this.cols - 1 || y < 1 || y >= this.rows - 1) return;
+
+                const index = x + y * this.cols;
+                // Add pressure to the current height map
+                this.buffer1[index] = amount; 
+            }
+
+            /**
+             * The core simulation loop, calculating the next state.
+             */
+            update() {
+                const W = this.cols;
+                const H = this.rows;
+                const B1 = this.buffer1; // Current
+                const B2 = this.buffer2; // Next
+
+                // Iterate over every point in the grid, excluding the borders
+                for (let y = 1; y < H - 1; y++) {
+                    for (let x = 1; x < W - 1; x++) {
+                        const i = x + y * W; // Current center index
+
+                        // The 2D wave equation:
+                        // New state = (Average of 4 neighbors * 2) - Previous State
+                        // Note: The previous state is stored in buffer2 before the swap.
+                        
+                        // Sum of neighbors
+                        const neighbors = 
+                            B1[i - 1] + // Left
+                            B1[i + 1] + // Right
+                            B1[i - W] + // Top
+                            B1[i + W];  // Bottom
+
+                        // Calculate new height for buffer 2
+                        // Formula: (neighbor_sum / 2) - next_state_at_this_point
+                        // This uses a slight modification of the standard formula for stability
+                        let newHeight = (neighbors / 2) - B2[i];
+                        
+                        // Apply dampening and store in buffer 2
+                        B2[i] = newHeight * this.damping;
+
+                        // --- RENDERING CALCULATION (Integrated into loop for performance) ---
+                        // The color/shading is proportional to the difference between the two buffers.
+                        const shade = Math.round(B2[i] * 255);
+                        
+                        // We use a light shade of blue/cyan. The color value is clamped between 0 and 255.
+                        const colorValue = 128 + shade;
+                        const clampedColor = Math.min(255, Math.max(0, colorValue));
+
+                        // Calculate the index for the pixel data array (4 components: R, G, B, A)
+                        const pIndex = i * 4;
+                        
+                        // Set the blue/cyan color based on height
+                        this.pixelData[pIndex] = 0;              // Red (low)
+                        this.pixelData[pIndex + 1] = clampedColor; // Green (mid/high)
+                        this.pixelData[pIndex + 2] = 255;        // Blue (high)
+                        this.pixelData[pIndex + 3] = 255;        // Alpha (full opacity)
+                    }
+                }
+
+                // Swap the buffers for the next frame
+                [this.buffer1, this.buffer2] = [this.buffer2, this.buffer1];
+            }
+
+            /**
+             * Draws the calculated pixel data to the canvas.
+             */
+            render() {
+                // Put the small, low-res simulation image data onto the context
+                CTX.putImageData(this.imageData, 0, 0);
+
+                // Scale the result up to fill the whole canvas for a stylized look
+                CTX.imageSmoothingEnabled = false; // Keep the sharp pixelated look
+                CTX.drawImage(CANVAS, 0, 0, this.cols, this.rows, 0, 0, WIDTH_PX, HEIGHT_PX);
+            }
+
+            /**
+             * Handles pointer down/move events to apply a continuous disturbance.
+             */
+            handlePointer(e) {
+                // Calculate position relative to the canvas
+                const rect = CANVAS.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+                const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+                
+                const canvasX = clientX - rect.left;
+                const canvasY = clientY - rect.top;
+
+                // Map canvas coordinates to the simulation grid coordinates
+                const gridX = Math.floor(canvasX / RESOLUTION);
+                const gridY = Math.floor(canvasY / RESOLUTION);
+
+                // Use a different amount for fast movement to make it look like a splash
+                const amount = (this.lastX === -1 || Math.abs(gridX - this.lastX) + Math.abs(gridY - this.lastY) > 5) 
+                    ? 2500 : 1500;
+                
+                // Apply the disturbance
+                this.disturb(gridX, gridY, amount);
+
+                // Update last position for movement tracking
+                this.lastX = gridX;
+                this.lastY = gridY;
+            }
+        }
+
+        // --- INITIALIZATION ---
+        let lastTime = 0;
+        let fps = 0;
+        const rippler = new WaterRippler(WIDTH_PX, HEIGHT_PX, DAMPING);
+
+        // --- GAME LOOP ---
+        function loop(currentTime) {
+            // Update stats
+            const deltaTime = currentTime - lastTime;
+            lastTime = currentTime;
+            if (deltaTime > 0) {
+                fps = Math.round(1000 / deltaTime);
+                STATS_EL.textContent = `FPS: ${fps} | Resolution: ${rippler.cols}x${rippler.rows} (Sim) | ${WIDTH_PX}x${HEIGHT_PX} (Display)`;
+            }
+
+            // Core simulation step
+            rippler.update();
+            rippler.render();
+
+            requestAnimationFrame(loop);
+        }
+
+        // --- EVENT LISTENERS (Pointer/Mouse/Touch) ---
+
+        // Pointer down/start
+        CANVAS.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            rippler.isPointerDown = true;
+            rippler.lastX = -1; // Reset last position to force a large initial splash
+            rippler.handlePointer(e);
+        });
+
+        // Pointer move/drag
+        CANVAS.addEventListener('pointermove', (e) => {
+            e.preventDefault();
+            if (rippler.isPointerDown) {
+                rippler.handlePointer(e);
+            }
+        });
+
+        // Pointer up/end
+        const pointerUpHandler = (e) => {
+            rippler.isPointerDown = false;
+        };
+        CANVAS.addEventListener('pointerup', pointerUpHandler);
+        CANVAS.addEventListener('pointerleave', pointerUpHandler);
+        
+        // Start the application loop
+        window.onload = function () {
+            // Initiate a small splash in the center on load
+            rippler.disturb(rippler.cols / 2, rippler.rows / 2, 5000);
+            requestAnimationFrame(loop);
+        }
+
+    </script>
+</body>
+</html>
