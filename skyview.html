@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyView Pro - 3D Showcase</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Load Three.js Orbit Controls for interaction -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Configure Tailwind for custom colors and font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#ff5722', // Deep Orange
+                        'secondary': '#ff8a65', // Light Orange
+                        'bright-bg': '#f8fafc', // Slate-50 (White/Light Gray)
+                        'text-dark': '#1f2937', // Gray-800
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Hide scrollbars for a clean look */
+        body { overflow: hidden; }
+        
+        #scene-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10; /* Below the UI overlay */
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-bright-bg text-text-dark font-sans antialiased">
+
+    <!-- 3D Scene Container -->
+    <div id="scene-container"></div>
+
+    <!-- UI Overlay Content -->
+    <main class="relative z-20 w-full h-full min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 text-center border border-gray-100">
+            
+            <span class="text-sm font-semibold text-primary uppercase tracking-widest">New Release</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold mt-2 mb-4 leading-tight">
+                SkyView <span class="text-primary">Pro.</span>
+            </h1>
+            <h2 class="text-2xl text-text-dark/80 font-medium mb-8">
+                Your world, redefined in 4K.
+            </h2>
+            
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
+                Experience unparalleled flight stability and crystal-clear vision with the new SkyView Pro. Spin the 3D model to explore its modular design and vibrant finish.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#" class="px-8 py-3 bg-primary text-white text-lg font-bold rounded-xl shadow-lg hover:bg-secondary transition duration-300 transform hover:scale-105">
+                    Order Now ($599)
+                </a>
+                <a href="#" class="px-8 py-3 bg-white border border-gray-300 text-text-dark text-lg font-bold rounded-xl shadow-md hover:bg-gray-100 transition duration-300">
+                    See Specs
+                </a>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-400">
+                    Use your mouse or finger to interact with the 3D model in the background.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Three.js Setup Script -->
+    <script>
+        let scene, camera, renderer, droneGroup, controls;
+
+        const container = document.getElementById('scene-container');
+        let width = container.clientWidth;
+        let height = container.clientHeight;
+
+        function init() {
+            // 1. Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf8fafc); // Bright background
+
+            // 2. Camera
+            camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+            camera.position.z = 10;
+            camera.position.y = 2;
+
+            // 3. Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            container.appendChild(renderer.domElement);
+
+            // 4. Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 7.5);
+            scene.add(directionalLight);
+
+            // 5. Product Model (Simple Drone Geometry)
+            droneGroup = new THREE.Group();
+            
+            const mainBodyMat = new THREE.MeshStandardMaterial({ color: 0xff5722, metalness: 0.8, roughness: 0.3 }); // Deep Orange glossy
+            const propellerMat = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.6, roughness: 0.5 }); // Dark gray
+
+            // Main Body (Box)
+            const bodyGeo = new THREE.BoxGeometry(3, 0.5, 2);
+            const bodyMesh = new THREE.Mesh(bodyGeo, mainBodyMat);
+            droneGroup.add(bodyMesh);
+
+            // Camera Gimbal (Sphere and box)
+            const gimbalGeo = new THREE.SphereGeometry(0.3, 16, 16);
+            const gimbalMesh = new THREE.Mesh(gimbalGeo, propellerMat);
+            gimbalMesh.position.set(0, -0.4, 0);
+            droneGroup.add(gimbalMesh);
+
+            // Propeller Arms (4 cylinders)
+            const armGeo = new THREE.CylinderGeometry(0.1, 0.1, 4, 16);
+            const armMat = new THREE.MeshStandardMaterial({ color: 0xcccccc }); // Light gray arms
+
+            for (let i = 0; i < 4; i++) {
+                const armMesh = new THREE.Mesh(armGeo, armMat);
+                armMesh.rotation.z = Math.PI / 2; 
+                armMesh.position.set((i % 2 === 0 ? 1.5 : -1.5), 0, (i < 2 ? 1 : -1));
+                droneGroup.add(armMesh);
+            }
+            
+            // Propellers (4 small toruses to represent props)
+            const propGeo = new THREE.TorusGeometry(0.5, 0.05, 8, 32);
+
+            // Positions for propellers
+            const propPositions = [
+                { x: 2, z: 1 }, { x: -2, z: 1 }, 
+                { x: 2, z: -1 }, { x: -2, z: -1 }
+            ];
+
+            propPositions.forEach(pos => {
+                const propMesh = new THREE.Mesh(propGeo, propellerMat);
+                propMesh.position.set(pos.x, 0.3, pos.z);
+                propMesh.rotation.x = Math.PI / 2;
+                propMesh.rotation.y = Math.PI / 2;
+                droneGroup.add(propMesh);
+            });
+
+            // Center the drone group
+            droneGroup.rotation.x = 0.2;
+            droneGroup.rotation.y = 0.5;
+            scene.add(droneGroup);
+
+            // 6. Orbit Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // smooth rotation
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 5;
+            controls.maxDistance = 15;
+            controls.enablePan = false;
+            controls.autoRotate = true; // Auto-rotation for visual appeal
+            controls.autoRotateSpeed = 2.0;
+            
+            // 7. Resize Handler
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            width = container.clientWidth;
+            height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update controls (mandatory for damping and auto-rotate)
+            controls.update();
+            
+            renderer.render(scene, camera);
+        }
+
+        // Initialize and start the animation loop when the window is fully loaded
+        window.onload = function () {
+            try {
+                init();
+                animate();
+            } catch (error) {
+                console.error("Three.js initialization failed:", error);
+                // Fallback UI to show an error message if 3D context fails
+                container.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-red-500 bg-gray-200/90 text-center p-4">3D Rendering Failed. Your browser might not support WebGL or the environment is restricted.</div>';
+            }
+        };
+
+    </script>
+</body>
+</html>
