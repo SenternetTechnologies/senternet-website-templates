@@ -168,17 +168,22 @@
 
         /**
          * Saves the selected channel preference (or invalid status) to localStorage for persistence.
+         * If the status is 'default' or null, the item is removed from localStorage.
          * @param {string} number - The phone number.
-         * @param {string} status - The selected status ('sms', 'wa', or 'invalid').
+         * @param {string|null} status - The selected status ('sms', 'wa', or 'invalid', or 'default' to remove).
          */
         function saveStatus(number, status) {
-            localStorage.setItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`, status);
+            if (!status || status === 'default') {
+                localStorage.removeItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`);
+            } else {
+                localStorage.setItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`, status);
+            }
         }
 
         /**
          * Loads the selected channel preference or status from localStorage.
          * @param {string} number - The phone number.
-         * @returns {string|null} The saved status ('sms', 'wa', 'invalid'), or null.
+         * @returns {string|null} The saved status ('sms', 'wa', 'invalid'), or null if not set.
          */
         function loadStatus(number) {
             return localStorage.getItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`);
@@ -187,21 +192,23 @@
         /**
          * Applies the correct permanent color class based on the status.
          * @param {HTMLElement} cardElement - The result card div.
-         * @param {string} status - The status ('sms', 'wa', or 'invalid').
+         * @param {string|null} status - The status ('sms', 'wa', 'invalid', or null/undefined for default).
          */
         function applyColorClass(cardElement, status) {
             // Remove all channel-specific colors first
             cardElement.classList.remove('bg-yellow-100', 'bg-green-100', 'bg-red-100', 'shadow-lg', 'border-yellow-200', 'border-green-200', 'border-red-200');
-            cardElement.classList.add('bg-white', 'shadow-md', 'border', 'border-gray-100'); // Reset to default
+            
+            // Default appearance
+            cardElement.classList.add('bg-white', 'shadow-md', 'border', 'border-gray-100'); 
 
             if (status === 'sms') {
-                cardElement.classList.remove('bg-white', 'border-gray-100');
+                cardElement.classList.remove('bg-white', 'border-gray-100', 'shadow-md');
                 cardElement.classList.add('bg-yellow-100', 'shadow-lg', 'border-yellow-200');
             } else if (status === 'wa') {
-                cardElement.classList.remove('bg-white', 'border-gray-100');
+                cardElement.classList.remove('bg-white', 'border-gray-100', 'shadow-md');
                 cardElement.classList.add('bg-green-100', 'shadow-lg', 'border-green-200');
             } else if (status === 'invalid') {
-                cardElement.classList.remove('bg-white', 'border-gray-100');
+                cardElement.classList.remove('bg-white', 'border-gray-100', 'shadow-md');
                 cardElement.classList.add('bg-red-100', 'shadow-lg', 'border-red-200');
             }
         }
@@ -237,22 +244,39 @@
         }
         
         /**
-         * Marks a number as invalid, saves the status, and changes the card color to red.
+         * Toggles the 'invalid' status for a number. If currently invalid, it resets to default.
          * @param {string} number - The phone number.
          * @param {string} elementId - The ID of the card element.
          */
         function handleInvalidClick(number, elementId) {
             const card = document.getElementById(elementId);
-            if (card) {
-                // 1. Record the status for persistence
-                saveStatus(number, 'invalid');
-                
-                // 2. Apply the permanent red color
-                applyColorClass(card, 'invalid');
+            if (!card) return;
 
-                // Optional: Provide feedback
-                showModal("Number Marked Invalid", `Number ${number} has been marked as invalid. It is now red and cannot be messaged.`);
+            const currentStatus = loadStatus(number);
+            let newStatus;
+            let modalTitle;
+            let modalMessage;
+
+            if (currentStatus === 'invalid') {
+                // Toggle OFF: Reset to default
+                newStatus = 'default'; 
+                modalTitle = "Number Status Reset";
+                modalMessage = `Number ${number} has been reset to default status (valid). You can now send messages again.`;
+            } else {
+                // Toggle ON: Mark as invalid
+                newStatus = 'invalid';
+                modalTitle = "Number Marked Invalid";
+                modalMessage = `Number ${number} has been marked as invalid. It is now red and cannot be messaged. Click the 'X' again to reset.`;
             }
+
+            // 1. Record the status for persistence ('default' removes it from storage)
+            saveStatus(number, newStatus);
+            
+            // 2. Apply the permanent color
+            applyColorClass(card, newStatus);
+
+            // 3. Show feedback
+            showModal(modalTitle, modalMessage);
         }
 
         /**
@@ -348,8 +372,8 @@
                                 </svg>
                             </button>
                             
-                            <!-- Mark Invalid Button (New Feature) -->
-                            <button onclick="handleInvalidClick('${number}', '${cardId}')" class="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none" title="Mark as Invalid/Blocked">
+                            <!-- Mark Invalid Button (Now Toggles Status) -->
+                            <button onclick="handleInvalidClick('${number}', '${cardId}')" class="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none" title="Toggle Invalid/Reset Status">
                                 <!-- X-mark Icon (to signify invalid/error) -->
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
                             </button>
