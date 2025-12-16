@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Smart Speaker - Sound Re-imagined</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for custom colors and font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo
+                        'secondary': '#6366f1', // Indigo-500
+                        'dark-bg': '#0f172a', // Slate-900
+                        'card-bg': '#1e293b', // Slate-800
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling for a smoother look */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: #4f46e5;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-gray-100 font-sans antialiased">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-dark-bg/90 backdrop-blur-sm shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-primary tracking-tight">Aura.</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#features" class="text-gray-300 hover:text-primary transition duration-300">Features</a>
+                <a href="#tech" class="text-gray-300 hover:text-primary transition duration-300">Technology</a>
+                <a href="#buy" class="text-gray-300 hover:text-primary transition duration-300">Pricing</a>
+            </nav>
+            <a href="#buy" class="hidden md:inline-flex px-4 py-2 bg-secondary hover:bg-primary text-white text-sm font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105">
+                Pre-Order Now
+            </a>
+            <!-- Mobile Menu Button (Hamburger) - Not implemented, but placeholder -->
+            <button class="md:hidden text-gray-400 hover:text-primary">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+            <!-- Text Content -->
+            <div class="order-2 md:order-1 text-center md:text-left">
+                <p class="text-xl text-primary font-semibold mb-2">Introducing the future of sound</p>
+                <h2 class="text-6xl md:text-7xl font-extrabold leading-tight mb-6">
+                    Aura. <br> Sound Re-imagined.
+                </h2>
+                <p class="text-gray-400 text-lg mb-8 max-w-lg mx-auto md:mx-0">
+                    Experience music like never before with 360-degree spatial audio, ultra-low latency, and adaptive sound profiles powered by Gemini AI.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <a href="#buy" class="px-8 py-3 bg-primary text-white text-lg font-bold rounded-xl shadow-lg hover:bg-secondary transition duration-300 transform hover:scale-105">
+                        Get Yours Today
+                    </a>
+                    <a href="#features" class="px-8 py-3 bg-card-bg border border-gray-700 text-gray-300 text-lg font-bold rounded-xl shadow-md hover:bg-gray-700 transition duration-300">
+                        Explore Features
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product Image -->
+            <div class="order-1 md:order-2 flex justify-center">
+                <!-- Placeholder image URL for a sleek, dark smart speaker -->
+                <img src="https://placehold.co/400x450/4f46e5/ffffff/png?text=Aura+Speaker"
+                     alt="Aura Smart Speaker, cylindrical and sleek."
+                     class="w-full max-w-sm rounded-3xl shadow-2xl transition duration-500 hover:shadow-primary/50 transform hover:rotate-1"
+                     onerror="this.onerror=null; this.src='https://placehold.co/400x450/1e293b/4f46e5?text=Aura+Speaker';"
+                >
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-card-bg/50 border-t border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-4xl font-extrabold text-center mb-12">Core Capabilities</h3>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-card-bg p-6 rounded-2xl shadow-xl hover:shadow-primary/30 transition duration-300 transform hover:-translate-y-1">
+                    <div class="text-primary mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19v-3m12 3V6"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-3">360° Spatial Audio</h4>
+                    <p class="text-gray-400">Immerse yourself in true omnidirectional sound that fills every corner of the room, optimized for clarity and depth.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="bg-card-bg p-6 rounded-2xl shadow-xl hover:shadow-primary/30 transition duration-300 transform hover:-translate-y-1">
+                    <div class="text-primary mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-3">Adaptive Profile (AI)</h4>
+                    <p class="text-gray-400">Aura automatically learns your room's acoustics and adjusts the EQ in real-time for perfect playback, every time.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-card-bg p-6 rounded-2xl shadow-xl hover:shadow-primary/30 transition duration-300 transform hover:-translate-y-1">
+                    <div class="text-primary mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-3">12-Hour Battery Life</h4>
+                    <p class="text-gray-400">Take your music anywhere without the worry. Optimized power consumption provides all-day listening enjoyment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section (Image/Text Layout) -->
+    <section id="tech" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-16 items-center">
+            <!-- Tech Image -->
+            <div class="relative flex justify-center p-6 bg-card-bg rounded-3xl shadow-2xl">
+                <!-- Placeholder for internal component view -->
+                <img src="https://placehold.co/500x300/1e293b/4f46e5?text=Internal+Tech+Diagram"
+                     alt="Internal technology diagram of Aura speaker"
+                     class="w-full rounded-xl opacity-80"
+                     onerror="this.onerror=null; this.src='https://placehold.co/500x300/1e293b/4f46e5?text=Internal+Tech+Diagram';"
+                >
+                <div class="absolute inset-0 bg-secondary/20 rounded-3xl animate-pulse"></div>
+            </div>
+
+            <!-- Tech Details -->
+            <div>
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Proprietary Engineering</span>
+                <h3 class="text-4xl font-extrabold mt-2 mb-4">The Nucleus Acoustic Engine.</h3>
+                <p class="text-gray-400 mb-6">
+                    At the heart of Aura is the Nucleus Engine, a custom-built processing chip that handles millions of calculations per second to deliver lossless, ultra-high-definition audio streams wirelessly.
+                </p>
+
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <svg class="flex-shrink-0 w-6 h-6 text-primary mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <div>
+                            <p class="text-lg font-semibold">Lossless Audio Support</p>
+                            <p class="text-gray-500">Up to 24-bit/192 kHz resolution.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="flex-shrink-0 w-6 h-6 text-primary mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <div>
+                            <p class="text-lg font-semibold">Low Latency Bluetooth 5.2</p>
+                            <p class="text-gray-500">Perfect synchronization for video and gaming.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="flex-shrink-0 w-6 h-6 text-primary mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <div>
+                            <p class="text-lg font-semibold">Weather Resistant</p>
+                            <p class="text-gray-500">IPX4 rating for indoor and light outdoor use.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call-to-Action / Pricing Section -->
+    <section id="buy" class="py-20 bg-card-bg border-t border-gray-800">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-4xl font-extrabold mb-4">Ready to Experience the Aura?</h3>
+            <p class="text-gray-400 text-xl mb-10">
+                Join the early access program and secure your Aura Smart Speaker today.
+            </p>
+
+            <!-- Pricing Card -->
+            <div class="bg-dark-bg p-8 rounded-3xl shadow-2xl border-2 border-primary/50 mx-auto max-w-sm">
+                <p class="text-sm font-semibold uppercase text-primary mb-2">Pre-Order Special</p>
+                <div class="text-5xl font-bold mb-2">$299</div>
+                <p class="text-gray-500 mb-6">MSRP $349 - Save $50</p>
+                <ul class="text-left space-y-2 text-gray-300 mb-8">
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Free Next-Day Shipping</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>30-Day Money-Back Guarantee</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>1-Year Warranty Included</li>
+                </ul>
+                <button onclick="handlePurchase()" class="w-full py-4 bg-primary text-white text-xl font-bold rounded-xl hover:bg-secondary transition duration-300 transform hover:scale-[1.02]">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-dark-bg border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Aura Acoustics. All rights reserved. | <a href="#" class="hover:text-primary">Privacy Policy</a> | <a href="#" class="hover:text-primary">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for button interaction/modal -->
+    <script>
+        function handlePurchase() {
+            // In a real app, this would initiate a checkout process.
+            // Using a simple message for demonstration instead of alert().
+            const ctaButton = document.querySelector('#buy button');
+            const originalText = ctaButton.textContent;
+            
+            ctaButton.textContent = 'Processing...';
+            ctaButton.disabled = true;
+
+            setTimeout(() => {
+                ctaButton.textContent = 'Successfully Added to Cart!';
+                ctaButton.classList.remove('bg-primary', 'hover:bg-secondary');
+                ctaButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                // Revert after a few seconds
+                setTimeout(() => {
+                    ctaButton.textContent = originalText;
+                    ctaButton.disabled = false;
+                    ctaButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    ctaButton.classList.add('bg-primary', 'hover:bg-secondary');
+                }, 3000);
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
