@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatSphere - Regional Content Clone</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configure Tailwind for custom colors and font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#ff5722', // Deep Orange/Vibrant Red accent
+                        'secondary': '#ff8a65', // Light Orange
+                        'bg-light': '#f3f4f6', // Light gray background
+                        'card-bg': '#ffffff', 
+                        'text-dark': '#1f2937', // Gray-800
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-light text-text-dark font-sans antialiased min-h-screen">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-40 bg-white shadow-md">
+        <div class="max-w-xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2">
+                <svg class="w-7 h-7 text-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 13.5H8.5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5h7a.5.5 0 01.5.5v1a.5.5 0 01-.5.5zM12 7a.5.5 0 01.5.5v2a.5.5 0 01-1 0v-2A.5.5 0 0112 7zM9 12a.5.5 0 01.5-.5h5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5v-1z"/></svg>
+                <h1 class="text-xl font-bold text-primary">ChatSphere</h1>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-500 hover:text-primary transition p-1 rounded-full hover:bg-gray-100">
+                    <!-- Search Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+                <button class="text-gray-500 hover:text-primary transition p-1 rounded-full hover:bg-gray-100">
+                    <!-- Menu Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout (Centered for mobile experience) -->
+    <div class="max-w-xl mx-auto py-4 px-2 sm:px-4">
+        
+        <!-- Trending Tags/Topics Section -->
+        <div class="mb-6 bg-white p-3 rounded-xl shadow-lg border border-gray-100">
+            <h2 class="text-base font-semibold text-gray-700 mb-3">Trending Topics</h2>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full cursor-pointer hover:bg-primary/20 transition">#FestivalVibes</span>
+                <span class="px-3 py-1 bg-indigo-500/10 text-indigo-700 text-xs font-medium rounded-full cursor-pointer hover:bg-indigo-500/20 transition">#DailyFun</span>
+                <span class="px-3 py-1 bg-green-500/10 text-green-700 text-xs font-medium rounded-full cursor-pointer hover:bg-green-500/20 transition">#LocalNews</span>
+                <span class="px-3 py-1 bg-yellow-500/10 text-yellow-700 text-xs font-medium rounded-full cursor-pointer hover:bg-yellow-500/20 transition">#MorningQuotes</span>
+            </div>
+        </div>
+
+        <!-- Feed Posts Container -->
+        <div id="feed" class="space-y-6">
+            
+            <!-- Post Card 1: Image Post -->
+            <div class="post-card bg-card-bg rounded-xl shadow-lg overflow-hidden">
+                <!-- User Info Header -->
+                <div class="flex items-center justify-between p-4 pb-2">
+                    <div class="flex items-center space-x-3">
+                        <img class="w-9 h-9 rounded-full object-cover border-2 border-primary" 
+                             src="https://placehold.co/100x100/3b82f6/ffffff?text=A" 
+                             alt="User Avatar" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/100x100/3b82f6/ffffff?text=A';">
+                        <div>
+                            <p class="font-bold text-sm">Amrita's Gallery</p>
+                            <p class="text-gray-500 text-xs">@amrita_photos • 2 hours ago</p>
+                        </div>
+                    </div>
+                    <button class="text-primary text-xs font-semibold px-3 py-1 border border-primary rounded-full hover:bg-primary hover:text-white transition">Follow</button>
+                </div>
+                
+                <!-- Content -->
+                <p class="text-gray-700 px-4 pt-2 pb-3 text-sm">A beautiful sunset view from my village. Nothing beats this peace. ❤️</p>
+                
+                <img class="w-full h-auto object-cover max-h-96" 
+                     src="https://placehold.co/600x400/22c55e/ffffff?text=Village+Sunset" 
+                     alt="Post Image" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/600x400/22c55e/ffffff?text=Village+Sunset';">
+                
+                <!-- Action Bar -->
+                <div class="flex justify-around p-3 text-gray-600 border-t border-gray-100">
+                    <button class="flex items-center space-x-1 hover:text-red-500 transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        <span class="text-xs font-medium">1.5K Likes</span>
+                    </button>
+                    <button class="flex items-center space-x-1 hover:text-primary transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.125 15.488 6.556 16 8 16c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h.01z"></path></svg>
+                        <span class="text-xs font-medium">210 Comments</span>
+                    </button>
+                    <button class="flex items-center space-x-1 hover:text-primary transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.882 13.513 9 13.75 9 14v4l5.243-3.932a2 2 0 012.757-.222L21 17M14 8V4.87C14 3.922 13.25 3 12.18 3H5.82C4.75 3 4 3.922 4 4.87V18.13C4 19.078 4.75 20 5.82 20h3.18"></path></svg>
+                        <span class="text-xs font-medium">Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post Card 2: Video/GIF Post -->
+            <div class="post-card bg-card-bg rounded-xl shadow-lg overflow-hidden">
+                <!-- User Info Header -->
+                <div class="flex items-center justify-between p-4 pb-2">
+                    <div class="flex items-center space-x-3">
+                        <img class="w-9 h-9 rounded-full object-cover border-2 border-primary" 
+                             src="https://placehold.co/100x100/f59e0b/ffffff?text=V" 
+                             alt="User Avatar" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/100x100/f59e0b/ffffff?text=V';">
+                        <div>
+                            <p class="font-bold text-sm">Viral Vidz Hub</p>
+                            <p class="text-gray-500 text-xs">@cool_clips • 4 hours ago</p>
+                        </div>
+                    </div>
+                    <button class="text-primary text-xs font-semibold px-3 py-1 border border-primary rounded-full hover:bg-primary hover:text-white transition">Follow</button>
+                </div>
+                
+                <!-- Content -->
+                <p class="text-gray-700 px-4 pt-2 pb-3 text-sm">Meme of the day! 😂 Tag your friend who always does this. #Funny #TrendingNow</p>
+                
+                <div class="relative w-full h-64 bg-gray-200 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-gray-900/40 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-white opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M6 3v18l14-9z"/></svg>
+                    </div>
+                    <img class="w-full h-full object-cover" 
+                         src="https://placehold.co/600x400/ef4444/ffffff?text=Video+Placeholder" 
+                         alt="Post Video Placeholder" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x400/ef4444/ffffff?text=Video+Placeholder';">
+                </div>
+                
+                <!-- Action Bar -->
+                <div class="flex justify-around p-3 text-gray-600 border-t border-gray-100">
+                    <button class="flex items-center space-x-1 hover:text-red-500 transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        <span class="text-xs font-medium">8.2K Likes</span>
+                    </button>
+                    <button class="flex items-center space-x-1 hover:text-primary transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.125 15.488 6.556 16 8 16c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h.01z"></path></svg>
+                        <span class="text-xs font-medium">950 Comments</span>
+                    </button>
+                    <button class="flex items-center space-x-1 hover:text-primary transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.882 13.513 9 13.75 9 14v4l5.243-3.932a2 2 0 012.757-.222L21 17M14 8V4.87C14 3.922 13.25 3 12.18 3H5.82C4.75 3 4 3.922 4 4.87V18.13C4 19.078 4.75 20 5.82 20h3.18"></path></svg>
+                        <span class="text-xs font-medium">Share</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Post Card 3: Quote/Text Post -->
+            <div class="post-card bg-card-bg rounded-xl shadow-lg overflow-hidden">
+                <!-- User Info Header -->
+                <div class="flex items-center justify-between p-4 pb-2">
+                    <div class="flex items-center space-x-3">
+                        <img class="w-9 h-9 rounded-full object-cover border-2 border-primary" 
+                             src="https://placehold.co/100x100/6366f1/ffffff?text=Q" 
+                             alt="User Avatar" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/100x100/6366f1/ffffff?text=Q';">
+                        <div>
+                            <p class="font-bold text-sm">Life Quotes</p>
+                            <p class="text-gray-500 text-xs">@thought_leader • 1 day ago</p>
+                        </div>
+                    </div>
+                    <button class="text-primary text-xs font-semibold px-3 py-1 border border-primary rounded-full hover:bg-primary hover:text-white transition">Follow</button>
+                </div>
+                
+                <!-- Content -->
+                <div class="px-4 py-8 bg-indigo-100/50">
+                    <blockquote class="text-xl font-medium italic text-indigo-800 text-center">
+                        "The smallest act of kindness is worth more than the grandest intention."
+                    </blockquote>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="flex justify-around p-3 text-gray-600 border-t border-gray-100">
+                    <button class="flex items-center space-x-1 hover:text-red-500 transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        <span class="text-xs font-medium">2.9K Likes</span>
+                    </button>
+                    <button class="flex items-center space-x-1 hover:text-primary transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.125 15.488 6.556 16 8 16c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h.01z"></path></svg>
+                        <span class="text-xs font-medium">350 Comments</span>
+                    </button>
+                    <button class="flex items-center space-x-1 hover:text-primary transition active:scale-95 transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.882 13.513 9 13.75 9 14v4l5.243-3.932a2 2 0 012.757-.222L21 17M14 8V4.87C14 3.922 13.25 3 12.18 3H5.82C4.75 3 4 3.922 4 4.87V18.13C4 19.078 4.75 20 5.82 20h3.18"></path></svg>
+                        <span class="text-xs font-medium">Share</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Floating Action Button (FAB) for Post Creation - Mobile style -->
+    <button class="fixed bottom-6 right-6 p-4 bg-primary text-white rounded-full shadow-2xl hover:bg-secondary transition duration-300 transform scale-110 active:scale-100">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+    </button>
+
+</body>
+</html>
