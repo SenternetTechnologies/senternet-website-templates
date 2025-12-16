@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortex Canvas - Generative Flow Field</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configure Tailwind for custom colors and font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6366f1', // Indigo-500
+                        'secondary': '#a5b4fc', // Indigo-300
+                        'bg-dark': '#111827', // Gray-900
+                        'bg-medium': '#1f2937', // Gray-800
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for canvas and layout */
+        body, html {
+            overflow: hidden; /* Prevent scrolling */
+        }
+        #controls {
+            max-height: 90vh;
+            overflow-y: auto;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+        }
+        #controls::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome/Safari */
+        }
+        .control-group {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: theme('colors.bg-medium');
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom track style for range inputs */
+        input[type=range]::-webkit-slider-runnable-track {
+            background: #4b5563;
+            border-radius: 4px;
+            height: 8px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            border: 2px solid theme('colors.primary');
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            margin-top: -4px;
+            box-shadow: 0 0 0 4px theme('colors.primary');
+        }
+    </style>
+</head>
+<body class="bg-bg-dark text-white font-sans flex flex-col md:flex-row h-screen">
+
+    <!-- Control Panel (Left Side) -->
+    <aside id="controls" class="w-full md:w-64 p-4 md:p-6 flex-shrink-0 border-r border-gray-700">
+        <h2 class="text-2xl font-bold mb-4 text-primary">Vortex Controls</h2>
+        <button id="toggleAnimation" class="w-full py-2 mb-4 bg-green-500 hover:bg-green-600 rounded-lg font-semibold transition transform hover:scale-[1.02]">
+            Pause
+        </button>
+
+        <div class="control-group">
+            <label class="block text-sm font-medium mb-2 text-secondary">Particle Count</label>
+            <input type="range" id="particleCount" min="100" max="5000" value="1500" step="100" class="w-full h-8">
+            <span id="particleCountValue" class="text-xs text-gray-400 mt-1 block text-right">1500</span>
+        </div>
+
+        <div class="control-group">
+            <label class="block text-sm font-medium mb-2 text-secondary">Field Intensity (Zoom)</label>
+            <input type="range" id="scale" min="10" max="200" value="80" step="5" class="w-full h-8">
+            <span id="scaleValue" class="text-xs text-gray-400 mt-1 block text-right">80</span>
+        </div>
+        
+        <div class="control-group">
+            <label class="block text-sm font-medium mb-2 text-secondary">Time Speed (Evolution)</label>
+            <input type="range" id="timeSpeed" min="0.0001" max="0.005" value="0.001" step="0.0001" class="w-full h-8">
+            <span id="timeSpeedValue" class="text-xs text-gray-400 mt-1 block text-right">0.001</span>
+        </div>
+
+        <div class="control-group">
+            <label class="block text-sm font-medium mb-2 text-secondary">Particle Speed</label>
+            <input type="range" id="particleSpeed" min="0.5" max="5" value="1.5" step="0.1" class="w-full h-8">
+            <span id="particleSpeedValue" class="text-xs text-gray-400 mt-1 block text-right">1.5</span>
+        </div>
+
+        <button id="resetCanvas" class="w-full py-2 bg-red-500 hover:bg-red-600 rounded-lg font-semibold transition transform hover:scale-[1.02] mt-4">
+            Reset Particles
+        </button>
+    </aside>
+
+    <!-- Canvas Area (Right Side) -->
+    <main class="flex-grow relative overflow-hidden">
+        <canvas id="vortexCanvas" class="w-full h-full block"></canvas>
+    </main>
+
+    <script>
+        // --- Canvas and Context Setup ---
+        const canvas = document.getElementById('vortexCanvas');
+        const ctx = canvas.getContext('2d');
+        const controls = {
+            particleCount: document.getElementById('particleCount'),
+            scale: document.getElementById('scale'),
+            timeSpeed: document.getElementById('timeSpeed'),
+            particleSpeed: document.getElementById('particleSpeed'),
+            toggleAnimation: document.getElementById('toggleAnimation'),
+            resetCanvas: document.getElementById('resetCanvas')
+        };
+        const displayValues = {
+            particleCount: document.getElementById('particleCountValue'),
+            scale: document.getElementById('scaleValue'),
+            timeSpeed: document.getElementById('timeSpeedValue'),
+            particleSpeed: document.getElementById('particleSpeedValue')
+        };
+
+        let animationFrameId;
+        let isPaused = false;
+        let particles = [];
+        let time = 0;
+        let width, height;
+
+        // --- Core Simulation Parameters ---
+        let maxParticles = parseInt(controls.particleCount.value);
+        let flowScale = parseFloat(controls.scale.value);
+        let speedMultiplier = parseFloat(controls.particleSpeed.value);
+        let timeStep = parseFloat(controls.timeSpeed.value);
+
+        // --- Perlin Noise Approximation (Simplified 2D Noise) ---
+        // A simple, predictable, and smooth noise function based on sine/cosine
+        function noise(x, y, t) {
+            // Use trigonometric functions of scaled coordinates and time to generate a smooth, non-repeating field.
+            // This mimics the flow pattern without a full Perlin implementation.
+            return Math.sin(x * 0.01 + t * 0.5) * Math.cos(y * 0.01 + t * 0.3) * Math.sin(t * 0.1);
+        }
+
+        // --- Particle Class Definition ---
+        class Particle {
+            constructor(startX, startY) {
+                this.x = startX || Math.random() * width;
+                this.y = startY || Math.random() * height;
+                this.vx = 0;
+                this.vy = 0;
+                this.history = []; // Store past positions for the trail
+                this.maxHistory = 20; // Length of the trail
+                this.color = this.generateColor();
+            }
+
+            generateColor() {
+                // Generate a consistent, vibrant color based on the initial position
+                const hue = Math.floor((this.x / width) * 360);
+                const saturation = 70 + Math.floor(Math.random() * 20); // 70-90%
+                const lightness = 60 + Math.floor(Math.random() * 20); // 60-80%
+                return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            }
+
+            update() {
+                // 1. Calculate vector from the flow field
+                const nx = this.x / flowScale;
+                const ny = this.y / flowScale;
+                
+                // Get the noise value which determines the angle
+                const angleNoise = noise(nx, ny, time); 
+                // Map the noise value to an angle (0 to 360 degrees, or 0 to 2*PI radians)
+                const angle = angleNoise * Math.PI * 2; 
+
+                // 2. Update velocity based on the angle and particle speed
+                this.vx = Math.cos(angle) * speedMultiplier;
+                this.vy = Math.sin(angle) * speedMultiplier;
+
+                // 3. Update position
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 4. Wrap around edges
+                if (this.x < 0) this.x += width;
+                if (this.x > width) this.x -= width;
+                if (this.y < 0) this.y += height;
+                if (this.y > height) this.y -= height;
+                
+                // 5. Store history
+                this.history.push({x: this.x, y: this.y});
+                if (this.history.length > this.maxHistory) {
+                    this.history.shift();
+                }
+            }
+
+            draw() {
+                if (this.history.length < 2) return;
+
+                ctx.beginPath();
+                ctx.moveTo(this.history[0].x, this.history[0].y);
+
+                for (let i = 1; i < this.history.length; i++) {
+                    ctx.lineTo(this.history[i].x, this.history[i].y);
+                }
+                
+                // Set the line style
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 0.8;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+        }
+
+        // --- Initialization and Reset Functions ---
+        
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            if (document.body.clientWidth > 640) { // If not on mobile, use full width
+                width -= controls.particleCount.offsetWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+        }
+        
+        function initParticles(count) {
+            particles = [];
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // --- Main Animation Loop ---
+        function animate() {
+            if (isPaused) return;
+
+            // Fade the background slightly instead of clearing entirely to create trails
+            ctx.fillStyle = 'rgba(17, 24, 39, 0.1)'; // Dark background with slight transparency
+            ctx.fillRect(0, 0, width, height);
+
+            // Update and draw all particles
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+
+            // Increment time for the evolving noise pattern
+            time += timeStep;
+
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // --- Event Listeners and Setup ---
+
+        function setup() {
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                initParticles(maxParticles); // Re-initialize particles on resize
+            });
+
+            // Handle range input changes
+            controls.particleCount.addEventListener('input', (e) => {
+                maxParticles = parseInt(e.target.value);
+                displayValues.particleCount.textContent = maxParticles;
+                initParticles(maxParticles); // Reset particles immediately on count change
+            });
+
+            controls.scale.addEventListener('input', (e) => {
+                flowScale = parseFloat(e.target.value);
+                displayValues.scale.textContent = flowScale;
+            });
+
+            controls.timeSpeed.addEventListener('input', (e) => {
+                timeStep = parseFloat(e.target.value);
+                displayValues.timeSpeed.textContent = timeStep;
+            });
+
+            controls.particleSpeed.addEventListener('input', (e) => {
+                speedMultiplier = parseFloat(e.target.value);
+                displayValues.particleSpeed.textContent = speedMultiplier;
+            });
+
+            // Pause/Resume button
+            controls.toggleAnimation.addEventListener('click', () => {
+                isPaused = !isPaused;
+                controls.toggleAnimation.textContent = isPaused ? 'Resume' : 'Pause';
+                if (!isPaused) {
+                    animate(); // Restart animation loop
+                }
+            });
+
+            // Reset button
+            controls.resetCanvas.addEventListener('click', () => {
+                time = 0; // Reset time to restart pattern evolution
+                initParticles(maxParticles);
+                ctx.fillStyle = 'rgba(17, 24, 39, 1)'; // Solid clear
+                ctx.fillRect(0, 0, width, height);
+            });
+
+            // Initial setup
+            resizeCanvas();
+            initParticles(maxParticles);
+            animate();
+        }
+
+        // Start the application when the window loads
+        window.onload = setup;
+    </script>
+</body>
+</html>
