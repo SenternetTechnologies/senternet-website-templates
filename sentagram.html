@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentagram - Social Feed</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .post-card {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+        }
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col items-center">
+        <!-- Header -->
+        <header class="w-full bg-white shadow-md sticky top-0 z-10">
+            <div class="max-w-xl mx-auto p-4 flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-pink-600 tracking-wider">Sentagram</h1>
+                <div class="text-xs text-gray-500 text-right">
+                    <p id="user-id-display" class="truncate">Initializing Auth...</p>
+                    <p class="text-[10px] text-red-500">Public Feed</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="w-full max-w-xl p-4">
+            <!-- New Post Section -->
+            <section class="bg-white p-6 mb-8 rounded-xl shadow-lg border border-gray-100">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Share a thought</h2>
+                <form id="new-post-form">
+                    <textarea id="post-content"
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 resize-none mb-4 transition duration-150 ease-in-out"
+                              rows="3"
+                              placeholder="What's on your mind?"
+                              required></textarea>
+                    <button type="submit"
+                            id="post-button"
+                            class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out disabled:opacity-50"
+                            disabled>
+                        Post to Sentagram
+                    </button>
+                    <p id="post-status" class="text-sm mt-2 text-center text-red-500 hidden"></p>
+                </form>
+            </section>
+
+            <!-- Feed Section -->
+            <section class="pb-20">
+                <h2 class="text-2xl font-bold mb-4 text-gray-700">Latest Sentas</h2>
+                <div id="feed-container" class="space-y-6">
+                    <!-- Posts will be loaded here -->
+                    <div class="flex justify-center items-center h-24 text-gray-500" id="loading-indicator">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-pink-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading feed...
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Set log level to debug for better console output
+        setLogLevel('Debug');
+
+        // Global variables provided by the environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // User-provided Firebase configuration (REPLACED)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAtZIXvVQtwHQsz0nKjJKEH9LTVSx-tus",
+            authDomain: "senternet-a99dd.firebaseapp.com",
+            projectId: "senternet-a99dd",
+            storageBucket: "senternet-a99dd.firebasestorage.app",
+            messagingSenderId: "779399095706",
+            appId: "1:779399095706:web:cee01cd750b506e0878623"
+        };
+
+        // Use environment's auth token if available, as the user's config doesn't include it.
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app = null;
+        let db = null;
+        let auth = null;
+        let userId = null;
+        let isAuthReady = false;
+
+        // UI elements
+        const feedContainer = document.getElementById('feed-container');
+        const postForm = document.getElementById('new-post-form');
+        const postContentInput = document.getElementById('post-content');
+        const postButton = document.getElementById('post-button');
+        const userIdDisplay = document.getElementById('user-id-display');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const postStatus = document.getElementById('post-status');
+
+        /**
+         * Converts a Firebase timestamp or Date object to a readable string.
+         * @param {Object | Date} timestamp - Firebase Timestamp object or standard Date.
+         * @returns {string} Formatted date string.
+         */
+        function formatTimestamp(timestamp) {
+            if (timestamp && timestamp.toDate) {
+                return timestamp.toDate().toLocaleString();
+            }
+            if (timestamp instanceof Date) {
+                return timestamp.toLocaleString();
+            }
+            return 'Just now';
+        }
+
+        /**
+         * Renders a single post element to the feed.
+         * @param {Object} post - The post data object from Firestore.
+         */
+        function renderPost(post) {
+            const postElement = document.createElement('div');
+            postElement.className = 'post-card bg-white p-5 rounded-xl border border-gray-200 shadow-sm';
+            
+            // Set up a consistent color for the sender based on the user ID hash
+            const hue = post.userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
+            const userColor = `hsl(${hue}, 70%, 50%)`;
+
+            postElement.innerHTML = `
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3" 
+                         style="background-color: ${userColor};">
+                        ${post.userId.substring(0, 1).toUpperCase()}
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-800 text-sm">
+                            ${post.userId === userId ? 'You (ID: ' + post.userId.substring(0, 8) + '...)' : 'User ID: ' + post.userId.substring(0, 8) + '...'}
+                        </p>
+                        <p class="text-xs text-gray-500">${formatTimestamp(post.timestamp)}</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 text-base whitespace-pre-wrap">${post.content}</p>
+            `;
+            feedContainer.prepend(postElement); // Prepend for newest first
+        }
+
+        /**
+         * Subscribes to the Sentagram posts collection for real-time updates.
+         */
+        function loadPosts() {
+            // Only proceed if auth is ready and we have a user ID and db instance
+            if (!isAuthReady || !userId || !db) {
+                console.warn("Attempted to load posts before Firebase was ready.");
+                return;
+            }
+
+            const postsCollectionPath = `artifacts/${appId}/public/data/sentagram_posts`;
+            const q = query(collection(db, postsCollectionPath), orderBy('timestamp', 'desc'));
+
+            // Real-time listener
+            onSnapshot(q, (snapshot) => {
+                loadingIndicator.classList.add('hidden'); // Hide loading indicator once data starts flowing
+                
+                // Clear existing posts without re-rendering the whole container
+                // Note: For a true real-time app, you'd use changes, but for simplicity, we clear and append.
+                // Filter out all children that are not the loading indicator
+                Array.from(feedContainer.children).forEach(child => {
+                    if (child.id !== 'loading-indicator') {
+                        child.remove();
+                    }
+                });
+
+
+                if (snapshot.empty) {
+                    feedContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No posts yet! Be the first to share.</p>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const post = doc.data();
+                    renderPost(post);
+                });
+            }, (error) => {
+                console.error("Error listening to posts:", error);
+                feedContainer.innerHTML = `<p class="text-red-500 p-4 text-center">Failed to load feed: ${error.message}</p>`;
+            });
+        }
+
+        /**
+         * Handles the form submission to create a new post.
+         * @param {Event} e - The form submission event.
+         */
+        async function handlePostSubmit(e) {
+            e.preventDefault();
+            postButton.disabled = true;
+            postStatus.classList.add('hidden');
+
+            if (!isAuthReady || !userId || !db) {
+                postStatus.textContent = "Error: Not connected to Firebase.";
+                postStatus.classList.remove('hidden');
+                postButton.disabled = false;
+                return;
+            }
+
+            const content = postContentInput.value.trim();
+
+            if (!content) {
+                postStatus.textContent = "Post content cannot be empty.";
+                postStatus.classList.remove('hidden');
+                postButton.disabled = false;
+                return;
+            }
+
+            try {
+                const postsCollectionPath = `artifacts/${appId}/public/data/sentagram_posts`;
+                
+                await addDoc(collection(db, postsCollectionPath), {
+                    userId: userId,
+                    content: content,
+                    timestamp: serverTimestamp() // Use server timestamp for consistency
+                });
+
+                postContentInput.value = ''; // Clear input
+                // Post success status is optional as the feed updates automatically
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                postStatus.textContent = `Error posting: ${error.message}`;
+                postStatus.classList.remove('hidden');
+            } finally {
+                postButton.disabled = false;
+            }
+        }
+
+        /**
+         * Initializes Firebase and handles the authentication process.
+         */
+        async function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Set persistence to session to maintain login state across page reloads in a session
+                await setPersistence(auth, browserSessionPersistence);
+                
+                // Sign in logic: use custom token if available, otherwise sign in anonymously
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Listener to capture the user ID after sign-in
+                const unsubscribe = onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        isAuthReady = true;
+                        userIdDisplay.textContent = `User ID: ${userId}`;
+                        postButton.disabled = false; // Enable posting
+                        loadPosts(); // Start loading data
+                    } else {
+                        // This state should rarely be hit if the token or anonymous sign-in succeeds
+                        userIdDisplay.textContent = 'Auth Failed';
+                        isAuthReady = false;
+                    }
+                    unsubscribe(); // Stop listening after the initial state is set
+                });
+            } catch (error) {
+                console.error("Firebase initialization or authentication failed:", error);
+                userIdDisplay.textContent = 'Auth Error!';
+                feedContainer.innerHTML = `<p class="text-red-500 p-4 text-center">Fatal Error: Cannot connect to Firebase. Check console for details.</p>`;
+            }
+        }
+
+        // --- Execution ---
+        window.onload = () => {
+            initializeFirebase();
+            postForm.addEventListener('submit', handlePostSubmit);
+        };
+    </script>
+</body>
+</html>
