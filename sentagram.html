@@ -29,23 +29,30 @@
         <header class="w-full bg-white shadow-md sticky top-0 z-10">
             <div class="max-w-xl mx-auto p-4 flex justify-between items-center">
                 <h1 class="text-3xl font-bold text-pink-600 tracking-wider">Sentagram</h1>
-                <div class="text-xs text-gray-500 text-right">
-                    <p id="user-id-display" class="truncate">Initializing Auth...</p>
-                    <p class="text-[10px] text-red-500">Public Feed</p>
+                <div class="text-xs text-gray-500 text-right flex items-center space-x-3">
+                    <div id="auth-status-container" class="hidden">
+                        <p id="user-id-display" class="truncate font-medium text-gray-700"></p>
+                        <p class="text-[10px] text-red-500">Public Feed</p>
+                    </div>
+                    <button id="auth-button"
+                            class="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-1 px-3 rounded-full text-sm transition duration-150">
+                        Sign In
+                    </button>
                 </div>
             </div>
         </header>
 
         <main class="w-full max-w-xl p-4">
             <!-- New Post Section -->
-            <section class="bg-white p-6 mb-8 rounded-xl shadow-lg border border-gray-100">
+            <section class="bg-white p-6 mb-8 rounded-xl shadow-lg border border-gray-100" id="post-section">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">Share a thought</h2>
                 <form id="new-post-form">
                     <textarea id="post-content"
                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 resize-none mb-4 transition duration-150 ease-in-out"
                               rows="3"
-                              placeholder="What's on your mind?"
-                              required></textarea>
+                              placeholder="Sign in to post..."
+                              required
+                              disabled></textarea>
                     <button type="submit"
                             id="post-button"
                             class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out disabled:opacity-50"
@@ -66,17 +73,74 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Loading feed...
+                        Authenticating...
                     </div>
                 </div>
             </section>
         </main>
     </div>
+    
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm m-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center" id="modal-title">Sign In</h2>
+            
+            <!-- Email/Password Form -->
+            <form id="email-auth-form" class="space-y-4">
+                <input type="email" id="auth-email" placeholder="Email" required
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500">
+                <input type="password" id="auth-password" placeholder="Password" required
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500">
+                
+                <button type="submit" id="email-submit-button"
+                        class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg transition duration-200">
+                    Sign In with Email
+                </button>
+                <p id="auth-error-message" class="text-sm text-red-500 text-center hidden"></p>
+            </form>
+
+            <div class="my-4 flex items-center">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <span class="flex-shrink mx-4 text-gray-500 text-sm">OR</span>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            <!-- Social Login -->
+            <button id="google-auth-button"
+                    class="w-full flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition duration-200 space-x-2">
+                <svg class="w-5 h-5" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.757-6.08 7.732-11.303 7.732-6.769 0-12.263-5.494-12.263-12.263s5.494-12.263 12.263-12.263c3.181 0 6.096 1.29 8.243 3.336l5.795-5.795C34.486 7.641 29.336 6 24 6c-11.042 0-20 8.958-20 20s8.958 20 20 20c11.042 0 20-8.958 20-20v-2.083z"/>
+                    <path fill="#FF3D00" d="M6.306 14.695L21.056 28.53h.941L4.35 12.012l1.956 2.683z"/>
+                    <path fill="#4CAF50" d="M14 20h2v12h-2z"/>
+                    <path fill="#1976D2" d="M33.611 20.083v-3.791h-5.795v11.583h5.795v-3.791h3.791V20.083z"/>
+                </svg>
+                <span>Sign In with Google</span>
+            </button>
+
+            <!-- Toggle Register/Login -->
+            <p class="text-center mt-4 text-gray-600 text-sm">
+                <span id="auth-toggle-text">Don't have an account?</span>
+                <button type="button" id="auth-toggle-button" class="text-pink-600 hover:text-pink-800 font-semibold ml-1">
+                    Register
+                </button>
+            </p>
+        </div>
+    </div>
 
     <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            setPersistence, 
+            browserSessionPersistence,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Set log level to debug for better console output
@@ -85,7 +149,7 @@
         // Global variables provided by the environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // User-provided Firebase configuration (REPLACED)
+        // User-provided Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCAtZIXvVQtwHQsz0nKjJKEH9LTVSx-tus",
             authDomain: "senternet-a99dd.firebaseapp.com",
@@ -95,7 +159,7 @@
             appId: "1:779399095706:web:cee01cd750b506e0878623"
         };
 
-        // Use environment's auth token if available, as the user's config doesn't include it.
+        // Environment's auth token (unused for this flow but kept for completeness)
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let app = null;
@@ -103,6 +167,7 @@
         let auth = null;
         let userId = null;
         let isAuthReady = false;
+        let isRegisterMode = false;
 
         // UI elements
         const feedContainer = document.getElementById('feed-container');
@@ -111,6 +176,20 @@
         const postButton = document.getElementById('post-button');
         const userIdDisplay = document.getElementById('user-id-display');
         const loadingIndicator = document.getElementById('loading-indicator');
+        const authStatusContainer = document.getElementById('auth-status-container');
+
+        // Modal elements
+        const authModal = document.getElementById('auth-modal');
+        const authButton = document.getElementById('auth-button'); // Sign In/Sign Out button
+        const modalTitle = document.getElementById('modal-title');
+        const emailAuthForm = document.getElementById('email-auth-form');
+        const authEmailInput = document.getElementById('auth-email');
+        const authPasswordInput = document.getElementById('auth-password');
+        const emailSubmitButton = document.getElementById('email-submit-button');
+        const googleAuthButton = document.getElementById('google-auth-button');
+        const authToggleText = document.getElementById('auth-toggle-text');
+        const authToggleButton = document.getElementById('auth-toggle-button');
+        const authErrorMessage = document.getElementById('auth-error-message');
         const postStatus = document.getElementById('post-status');
 
         /**
@@ -140,15 +219,18 @@
             const hue = post.userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
             const userColor = `hsl(${hue}, 70%, 50%)`;
 
+            // Display email if available, otherwise fallback to truncated ID
+            const userDisplay = post.email || `User ID: ${post.userId.substring(0, 8)}...`;
+
             postElement.innerHTML = `
                 <div class="flex items-center mb-3">
                     <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3" 
                          style="background-color: ${userColor};">
-                        ${post.userId.substring(0, 1).toUpperCase()}
+                        ${(post.email || post.userId).substring(0, 1).toUpperCase()}
                     </div>
                     <div>
                         <p class="font-semibold text-gray-800 text-sm">
-                            ${post.userId === userId ? 'You (ID: ' + post.userId.substring(0, 8) + '...)' : 'User ID: ' + post.userId.substring(0, 8) + '...'}
+                            ${post.userId === userId ? 'You' : userDisplay}
                         </p>
                         <p class="text-xs text-gray-500">${formatTimestamp(post.timestamp)}</p>
                     </div>
@@ -163,7 +245,7 @@
          */
         function loadPosts() {
             // Only proceed if auth is ready and we have a user ID and db instance
-            if (!isAuthReady || !userId || !db) {
+            if (!isAuthReady || !db) {
                 console.warn("Attempted to load posts before Firebase was ready.");
                 return;
             }
@@ -176,17 +258,17 @@
                 loadingIndicator.classList.add('hidden'); // Hide loading indicator once data starts flowing
                 
                 // Clear existing posts without re-rendering the whole container
-                // Note: For a true real-time app, you'd use changes, but for simplicity, we clear and append.
-                // Filter out all children that are not the loading indicator
                 Array.from(feedContainer.children).forEach(child => {
                     if (child.id !== 'loading-indicator') {
                         child.remove();
                     }
                 });
 
-
                 if (snapshot.empty) {
-                    feedContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No posts yet! Be the first to share.</p>';
+                    // Only show this message if the loading indicator is hidden
+                    if (loadingIndicator.classList.contains('hidden')) {
+                        feedContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No posts yet! Be the first to share.</p>';
+                    }
                     return;
                 }
 
@@ -207,12 +289,14 @@
         async function handlePostSubmit(e) {
             e.preventDefault();
             postButton.disabled = true;
+            postContentInput.disabled = true;
             postStatus.classList.add('hidden');
 
-            if (!isAuthReady || !userId || !db) {
-                postStatus.textContent = "Error: Not connected to Firebase.";
+            if (!userId || !db) {
+                postStatus.textContent = "Error: Please sign in to post.";
                 postStatus.classList.remove('hidden');
                 postButton.disabled = false;
+                postContentInput.disabled = false;
                 return;
             }
 
@@ -222,6 +306,7 @@
                 postStatus.textContent = "Post content cannot be empty.";
                 postStatus.classList.remove('hidden');
                 postButton.disabled = false;
+                postContentInput.disabled = false;
                 return;
             }
 
@@ -230,23 +315,104 @@
                 
                 await addDoc(collection(db, postsCollectionPath), {
                     userId: userId,
+                    email: auth.currentUser.email || auth.currentUser.uid, // Store email if available
                     content: content,
                     timestamp: serverTimestamp() // Use server timestamp for consistency
                 });
 
                 postContentInput.value = ''; // Clear input
-                // Post success status is optional as the feed updates automatically
             } catch (error) {
                 console.error("Error adding document: ", error);
                 postStatus.textContent = `Error posting: ${error.message}`;
                 postStatus.classList.remove('hidden');
             } finally {
                 postButton.disabled = false;
+                postContentInput.disabled = false;
             }
         }
 
         /**
-         * Initializes Firebase and handles the authentication process.
+         * Toggles the modal between Sign In and Register modes.
+         */
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            authErrorMessage.classList.add('hidden');
+            authEmailInput.value = '';
+            authPasswordInput.value = '';
+
+            if (isRegisterMode) {
+                modalTitle.textContent = 'Register';
+                emailSubmitButton.textContent = 'Register with Email';
+                authToggleText.textContent = 'Already have an account?';
+                authToggleButton.textContent = 'Sign In';
+            } else {
+                modalTitle.textContent = 'Sign In';
+                emailSubmitButton.textContent = 'Sign In with Email';
+                authToggleText.textContent = "Don't have an account?";
+                authToggleButton.textContent = 'Register';
+            }
+        }
+
+        /**
+         * Handles Email/Password sign-in or registration.
+         */
+        async function handleEmailAuth(e) {
+            e.preventDefault();
+            authErrorMessage.classList.add('hidden');
+            const email = authEmailInput.value;
+            const password = authPasswordInput.value;
+            
+            emailSubmitButton.disabled = true;
+
+            try {
+                if (isRegisterMode) {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+                // AuthStateChanged listener will handle UI update on success
+            } catch (error) {
+                console.error("Authentication error:", error);
+                authErrorMessage.textContent = error.message.replace('Firebase:', '').trim();
+                authErrorMessage.classList.remove('hidden');
+            } finally {
+                emailSubmitButton.disabled = false;
+            }
+        }
+
+        /**
+         * Handles Google Sign-In using a popup.
+         */
+        async function signInWithGoogle() {
+            authErrorMessage.classList.add('hidden');
+            googleAuthButton.disabled = true;
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+                // AuthStateChanged listener will handle UI update on success
+            } catch (error) {
+                console.error("Google sign-in error:", error);
+                authErrorMessage.textContent = error.message.replace('Firebase:', '').trim();
+                authErrorMessage.classList.remove('hidden');
+            } finally {
+                googleAuthButton.disabled = false;
+            }
+        }
+
+        /**
+         * Handles user sign-out.
+         */
+        async function handleSignOut() {
+            try {
+                await signOut(auth);
+                // AuthStateChanged listener will handle UI update on sign-out
+            } catch (error) {
+                console.error("Sign out error:", error);
+            }
+        }
+
+        /**
+         * Initializes Firebase and sets up the central auth listener.
          */
         async function initializeFirebase() {
             try {
@@ -254,42 +420,72 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Set persistence to session to maintain login state across page reloads in a session
+                // Set persistence to session to maintain login state across page reloads
                 await setPersistence(auth, browserSessionPersistence);
                 
-                // Sign in logic: use custom token if available, otherwise sign in anonymously
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // Listener to capture the user ID after sign-in
-                const unsubscribe = onAuthStateChanged(auth, (user) => {
+                // Central listener to manage UI state
+                onAuthStateChanged(auth, (user) => {
+                    isAuthReady = true;
+                    loadingIndicator.classList.add('hidden');
+                    
                     if (user) {
+                        // --- User is signed in ---
                         userId = user.uid;
-                        isAuthReady = true;
-                        userIdDisplay.textContent = `User ID: ${userId}`;
-                        postButton.disabled = false; // Enable posting
-                        loadPosts(); // Start loading data
+                        authModal.classList.add('hidden');
+                        authButton.textContent = 'Sign Out';
+                        authButton.onclick = handleSignOut;
+                        authStatusContainer.classList.remove('hidden');
+
+                        const emailDisplay = user.email || 'Anonymous';
+                        userIdDisplay.innerHTML = `<span class="font-bold">${emailDisplay}</span>`;
+                        
+                        postContentInput.disabled = false;
+                        postContentInput.placeholder = 'What\'s on your mind?';
+                        postButton.disabled = false;
+
                     } else {
-                        // This state should rarely be hit if the token or anonymous sign-in succeeds
-                        userIdDisplay.textContent = 'Auth Failed';
-                        isAuthReady = false;
+                        // --- User is signed out ---
+                        userId = null;
+                        authButton.textContent = 'Sign In';
+                        authButton.onclick = () => authModal.classList.remove('hidden');
+                        authStatusContainer.classList.add('hidden');
+                        
+                        postContentInput.disabled = true;
+                        postContentInput.placeholder = 'Sign in to post...';
+                        postButton.disabled = true;
+
+                        // Show modal initially if no user
+                        if (authModal.classList.contains('hidden')) {
+                             authModal.classList.remove('hidden');
+                             toggleAuthMode(); // Reset to Sign In mode
+                        }
                     }
-                    unsubscribe(); // Stop listening after the initial state is set
+                    // Load posts only after the initial auth state is determined
+                    loadPosts();
                 });
+
             } catch (error) {
-                console.error("Firebase initialization or authentication failed:", error);
+                console.error("Firebase initialization failed:", error);
+                loadingIndicator.textContent = 'Error initializing Firebase.';
                 userIdDisplay.textContent = 'Auth Error!';
                 feedContainer.innerHTML = `<p class="text-red-500 p-4 text-center">Fatal Error: Cannot connect to Firebase. Check console for details.</p>`;
             }
         }
 
-        // --- Execution ---
+        // --- Event Listeners ---
         window.onload = () => {
             initializeFirebase();
             postForm.addEventListener('submit', handlePostSubmit);
+            emailAuthForm.addEventListener('submit', handleEmailAuth);
+            googleAuthButton.addEventListener('click', signInWithGoogle);
+            authToggleButton.addEventListener('click', toggleAuthMode);
+
+            // Close modal when clicking outside of it
+            authModal.addEventListener('click', (e) => {
+                if (e.target === authModal) {
+                    authModal.classList.add('hidden');
+                }
+            });
         };
     </script>
 </body>
