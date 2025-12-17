@@ -3,490 +3,890 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentagram - Social Feed</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Sentagram - The Social App</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* Custom styles for aesthetic enhancements */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f7f9fb;
         }
-        .post-card {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-            transition: transform 0.2s;
+        .scroll-area::-webkit-scrollbar {
+            display: none;
         }
-        .post-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+        .scroll-area {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        /* Custom card shadows and rounded corners */
+        .card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 1rem;
+        }
+        /* Style for the app logo */
+        .logo-text {
+            font-family: 'Georgia', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #3b82f6;
+            letter-spacing: -0.5px;
+        }
+        /* Custom focus ring */
+        input:focus, textarea:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="min-h-screen flex flex-col items-center">
-        <!-- Header -->
-        <header class="w-full bg-white shadow-md sticky top-0 z-10">
-            <div class="max-w-xl mx-auto p-4 flex justify-between items-center">
-                <h1 class="text-3xl font-bold text-pink-600 tracking-wider">Sentagram</h1>
-                <div class="text-xs text-gray-500 text-right flex items-center space-x-3">
-                    <div id="auth-status-container" class="hidden">
-                        <p id="user-id-display" class="truncate font-medium text-gray-700"></p>
-                        <p class="text-[10px] text-red-500">Public Feed</p>
-                    </div>
-                    <button id="auth-button"
-                            class="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-1 px-3 rounded-full text-sm transition duration-150">
-                        Sign In
-                    </button>
-                </div>
-            </div>
-        </header>
 
-        <main class="w-full max-w-xl p-4">
-            <!-- New Post Section -->
-            <section class="bg-white p-6 mb-8 rounded-xl shadow-lg border border-gray-100" id="post-section">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Share a thought</h2>
-                <form id="new-post-form">
-                    <textarea id="post-content"
-                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 resize-none mb-4 transition duration-150 ease-in-out"
-                              rows="3"
-                              placeholder="Sign in to post..."
-                              required
-                              disabled></textarea>
-                    <button type="submit"
-                            id="post-button"
-                            class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200 ease-in-out disabled:opacity-50"
-                            disabled>
-                        Post to Sentagram
-                    </button>
-                    <p id="post-status" class="text-sm mt-2 text-center text-red-500 hidden"></p>
-                </form>
-            </section>
+<div id="app" class="min-h-screen flex flex-col">
+    <!-- Main content area will be injected here -->
+</div>
 
-            <!-- Feed Section -->
-            <section class="pb-20">
-                <h2 class="text-2xl font-bold mb-4 text-gray-700">Latest Sentas</h2>
-                <div id="feed-container" class="space-y-6">
-                    <!-- Posts will be loaded here -->
-                    <div class="flex justify-center items-center h-24 text-gray-500" id="loading-indicator">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-pink-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Authenticating...
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
+<!-- Firebase and App Logic -->
+<script type="module">
+    // Firebase Imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithCustomToken, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, onSnapshot, updateDoc, arrayUnion, arrayRemove, where, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // --- Global Configuration and State ---
+    // Canvas Environment Globals
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+    // App State
+    const state = {
+        userId: null,
+        userProfile: null, // Full user data {uid, username, followers, following, ...}
+        isAuthReady: false,
+        currentView: 'loading', // 'auth', 'feed', 'profile', 'post', 'chatList', 'singleChat'
+        feedPosts: [],
+        allUsers: [],
+        currentViewData: null, // Used for profileUserId, postId, chatId
+        chats: [],
+    };
+
+    // Firebase Instances
+    let app;
+    let db;
+    let auth;
+
+    // --- Firestore Path Helpers ---
+    // Collections are set to public/data to allow for cross-user data access (feed, profiles)
+    const getCollectionPath = (name) => `artifacts/${appId}/public/data/sentagram_${name}`;
+    const getUsersCollectionRef = () => collection(db, getCollectionPath('users'));
+    const getPostsCollectionRef = () => collection(db, getCollectionPath('posts'));
+    const getChatsCollectionRef = () => collection(db, getCollectionPath('chats'));
+    const getUserDocRef = (uid) => doc(db, getCollectionPath('users'), uid);
+    const getPostDocRef = (postId) => doc(db, getCollectionPath('posts'), postId);
+    const getChatDocRef = (chatId) => doc(db, getCollectionPath('chats'), chatId);
     
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center hidden">
-        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm m-4">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center" id="modal-title">Sign In</h2>
-            
-            <!-- Email/Password Form -->
-            <form id="email-auth-form" class="space-y-4">
-                <input type="email" id="auth-email" placeholder="Email" required
-                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500">
-                <input type="password" id="auth-password" placeholder="Password" required
-                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500">
-                
-                <button type="submit" id="email-submit-button"
-                        class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg transition duration-200">
-                    Sign In with Email
-                </button>
-                <p id="auth-error-message" class="text-sm text-red-500 text-center hidden"></p>
-            </form>
+    // --- Utility Functions ---
+    const getIcon = (name, classes = 'w-6 h-6') => {
+        return `<i data-lucide="${name}" class="${classes}"></i>`;
+    };
 
-            <div class="my-4 flex items-center">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-500 text-sm">OR</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-            </div>
+    const generateId = () => crypto.randomUUID();
 
-            <!-- Social Login -->
-            <button id="google-auth-button"
-                    class="w-full flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition duration-200 space-x-2">
-                <svg class="w-5 h-5" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.757-6.08 7.732-11.303 7.732-6.769 0-12.263-5.494-12.263-12.263s5.494-12.263 12.263-12.263c3.181 0 6.096 1.29 8.243 3.336l5.795-5.795C34.486 7.641 29.336 6 24 6c-11.042 0-20 8.958-20 20s8.958 20 20 20c11.042 0 20-8.958 20-20v-2.083z"/>
-                    <path fill="#FF3D00" d="M6.306 14.695L21.056 28.53h.941L4.35 12.012l1.956 2.683z"/>
-                    <path fill="#4CAF50" d="M14 20h2v12h-2z"/>
-                    <path fill="#1976D2" d="M33.611 20.083v-3.791h-5.795v11.583h5.795v-3.791h3.791V20.083z"/>
-                </svg>
-                <span>Sign In with Google</span>
-            </button>
+    const formatDate = (timestamp) => {
+        const now = new Date();
+        const date = new Date(timestamp);
+        const diff = now.getTime() - date.getTime();
 
-            <!-- Toggle Register/Login -->
-            <p class="text-center mt-4 text-gray-600 text-sm">
-                <span id="auth-toggle-text">Don't have an account?</span>
-                <button type="button" id="auth-toggle-button" class="text-pink-600 hover:text-pink-800 font-semibold ml-1">
-                    Register
-                </button>
-            </p>
-        </div>
-    </div>
+        const seconds = Math.floor(diff / 1000);
+        if (seconds < 60) return `${seconds}s ago`;
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            onAuthStateChanged, 
-            setPersistence, 
-            browserSessionPersistence,
-            createUserWithEmailAndPassword,
-            signInWithEmailAndPassword,
-            GoogleAuthProvider,
-            signInWithPopup,
-            signOut
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        const minutes = Math.floor(diff / (1000 * 60));
+        if (minutes < 60) return `${minutes}m ago`;
 
-        // Set log level to debug for better console output
-        setLogLevel('Debug');
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        if (hours < 24) return `${hours}h ago`;
 
-        // Global variables provided by the environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        if (days < 7) return `${days}d ago`;
 
-        // User-provided Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCAtZIXvVQtwHQsz0nKjJKEH9LTVSx-tus",
-            authDomain: "senternet-a99dd.firebaseapp.com",
-            projectId: "senternet-a99dd",
-            storageBucket: "senternet-a99dd.firebasestorage.app",
-            messagingSenderId: "779399095706",
-            appId: "1:779399095706:web:cee01cd750b506e0878623"
+        return date.toLocaleDateString();
+    };
+
+    // --- Firebase Initialization and Auth ---
+    async function initializeFirebase() {
+        try {
+            // setLogLevel('debug'); // Uncomment for debugging
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Handle Authentication using the provided token or sign in anonymously
+            if (initialAuthToken) {
+                await signInWithCustomToken(auth, initialAuthToken);
+            } else {
+                await signInAnonymously(auth);
+            }
+
+            // Listen for Auth state changes
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    state.userId = user.uid;
+                    checkOrCreateUser(user.uid);
+                } else {
+                    state.userId = null;
+                    state.userProfile = null;
+                    state.isAuthReady = true;
+                    // If the user logs out, go to Auth view
+                    switchView('auth');
+                }
+            });
+
+        } catch (error) {
+            console.error("Firebase initialization failed:", error);
+            document.getElementById('app').innerHTML = `<div class="p-8 text-center text-red-600">Failed to load Sentagram: ${error.message}</div>`;
+        }
+    }
+
+    // Checks if user exists in Firestore, sets up snapshot listener, or prompts for username
+    function checkOrCreateUser(uid) {
+        onSnapshot(getUserDocRef(uid), (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                state.userProfile = docSnapshot.data();
+                state.isAuthReady = true;
+                // If we were on loading or auth, switch to feed
+                if (state.currentView === 'loading' || state.currentView === 'auth') {
+                    switchView('feed');
+                }
+                // Start listening to public data once auth and profile are ready
+                startDataListeners();
+            } else {
+                // User document doesn't exist, prompt for profile setup
+                state.isAuthReady = true;
+                switchView('profileSetup', { uid });
+            }
+        }, (error) => {
+            console.error("Error listening to user profile:", error);
+        });
+    }
+
+    // --- Data Listeners ---
+    function startDataListeners() {
+        if (!state.isAuthReady || !state.userId || !db) return;
+
+        // 1. Listen to all users (for following/profile lookup)
+        onSnapshot(getUsersCollectionRef(), (snapshot) => {
+            state.allUsers = snapshot.docs.map(doc => doc.data());
+            renderApp();
+        }, (error) => { console.error("Error listening to users:", error); });
+
+        // 2. Listen to posts (Feed) - Order by timestamp
+        const qPosts = query(getPostsCollectionRef(), where('timestamp', '>', 0)); // Filter out null timestamps
+        onSnapshot(qPosts, (snapshot) => {
+            state.feedPosts = snapshot.docs.map(doc => ({ ...doc.data(), postId: doc.id })).sort((a, b) => b.timestamp - a.timestamp);
+            renderApp();
+        }, (error) => { console.error("Error listening to posts:", error); });
+
+        // 3. Listen to Chats
+        const qChats = query(getChatsCollectionRef(), where('participants', 'array-contains', state.userId));
+        onSnapshot(qChats, (snapshot) => {
+            state.chats = snapshot.docs.map(doc => ({ ...doc.data(), chatId: doc.id }));
+            // If the user is viewing the chat list or a specific chat, re-render
+            if (state.currentView.startsWith('chat')) {
+                renderApp();
+            }
+        }, (error) => { console.error("Error listening to chats:", error); });
+    }
+
+    // --- Core Interaction Logic (Post/Follow/Like) ---
+
+    async function handleFollow(targetUserId) {
+        if (!state.userProfile || state.userId === targetUserId) return;
+
+        const isFollowing = state.userProfile.following.includes(targetUserId);
+
+        try {
+            // 1. Update Current User's 'following' list
+            await updateDoc(getUserDocRef(state.userId), {
+                following: isFollowing ? arrayRemove(targetUserId) : arrayUnion(targetUserId)
+            });
+
+            // 2. Update Target User's 'followers' list
+            await updateDoc(getUserDocRef(targetUserId), {
+                followers: isFollowing ? arrayRemove(state.userId) : arrayUnion(state.userId)
+            });
+        } catch (error) {
+            console.error("Error updating follow status:", error);
+        }
+    }
+
+    async function handleLike(postId) {
+        const post = state.feedPosts.find(p => p.postId === postId);
+        if (!post) return;
+
+        const isLiked = post.likes.includes(state.userId);
+
+        try {
+            await updateDoc(getPostDocRef(postId), {
+                likes: isLiked ? arrayRemove(state.userId) : arrayUnion(state.userId)
+            });
+        } catch (error) {
+            console.error("Error updating like status:", error);
+        }
+    }
+
+    async function handleComment(postId) {
+        const commentText = document.getElementById(`comment-input-${postId}`).value.trim();
+        if (!commentText) return;
+
+        const newComment = {
+            userId: state.userId,
+            username: state.userProfile.username,
+            text: commentText,
+            timestamp: new Date().getTime()
         };
 
-        // Environment's auth token (unused for this flow but kept for completeness)
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        try {
+            await updateDoc(getPostDocRef(postId), {
+                comments: arrayUnion(newComment)
+            });
+            document.getElementById(`comment-input-${postId}`).value = ''; // Clear input
+            // Optionally scroll to the new comment
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
+    }
 
-        let app = null;
-        let db = null;
-        let auth = null;
-        let userId = null;
-        let isAuthReady = false;
-        let isRegisterMode = false;
+    async function handleNewPost(e) {
+        e.preventDefault();
+        const form = e.target;
+        const caption = form.caption.value;
+        const contentType = form.content_type.value;
+        const contentUrl = form.content_url.value || (contentType === 'image' ? 'https://placehold.co/600x400/3b82f6/ffffff?text=Sentagram+Image' : 'https://placehold.co/600x400/ef4444/ffffff?text=Sentagram+Video');
 
-        // UI elements
-        const feedContainer = document.getElementById('feed-container');
-        const postForm = document.getElementById('new-post-form');
-        const postContentInput = document.getElementById('post-content');
-        const postButton = document.getElementById('post-button');
-        const userIdDisplay = document.getElementById('user-id-display');
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const authStatusContainer = document.getElementById('auth-status-container');
-
-        // Modal elements
-        const authModal = document.getElementById('auth-modal');
-        const authButton = document.getElementById('auth-button'); // Sign In/Sign Out button
-        const modalTitle = document.getElementById('modal-title');
-        const emailAuthForm = document.getElementById('email-auth-form');
-        const authEmailInput = document.getElementById('auth-email');
-        const authPasswordInput = document.getElementById('auth-password');
-        const emailSubmitButton = document.getElementById('email-submit-button');
-        const googleAuthButton = document.getElementById('google-auth-button');
-        const authToggleText = document.getElementById('auth-toggle-text');
-        const authToggleButton = document.getElementById('auth-toggle-button');
-        const authErrorMessage = document.getElementById('auth-error-message');
-        const postStatus = document.getElementById('post-status');
-
-        /**
-         * Converts a Firebase timestamp or Date object to a readable string.
-         * @param {Object | Date} timestamp - Firebase Timestamp object or standard Date.
-         * @returns {string} Formatted date string.
-         */
-        function formatTimestamp(timestamp) {
-            if (timestamp && timestamp.toDate) {
-                return timestamp.toDate().toLocaleString();
-            }
-            if (timestamp instanceof Date) {
-                return timestamp.toLocaleString();
-            }
-            return 'Just now';
+        if (!caption || !contentUrl) {
+            alert('Please provide a caption and a placeholder URL.');
+            return;
         }
 
-        /**
-         * Renders a single post element to the feed.
-         * @param {Object} post - The post data object from Firestore.
-         */
-        function renderPost(post) {
-            const postElement = document.createElement('div');
-            postElement.className = 'post-card bg-white p-5 rounded-xl border border-gray-200 shadow-sm';
-            
-            // Set up a consistent color for the sender based on the user ID hash
-            const hue = post.userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360;
-            const userColor = `hsl(${hue}, 70%, 50%)`;
+        const newPost = {
+            userId: state.userId,
+            username: state.userProfile.username,
+            contentUrl,
+            contentType,
+            caption,
+            timestamp: new Date().getTime(),
+            likes: [],
+            comments: []
+        };
 
-            // Display email if available, otherwise fallback to truncated ID
-            const userDisplay = post.email || `User ID: ${post.userId.substring(0, 8)}...`;
+        try {
+            await addDoc(getPostsCollectionRef(), newPost);
+            switchView('feed');
+        } catch (error) {
+            console.error("Error creating new post:", error);
+        }
+    }
 
-            postElement.innerHTML = `
-                <div class="flex items-center mb-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3" 
-                         style="background-color: ${userColor};">
-                        ${(post.email || post.userId).substring(0, 1).toUpperCase()}
+    // --- Chat Logic ---
+
+    // Function to create a chat ID based on two user IDs (sorted)
+    const getChatId = (userA, userB) => [userA, userB].sort().join('_');
+
+    async function startChatWith(targetUserId) {
+        const chatId = getChatId(state.userId, targetUserId);
+        const chatDocRef = getChatDocRef(chatId);
+
+        try {
+            const chatDoc = await getDoc(chatDocRef);
+            if (!chatDoc.exists()) {
+                // Create new chat
+                const newChat = {
+                    participants: [state.userId, targetUserId],
+                    messages: [],
+                    lastMessageTime: new Date().getTime()
+                };
+                await setDoc(chatDocRef, newChat);
+            }
+            // Switch to the chat view
+            const targetUser = state.allUsers.find(u => u.uid === targetUserId);
+            switchView('singleChat', { chatId, targetUsername: targetUser?.username || targetUserId });
+
+        } catch (error) {
+            console.error("Error starting chat:", error);
+        }
+    }
+
+    async function handleNewChatMessage(e) {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const messageText = input.value.trim();
+        const chatId = state.currentViewData.chatId;
+
+        if (!messageText || !chatId) return;
+
+        const newMessage = {
+            userId: state.userId,
+            text: messageText,
+            timestamp: new Date().getTime()
+        };
+
+        try {
+            await updateDoc(getChatDocRef(chatId), {
+                messages: arrayUnion(newMessage),
+                lastMessageTime: new Date().getTime()
+            });
+            input.value = '';
+            // Scroll to bottom of chat
+            const chatBody = document.getElementById('chat-body');
+            if (chatBody) {
+                setTimeout(() => chatBody.scrollTop = chatBody.scrollHeight, 10);
+            }
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
+    }
+
+    // --- View Rendering ---
+
+    function switchView(viewName, data = null) {
+        state.currentView = viewName;
+        state.currentViewData = data;
+        renderApp();
+        // After rendering, ensure Lucide icons are correctly rendered
+        setTimeout(() => {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+            // Scroll to bottom of chat if in chat view
+            if (viewName === 'singleChat') {
+                const chatBody = document.getElementById('chat-body');
+                if (chatBody) {
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }
+            }
+        }, 50);
+    }
+
+    function renderApp() {
+        const appContainer = document.getElementById('app');
+        appContainer.innerHTML = ''; // Clear previous content
+
+        // Render based on Authentication and Ready Status
+        if (!state.isAuthReady) {
+            appContainer.innerHTML = renderLoadingScreen();
+        } else if (!state.userId) {
+            appContainer.innerHTML = renderAuthView();
+        } else if (state.currentView === 'profileSetup') {
+            appContainer.innerHTML = renderProfileSetupView();
+        } else {
+            appContainer.innerHTML = renderMainLayout();
+            const content = document.getElementById('main-content');
+            switch (state.currentView) {
+                case 'feed':
+                    content.innerHTML = renderFeedView();
+                    break;
+                case 'profile':
+                    content.innerHTML = renderProfileView(state.currentViewData.userId);
+                    break;
+                case 'post':
+                    content.innerHTML = renderPostCreationView();
+                    break;
+                case 'chatList':
+                    content.innerHTML = renderChatListView();
+                    break;
+                case 'singleChat':
+                    content.innerHTML = renderSingleChatView(state.currentViewData);
+                    break;
+                default:
+                    content.innerHTML = renderFeedView(); // Default to feed
+            }
+        }
+        // Attach all necessary event listeners (delegation or direct)
+        attachGlobalEventListeners();
+    }
+
+    function attachGlobalEventListeners() {
+        // Clear previous listeners (important for single-file apps)
+        const appContainer = document.getElementById('app');
+        if (appContainer) {
+            appContainer.onclick = null;
+            appContainer.onsubmit = null;
+        }
+
+        // Global Event Delegation for Clicks
+        document.getElementById('app').onclick = async (e) => {
+            const target = e.target.closest('[data-action]');
+            if (!target) return;
+            const action = target.getAttribute('data-action');
+            const postId = target.getAttribute('data-post-id');
+            const userId = target.getAttribute('data-user-id');
+            const targetUid = target.getAttribute('data-target-uid');
+
+            switch (action) {
+                case 'switch-view':
+                    switchView(target.getAttribute('data-view'), { userId: targetUid });
+                    break;
+                case 'like-post':
+                    await handleLike(postId);
+                    break;
+                case 'toggle-follow':
+                    await handleFollow(targetUid);
+                    break;
+                case 'start-chat':
+                    await startChatWith(targetUid);
+                    break;
+                case 'share-post':
+                    // Simulation of sharing
+                    const postUrl = `${window.location.origin}/post/${postId}`;
+                    navigator.clipboard.writeText(postUrl)
+                        .then(() => alert('Post link copied to clipboard!'))
+                        .catch(() => {
+                            // Fallback for clipboard access issues
+                            const dummy = document.createElement('textarea');
+                            document.body.appendChild(dummy);
+                            dummy.value = postUrl;
+                            dummy.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(dummy);
+                            alert('Post link copied to clipboard! (Fallback)');
+                        });
+                    break;
+                case 'sign-out':
+                    await signOut(auth);
+                    break;
+            }
+        };
+
+        // Global Event Delegation for Form Submissions
+        document.getElementById('app').onsubmit = async (e) => {
+            const form = e.target.closest('form');
+            if (!form) return;
+            const formAction = form.getAttribute('data-form-action');
+
+            if (formAction) {
+                e.preventDefault();
+                switch (formAction) {
+                    case 'auth-sign-up':
+                        await handleAuth(e, 'signup');
+                        break;
+                    case 'auth-sign-in':
+                        await handleAuth(e, 'signin');
+                        break;
+                    case 'profile-setup':
+                        await handleProfileSetup(e);
+                        break;
+                    case 'new-post':
+                        await handleNewPost(e);
+                        break;
+                    case 'new-comment':
+                        await handleComment(form.getAttribute('data-post-id'));
+                        break;
+                    case 'new-chat-message':
+                        await handleNewChatMessage(e);
+                        break;
+                }
+            }
+        };
+    }
+
+    // --- Render Components ---
+
+    function renderLoadingScreen() {
+        return `
+            <div class="flex flex-col items-center justify-center h-screen bg-gray-50">
+                <div class="logo-text text-5xl animate-pulse">Sentagram</div>
+                <p class="mt-4 text-gray-500">Loading your feed...</p>
+                ${getIcon('loader', 'w-8 h-8 mt-4 text-blue-500 animate-spin')}
+            </div>
+        `;
+    }
+
+    function renderAuthView() {
+        const isSignUp = state.currentViewData?.isSignUp || false;
+        const toggleHtml = `<p class="mt-6 text-center text-sm text-gray-600">
+            ${isSignUp ? 'Already have an account?' : "Don't have an account?"}
+            <a href="#" class="font-medium text-blue-600 hover:text-blue-500" data-action="switch-view" data-view="auth" data-target-uid='{"isSignUp": ${!isSignUp}}'>
+                ${isSignUp ? 'Sign in' : 'Register'}
+            </a>
+        </p>`;
+
+        return `
+            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full space-y-8 card bg-white p-8">
+                    <div class="text-center">
+                        <div class="logo-text text-3xl">Sentagram</div>
+                        <h2 class="mt-6 text-xl font-extrabold text-gray-900">${isSignUp ? 'Create your account' : 'Sign in to your account'}</h2>
+                    </div>
+                    <form class="mt-8 space-y-6" data-form-action="auth-${isSignUp ? 'sign-up' : 'sign-in'}">
+                        <input type="hidden" name="remember" value="true">
+                        <div class="rounded-md shadow-sm space-y-4">
+                            <div>
+                                <label for="email" class="sr-only">Email address</label>
+                                <input id="email" name="email" type="email" autocomplete="email" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email address">
+                            </div>
+                            <div>
+                                <label for="password" class="sr-only">Password</label>
+                                <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Password">
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">
+                                ${isSignUp ? 'Register' : 'Sign in'}
+                            </button>
+                        </div>
+                    </form>
+                    ${toggleHtml}
+                    <div id="auth-error" class="text-red-500 text-center mt-4"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    async function handleAuth(e, type) {
+        const form = e.target;
+        const email = form.email.value;
+        const password = form.password.value;
+        const errorElement = document.getElementById('auth-error');
+        errorElement.textContent = '';
+
+        try {
+            if (type === 'signup') {
+                await createUserWithEmailAndPassword(auth, email, password);
+                // checkOrCreateUser will handle the profile setup view transition
+            } else {
+                await signInWithEmailAndPassword(auth, email, password);
+                // checkOrCreateUser will handle the feed view transition
+            }
+        } catch (error) {
+            console.error("Auth error:", error);
+            errorElement.textContent = `Error: ${error.message}`;
+        }
+    }
+
+    function renderProfileSetupView() {
+        return `
+            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full space-y-8 card bg-white p-8">
+                    <div class="text-center">
+                        <div class="logo-text text-3xl">Welcome to Sentagram</div>
+                        <h2 class="mt-6 text-xl font-extrabold text-gray-900">One more step! Set up your profile.</h2>
+                    </div>
+                    <form class="mt-8 space-y-6" data-form-action="profile-setup">
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                            <input id="username" name="username" type="text" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Choose a unique username">
+                        </div>
+                        <div>
+                            <label for="bio" class="block text-sm font-medium text-gray-700">Bio (Optional)</label>
+                            <textarea id="bio" name="bio" rows="3" class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                                Complete Setup
+                            </button>
+                        </div>
+                        <div id="setup-error" class="text-red-500 text-center mt-4"></div>
+                    </form>
+                </div>
+            </div>
+        `;
+    }
+
+    async function handleProfileSetup(e) {
+        e.preventDefault();
+        const form = e.target;
+        const username = form.username.value.trim();
+        const bio = form.bio.value.trim();
+        const errorElement = document.getElementById('setup-error');
+        errorElement.textContent = '';
+
+        if (!username) {
+            errorElement.textContent = "Username is required.";
+            return;
+        }
+
+        const newUserProfile = {
+            uid: state.userId,
+            username: username,
+            bio: bio || 'Hello, Sentagram!',
+            profilePicUrl: `https://placehold.co/100x100/3b82f6/ffffff?text=${username.charAt(0).toUpperCase()}`,
+            followers: [],
+            following: [],
+            email: auth.currentUser.email || 'N/A' // Store email for management
+        };
+
+        try {
+            await setDoc(getUserDocRef(state.userId), newUserProfile);
+            // checkOrCreateUser listener will automatically update state.userProfile and switch to feed
+        } catch (error) {
+            console.error("Error setting up profile:", error);
+            errorElement.textContent = `Error setting up profile: ${error.message}`;
+        }
+    }
+
+    function renderMainLayout() {
+        return `
+            <header class="sticky top-0 z-10 bg-white shadow-md">
+                <nav class="flex justify-between items-center px-4 py-3 max-w-4xl mx-auto">
+                    <div class="logo-text cursor-pointer" data-action="switch-view" data-view="feed">Sentagram</div>
+                    <div class="flex space-x-4">
+                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="feed" title="Feed">${getIcon('home')}</button>
+                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="post" title="New Post">${getIcon('plus-square')}</button>
+                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="chatList" title="Chats">${getIcon('message-square')}</button>
+                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="profile" data-target-uid="${state.userId}" title="Profile">${getIcon('user')}</button>
+                    </div>
+                </nav>
+            </header>
+            <main id="main-content" class="flex-grow max-w-4xl mx-auto w-full p-4"></main>
+        `;
+    }
+
+    function renderFeedView() {
+        const postsHtml = state.feedPosts.map(post => {
+            const isLiked = post.likes.includes(state.userId);
+            const likeIcon = isLiked ? getIcon('heart', 'w-5 h-5 fill-red-500 text-red-500') : getIcon('heart', 'w-5 h-5 text-gray-500');
+            const poster = state.allUsers.find(u => u.uid === post.userId);
+            const profilePic = poster?.profilePicUrl || 'https://placehold.co/40x40/cccccc/000000?text=?';
+
+            return `
+                <div class="card bg-white mb-6 overflow-hidden">
+                    <!-- Post Header -->
+                    <div class="flex items-center p-4 border-b">
+                        <img src="${profilePic}" alt="${post.username}" class="w-10 h-10 rounded-full object-cover mr-3">
+                        <div class="flex-grow">
+                            <span class="font-semibold text-gray-900 cursor-pointer hover:text-blue-600" data-action="switch-view" data-view="profile" data-target-uid="${post.userId}">${post.username}</span>
+                            <span class="text-xs text-gray-500 block">${formatDate(post.timestamp)}</span>
+                        </div>
+                    </div>
+                    <!-- Post Content (Image/Video Placeholder) -->
+                    <div class="aspect-video bg-gray-200">
+                        <img src="${post.contentUrl}" alt="Post Content" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Post Actions -->
+                    <div class="flex items-center p-3 space-x-4 border-b">
+                        <button class="flex items-center space-x-1 p-2 rounded-full hover:bg-gray-100 transition duration-150" data-action="like-post" data-post-id="${post.postId}">
+                            ${likeIcon}
+                        </button>
+                        <button class="flex items-center space-x-1 p-2 rounded-full hover:bg-gray-100 transition duration-150" onclick="document.getElementById('comment-input-${post.postId}').focus()">
+                            ${getIcon('message-circle', 'w-5 h-5 text-gray-500')}
+                        </button>
+                        <button class="flex items-center space-x-1 p-2 rounded-full hover:bg-gray-100 transition duration-150" data-action="share-post" data-post-id="${post.postId}">
+                            ${getIcon('send', 'w-5 h-5 text-gray-500')}
+                        </button>
+                        <span class="text-sm font-medium text-gray-700 ml-auto">${post.likes.length} Likes</span>
+                    </div>
+                    <!-- Post Caption -->
+                    <div class="p-4 pt-2">
+                        <p class="text-gray-800 mb-2">
+                            <span class="font-semibold">${post.username}</span> ${post.caption}
+                        </p>
+                        <!-- Comments Section -->
+                        <div class="space-y-2 max-h-40 overflow-y-auto scroll-area border-t pt-2 mt-2">
+                            ${post.comments.map(comment => `
+                                <p class="text-sm text-gray-700">
+                                    <span class="font-semibold cursor-pointer hover:text-blue-600" data-action="switch-view" data-view="profile" data-target-uid="${comment.userId}">${comment.username}:</span> ${comment.text}
+                                </p>
+                            `).join('')}
+                            ${post.comments.length === 0 ? '<p class="text-sm text-gray-500 italic">No comments yet.</p>' : ''}
+                        </div>
+                        <!-- Add Comment Form -->
+                        <form class="flex mt-3 border-t pt-3" data-form-action="new-comment" data-post-id="${post.postId}">
+                            <input id="comment-input-${post.postId}" type="text" placeholder="Add a comment..." class="flex-grow px-3 py-2 border-none rounded-l-lg bg-gray-50 text-sm focus:ring-0 focus:outline-none" required>
+                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 text-sm rounded-r-lg hover:bg-blue-600 transition duration-150">Post</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <div class="w-full">
+                <h1 class="text-2xl font-bold mb-6 text-gray-800">Global Feed</h1>
+                ${state.feedPosts.length === 0 ? '<p class="text-center text-gray-500 mt-10">No posts yet. Be the first to post!</p>' : postsHtml}
+            </div>
+        `;
+    }
+
+    function renderPostCreationView() {
+        return `
+            <div class="w-full max-w-xl mx-auto card bg-white p-6">
+                <h1 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-3">Create New Post</h1>
+                <form data-form-action="new-post" class="space-y-4">
+                    <div>
+                        <label for="caption" class="block text-sm font-medium text-gray-700">Caption</label>
+                        <textarea id="caption" name="caption" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="What's on your mind?" required></textarea>
                     </div>
                     <div>
-                        <p class="font-semibold text-gray-800 text-sm">
-                            ${post.userId === userId ? 'You' : userDisplay}
-                        </p>
-                        <p class="text-xs text-gray-500">${formatTimestamp(post.timestamp)}</p>
+                        <label for="content_type" class="block text-sm font-medium text-gray-700">Content Type (Placeholder)</label>
+                        <select id="content_type" name="content_type" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="image">Image</option>
+                            <option value="video">Video</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="content_url" class="block text-sm font-medium text-gray-700">Content URL (Mock/Placeholder)</label>
+                        <input id="content_url" name="content_url" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="Optional: Enter image or video link. Uses default if empty.">
+                    </div>
+                    <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                        Post to Sentagram
+                    </button>
+                </form>
+            </div>
+        `;
+    }
+
+    function renderProfileView(targetUid) {
+        const targetUser = state.allUsers.find(u => u.uid === targetUid) || {};
+        const isCurrentUser = targetUid === state.userId;
+        const userPosts = state.feedPosts.filter(p => p.userId === targetUid);
+
+        // Safely access properties, default to empty arrays
+        const followersCount = targetUser.followers?.length || 0;
+        const followingCount = targetUser.following?.length || 0;
+        const isFollowing = isCurrentUser ? false : state.userProfile?.following?.includes(targetUid);
+        
+        const followButtonHtml = isCurrentUser ? 
+            `<button class="w-full sm:w-auto py-2 px-4 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition duration-150" data-action="sign-out">${getIcon('log-out', 'w-4 h-4 mr-2')}Sign Out</button>` :
+            `<button class="w-full sm:w-auto py-2 px-4 rounded-lg text-sm font-medium transition duration-150 ${isFollowing ? 'bg-gray-300 text-gray-800 hover:bg-gray-400' : 'bg-blue-600 text-white hover:bg-blue-700'}" data-action="toggle-follow" data-target-uid="${targetUid}">
+                ${isFollowing ? `${getIcon('user-check', 'w-4 h-4 mr-2')}Following` : `${getIcon('user-plus', 'w-4 h-4 mr-2')}Follow`}
+            </button>
+            <button class="w-full sm:w-auto py-2 px-4 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition duration-150 mt-2 sm:mt-0" data-action="start-chat" data-target-uid="${targetUid}">
+                ${getIcon('send', 'w-4 h-4 mr-2')}Message
+            </button>`;
+
+        return `
+            <div class="w-full">
+                <!-- Profile Header -->
+                <div class="card bg-white p-6 mb-6 text-center">
+                    <img src="${targetUser.profilePicUrl || 'https://placehold.co/100x100/cccccc/000000?text=U'}" alt="${targetUser.username}" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-blue-500 shadow-md">
+                    <h1 class="text-3xl font-bold text-gray-900">${targetUser.username || 'User Not Found'}</h1>
+                    <p class="text-sm text-gray-500 mb-4">UID: ${targetUid}</p>
+
+                    <!-- Stats -->
+                    <div class="flex justify-center space-x-8 mb-6">
+                        <div class="text-center">
+                            <span class="block font-bold text-xl">${userPosts.length}</span>
+                            <span class="text-gray-500 text-sm">Posts</span>
+                        </div>
+                        <div class="text-center cursor-pointer hover:text-blue-600" data-action="show-list" data-list-type="followers">
+                            <span class="block font-bold text-xl">${followersCount}</span>
+                            <span class="text-gray-500 text-sm">Followers</span>
+                        </div>
+                        <div class="text-center cursor-pointer hover:text-blue-600" data-action="show-list" data-list-type="following">
+                            <span class="block font-bold text-xl">${followingCount}</span>
+                            <span class="text-gray-500 text-sm">Following</span>
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <p class="text-gray-700 mb-6 max-w-md mx-auto italic">${targetUser.bio || 'No bio provided.'}</p>
+
+                    <!-- Actions -->
+                    <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
+                        ${followButtonHtml}
                     </div>
                 </div>
-                <p class="text-gray-700 text-base whitespace-pre-wrap">${post.content}</p>
+
+                <!-- User Posts Grid -->
+                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Posts</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    ${userPosts.length > 0 ? userPosts.map(post => `
+                        <div class="relative group aspect-square overflow-hidden rounded-lg cursor-pointer hover:shadow-xl transition duration-300">
+                            <img src="${post.contentUrl}" alt="Post" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                                <span class="text-white text-lg font-bold flex items-center">
+                                    ${getIcon('heart', 'w-5 h-5 fill-white mr-1')} ${post.likes.length}
+                                </span>
+                            </div>
+                        </div>
+                    `).join('') : `<p class="col-span-3 text-center text-gray-500 mt-4">${targetUser.username} has no posts yet.</p>`}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderChatListView() {
+        // Find the other participant's profile for each chat
+        const chatItemsHtml = state.chats.map(chat => {
+            const otherUserId = chat.participants.find(uid => uid !== state.userId);
+            const otherUser = state.allUsers.find(u => u.uid === otherUserId) || { username: 'Unknown User', profilePicUrl: 'https://placehold.co/40x40/cccccc/000000?text=?' };
+            const lastMessage = chat.messages[chat.messages.length - 1];
+
+            return `
+                <div class="flex items-center p-4 border-b last:border-b-0 cursor-pointer hover:bg-gray-50 transition duration-150" 
+                     data-action="switch-view" data-view="singleChat" 
+                     data-target-uid='{"chatId": "${chat.chatId}", "targetUsername": "${otherUser.username}"}'>
+                    <img src="${otherUser.profilePicUrl}" alt="${otherUser.username}" class="w-12 h-12 rounded-full object-cover mr-4">
+                    <div class="flex-grow">
+                        <p class="font-semibold text-gray-900">${otherUser.username}</p>
+                        <p class="text-sm text-gray-500 truncate max-w-[200px] sm:max-w-none">
+                            ${lastMessage ? (lastMessage.userId === state.userId ? 'You: ' : '') + lastMessage.text : 'Start a conversation.'}
+                        </p>
+                    </div>
+                    ${lastMessage ? `<span class="text-xs text-gray-400 ml-auto">${formatDate(lastMessage.timestamp)}</span>` : ''}
+                </div>
             `;
-            feedContainer.prepend(postElement); // Prepend for newest first
-        }
+        }).join('');
 
-        /**
-         * Subscribes to the Sentagram posts collection for real-time updates.
-         */
-        function loadPosts() {
-            // Only proceed if auth is ready and we have a user ID and db instance
-            if (!isAuthReady || !db) {
-                console.warn("Attempted to load posts before Firebase was ready.");
-                return;
-            }
+        return `
+            <div class="w-full max-w-xl mx-auto card bg-white">
+                <h1 class="text-2xl font-bold p-4 border-b">Private Messages</h1>
+                <div class="scroll-area h-[60vh] overflow-y-auto divide-y divide-gray-100">
+                    ${state.chats.length > 0 ? chatItemsHtml : '<p class="p-8 text-center text-gray-500">No active chats. Find a user to message!</p>'}
+                </div>
+            </div>
+        `;
+    }
 
-            const postsCollectionPath = `artifacts/${appId}/public/data/sentagram_posts`;
-            const q = query(collection(db, postsCollectionPath), orderBy('timestamp', 'desc'));
+    function renderSingleChatView({ chatId, targetUsername }) {
+        const currentChat = state.chats.find(c => c.chatId === chatId);
+        const messages = currentChat?.messages || [];
 
-            // Real-time listener
-            onSnapshot(q, (snapshot) => {
-                loadingIndicator.classList.add('hidden'); // Hide loading indicator once data starts flowing
-                
-                // Clear existing posts without re-rendering the whole container
-                Array.from(feedContainer.children).forEach(child => {
-                    if (child.id !== 'loading-indicator') {
-                        child.remove();
-                    }
-                });
+        const messagesHtml = messages.map(msg => {
+            const isMe = msg.userId === state.userId;
+            const messageClass = isMe ? 'bg-blue-500 text-white rounded-bl-lg self-end' : 'bg-gray-200 text-gray-800 rounded-tr-lg self-start';
+            const username = isMe ? 'You' : targetUsername;
 
-                if (snapshot.empty) {
-                    // Only show this message if the loading indicator is hidden
-                    if (loadingIndicator.classList.contains('hidden')) {
-                        feedContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No posts yet! Be the first to share.</p>';
-                    }
-                    return;
-                }
+            return `
+                <div class="flex flex-col mb-4 ${isMe ? 'items-end' : 'items-start'}">
+                    <div class="text-xs text-gray-500 mb-1">${username} - ${formatDate(msg.timestamp)}</div>
+                    <div class="p-3 max-w-xs md:max-w-md ${messageClass} rounded-t-lg rounded-br-lg shadow-md break-words">
+                        ${msg.text}
+                    </div>
+                </div>
+            `;
+        }).join('');
 
-                snapshot.forEach(doc => {
-                    const post = doc.data();
-                    renderPost(post);
-                });
-            }, (error) => {
-                console.error("Error listening to posts:", error);
-                feedContainer.innerHTML = `<p class="text-red-500 p-4 text-center">Failed to load feed: ${error.message}</p>`;
-            });
-        }
+        return `
+            <div class="w-full max-w-xl mx-auto flex flex-col h-[80vh] card bg-white">
+                <!-- Chat Header -->
+                <div class="p-4 border-b flex items-center justify-between">
+                    <button class="text-gray-600 hover:text-blue-500 mr-3" data-action="switch-view" data-view="chatList">${getIcon('arrow-left')}</button>
+                    <h1 class="text-xl font-bold text-gray-900 flex-grow">${targetUsername}</h1>
+                </div>
 
-        /**
-         * Handles the form submission to create a new post.
-         * @param {Event} e - The form submission event.
-         */
-        async function handlePostSubmit(e) {
-            e.preventDefault();
-            postButton.disabled = true;
-            postContentInput.disabled = true;
-            postStatus.classList.add('hidden');
+                <!-- Chat Body -->
+                <div id="chat-body" class="flex-grow p-4 space-y-4 scroll-area overflow-y-auto">
+                    ${messages.length > 0 ? messagesHtml : '<p class="text-center text-gray-500 mt-auto">Say hello to start the chat!</p>'}
+                </div>
 
-            if (!userId || !db) {
-                postStatus.textContent = "Error: Please sign in to post.";
-                postStatus.classList.remove('hidden');
-                postButton.disabled = false;
-                postContentInput.disabled = false;
-                return;
-            }
+                <!-- Chat Input Form -->
+                <form data-form-action="new-chat-message" class="p-4 border-t flex">
+                    <input id="chat-input" type="text" placeholder="Type a message..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-blue-500 focus:border-blue-500" required>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition duration-150">
+                        ${getIcon('send', 'w-5 h-5')}
+                    </button>
+                </form>
+            </div>
+        `;
+    }
 
-            const content = postContentInput.value.trim();
+    // --- Start Application ---
+    initializeFirebase();
 
-            if (!content) {
-                postStatus.textContent = "Post content cannot be empty.";
-                postStatus.classList.remove('hidden');
-                postButton.disabled = false;
-                postContentInput.disabled = false;
-                return;
-            }
-
-            try {
-                const postsCollectionPath = `artifacts/${appId}/public/data/sentagram_posts`;
-                
-                await addDoc(collection(db, postsCollectionPath), {
-                    userId: userId,
-                    email: auth.currentUser.email || auth.currentUser.uid, // Store email if available
-                    content: content,
-                    timestamp: serverTimestamp() // Use server timestamp for consistency
-                });
-
-                postContentInput.value = ''; // Clear input
-            } catch (error) {
-                console.error("Error adding document: ", error);
-                postStatus.textContent = `Error posting: ${error.message}`;
-                postStatus.classList.remove('hidden');
-            } finally {
-                postButton.disabled = false;
-                postContentInput.disabled = false;
-            }
-        }
-
-        /**
-         * Toggles the modal between Sign In and Register modes.
-         */
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            authErrorMessage.classList.add('hidden');
-            authEmailInput.value = '';
-            authPasswordInput.value = '';
-
-            if (isRegisterMode) {
-                modalTitle.textContent = 'Register';
-                emailSubmitButton.textContent = 'Register with Email';
-                authToggleText.textContent = 'Already have an account?';
-                authToggleButton.textContent = 'Sign In';
-            } else {
-                modalTitle.textContent = 'Sign In';
-                emailSubmitButton.textContent = 'Sign In with Email';
-                authToggleText.textContent = "Don't have an account?";
-                authToggleButton.textContent = 'Register';
-            }
-        }
-
-        /**
-         * Handles Email/Password sign-in or registration.
-         */
-        async function handleEmailAuth(e) {
-            e.preventDefault();
-            authErrorMessage.classList.add('hidden');
-            const email = authEmailInput.value;
-            const password = authPasswordInput.value;
-            
-            emailSubmitButton.disabled = true;
-
-            try {
-                if (isRegisterMode) {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                } else {
-                    await signInWithEmailAndPassword(auth, email, password);
-                }
-                // AuthStateChanged listener will handle UI update on success
-            } catch (error) {
-                console.error("Authentication error:", error);
-                authErrorMessage.textContent = error.message.replace('Firebase:', '').trim();
-                authErrorMessage.classList.remove('hidden');
-            } finally {
-                emailSubmitButton.disabled = false;
-            }
-        }
-
-        /**
-         * Handles Google Sign-In using a popup.
-         */
-        async function signInWithGoogle() {
-            authErrorMessage.classList.add('hidden');
-            googleAuthButton.disabled = true;
-            try {
-                const provider = new GoogleAuthProvider();
-                await signInWithPopup(auth, provider);
-                // AuthStateChanged listener will handle UI update on success
-            } catch (error) {
-                console.error("Google sign-in error:", error);
-                authErrorMessage.textContent = error.message.replace('Firebase:', '').trim();
-                authErrorMessage.classList.remove('hidden');
-            } finally {
-                googleAuthButton.disabled = false;
-            }
-        }
-
-        /**
-         * Handles user sign-out.
-         */
-        async function handleSignOut() {
-            try {
-                await signOut(auth);
-                // AuthStateChanged listener will handle UI update on sign-out
-            } catch (error) {
-                console.error("Sign out error:", error);
-            }
-        }
-
-        /**
-         * Initializes Firebase and sets up the central auth listener.
-         */
-        async function initializeFirebase() {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                // Set persistence to session to maintain login state across page reloads
-                await setPersistence(auth, browserSessionPersistence);
-                
-                // Central listener to manage UI state
-                onAuthStateChanged(auth, (user) => {
-                    isAuthReady = true;
-                    loadingIndicator.classList.add('hidden');
-                    
-                    if (user) {
-                        // --- User is signed in ---
-                        userId = user.uid;
-                        authModal.classList.add('hidden');
-                        authButton.textContent = 'Sign Out';
-                        authButton.onclick = handleSignOut;
-                        authStatusContainer.classList.remove('hidden');
-
-                        const emailDisplay = user.email || 'Anonymous';
-                        userIdDisplay.innerHTML = `<span class="font-bold">${emailDisplay}</span>`;
-                        
-                        postContentInput.disabled = false;
-                        postContentInput.placeholder = 'What\'s on your mind?';
-                        postButton.disabled = false;
-
-                    } else {
-                        // --- User is signed out ---
-                        userId = null;
-                        authButton.textContent = 'Sign In';
-                        authButton.onclick = () => authModal.classList.remove('hidden');
-                        authStatusContainer.classList.add('hidden');
-                        
-                        postContentInput.disabled = true;
-                        postContentInput.placeholder = 'Sign in to post...';
-                        postButton.disabled = true;
-
-                        // Show modal initially if no user
-                        if (authModal.classList.contains('hidden')) {
-                             authModal.classList.remove('hidden');
-                             toggleAuthMode(); // Reset to Sign In mode
-                        }
-                    }
-                    // Load posts only after the initial auth state is determined
-                    loadPosts();
-                });
-
-            } catch (error) {
-                console.error("Firebase initialization failed:", error);
-                loadingIndicator.textContent = 'Error initializing Firebase.';
-                userIdDisplay.textContent = 'Auth Error!';
-                feedContainer.innerHTML = `<p class="text-red-500 p-4 text-center">Fatal Error: Cannot connect to Firebase. Check console for details.</p>`;
-            }
-        }
-
-        // --- Event Listeners ---
-        window.onload = () => {
-            initializeFirebase();
-            postForm.addEventListener('submit', handlePostSubmit);
-            emailAuthForm.addEventListener('submit', handleEmailAuth);
-            googleAuthButton.addEventListener('click', signInWithGoogle);
-            authToggleButton.addEventListener('click', toggleAuthMode);
-
-            // Close modal when clicking outside of it
-            authModal.addEventListener('click', (e) => {
-                if (e.target === authModal) {
-                    authModal.classList.add('hidden');
-                }
-            });
-        };
-    </script>
+</script>
 </body>
 </html>
