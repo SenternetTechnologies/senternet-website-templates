@@ -3,890 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentagram - The Social App</title>
+    <title>Video Stream Clone</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Configure Tailwind to use Inter font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
-        /* Custom styles for aesthetic enhancements */
+        /* Custom scrollbar for a cleaner look */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: #9ca3af; /* gray-400 */
+            border-radius: 4px;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7f9fb;
+            background-color: #0f0f0f; /* Dark background like YouTube */
+            color: white;
         }
-        .scroll-area::-webkit-scrollbar {
-            display: none;
+        /* Make the iframe responsive and maintain aspect ratio (16:9) */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background-color: #1f1f1f;
         }
-        .scroll-area {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-        /* Custom card shadows and rounded corners */
-        .card {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-radius: 1rem;
-        }
-        /* Style for the app logo */
-        .logo-text {
-            font-family: 'Georgia', serif;
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #3b82f6;
-            letter-spacing: -0.5px;
-        }
-        /* Custom focus ring */
-        input:focus, textarea:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
-<body>
-
-<div id="app" class="min-h-screen flex flex-col">
-    <!-- Main content area will be injected here -->
-</div>
-
-<!-- Firebase and App Logic -->
-<script type="module">
-    // Firebase Imports
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithCustomToken, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, query, onSnapshot, updateDoc, arrayUnion, arrayRemove, where, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // --- Global Configuration and State ---
-    // Canvas Environment Globals
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-    // App State
-    const state = {
-        userId: null,
-        userProfile: null, // Full user data {uid, username, followers, following, ...}
-        isAuthReady: false,
-        currentView: 'loading', // 'auth', 'feed', 'profile', 'post', 'chatList', 'singleChat'
-        feedPosts: [],
-        allUsers: [],
-        currentViewData: null, // Used for profileUserId, postId, chatId
-        chats: [],
-    };
-
-    // Firebase Instances
-    let app;
-    let db;
-    let auth;
-
-    // --- Firestore Path Helpers ---
-    // Collections are set to public/data to allow for cross-user data access (feed, profiles)
-    const getCollectionPath = (name) => `artifacts/${appId}/public/data/sentagram_${name}`;
-    const getUsersCollectionRef = () => collection(db, getCollectionPath('users'));
-    const getPostsCollectionRef = () => collection(db, getCollectionPath('posts'));
-    const getChatsCollectionRef = () => collection(db, getCollectionPath('chats'));
-    const getUserDocRef = (uid) => doc(db, getCollectionPath('users'), uid);
-    const getPostDocRef = (postId) => doc(db, getCollectionPath('posts'), postId);
-    const getChatDocRef = (chatId) => doc(db, getCollectionPath('chats'), chatId);
-    
-    // --- Utility Functions ---
-    const getIcon = (name, classes = 'w-6 h-6') => {
-        return `<i data-lucide="${name}" class="${classes}"></i>`;
-    };
-
-    const generateId = () => crypto.randomUUID();
-
-    const formatDate = (timestamp) => {
-        const now = new Date();
-        const date = new Date(timestamp);
-        const diff = now.getTime() - date.getTime();
-
-        const seconds = Math.floor(diff / 1000);
-        if (seconds < 60) return `${seconds}s ago`;
-
-        const minutes = Math.floor(diff / (1000 * 60));
-        if (minutes < 60) return `${minutes}m ago`;
-
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        if (hours < 24) return `${hours}h ago`;
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        if (days < 7) return `${days}d ago`;
-
-        return date.toLocaleDateString();
-    };
-
-    // --- Firebase Initialization and Auth ---
-    async function initializeFirebase() {
-        try {
-            // setLogLevel('debug'); // Uncomment for debugging
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            // Handle Authentication using the provided token or sign in anonymously
-            if (initialAuthToken) {
-                await signInWithCustomToken(auth, initialAuthToken);
-            } else {
-                await signInAnonymously(auth);
-            }
-
-            // Listen for Auth state changes
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    state.userId = user.uid;
-                    checkOrCreateUser(user.uid);
-                } else {
-                    state.userId = null;
-                    state.userProfile = null;
-                    state.isAuthReady = true;
-                    // If the user logs out, go to Auth view
-                    switchView('auth');
-                }
-            });
-
-        } catch (error) {
-            console.error("Firebase initialization failed:", error);
-            document.getElementById('app').innerHTML = `<div class="p-8 text-center text-red-600">Failed to load Sentagram: ${error.message}</div>`;
-        }
-    }
-
-    // Checks if user exists in Firestore, sets up snapshot listener, or prompts for username
-    function checkOrCreateUser(uid) {
-        onSnapshot(getUserDocRef(uid), (docSnapshot) => {
-            if (docSnapshot.exists()) {
-                state.userProfile = docSnapshot.data();
-                state.isAuthReady = true;
-                // If we were on loading or auth, switch to feed
-                if (state.currentView === 'loading' || state.currentView === 'auth') {
-                    switchView('feed');
-                }
-                // Start listening to public data once auth and profile are ready
-                startDataListeners();
-            } else {
-                // User document doesn't exist, prompt for profile setup
-                state.isAuthReady = true;
-                switchView('profileSetup', { uid });
-            }
-        }, (error) => {
-            console.error("Error listening to user profile:", error);
-        });
-    }
-
-    // --- Data Listeners ---
-    function startDataListeners() {
-        if (!state.isAuthReady || !state.userId || !db) return;
-
-        // 1. Listen to all users (for following/profile lookup)
-        onSnapshot(getUsersCollectionRef(), (snapshot) => {
-            state.allUsers = snapshot.docs.map(doc => doc.data());
-            renderApp();
-        }, (error) => { console.error("Error listening to users:", error); });
-
-        // 2. Listen to posts (Feed) - Order by timestamp
-        const qPosts = query(getPostsCollectionRef(), where('timestamp', '>', 0)); // Filter out null timestamps
-        onSnapshot(qPosts, (snapshot) => {
-            state.feedPosts = snapshot.docs.map(doc => ({ ...doc.data(), postId: doc.id })).sort((a, b) => b.timestamp - a.timestamp);
-            renderApp();
-        }, (error) => { console.error("Error listening to posts:", error); });
-
-        // 3. Listen to Chats
-        const qChats = query(getChatsCollectionRef(), where('participants', 'array-contains', state.userId));
-        onSnapshot(qChats, (snapshot) => {
-            state.chats = snapshot.docs.map(doc => ({ ...doc.data(), chatId: doc.id }));
-            // If the user is viewing the chat list or a specific chat, re-render
-            if (state.currentView.startsWith('chat')) {
-                renderApp();
-            }
-        }, (error) => { console.error("Error listening to chats:", error); });
-    }
-
-    // --- Core Interaction Logic (Post/Follow/Like) ---
-
-    async function handleFollow(targetUserId) {
-        if (!state.userProfile || state.userId === targetUserId) return;
-
-        const isFollowing = state.userProfile.following.includes(targetUserId);
-
-        try {
-            // 1. Update Current User's 'following' list
-            await updateDoc(getUserDocRef(state.userId), {
-                following: isFollowing ? arrayRemove(targetUserId) : arrayUnion(targetUserId)
-            });
-
-            // 2. Update Target User's 'followers' list
-            await updateDoc(getUserDocRef(targetUserId), {
-                followers: isFollowing ? arrayRemove(state.userId) : arrayUnion(state.userId)
-            });
-        } catch (error) {
-            console.error("Error updating follow status:", error);
-        }
-    }
-
-    async function handleLike(postId) {
-        const post = state.feedPosts.find(p => p.postId === postId);
-        if (!post) return;
-
-        const isLiked = post.likes.includes(state.userId);
-
-        try {
-            await updateDoc(getPostDocRef(postId), {
-                likes: isLiked ? arrayRemove(state.userId) : arrayUnion(state.userId)
-            });
-        } catch (error) {
-            console.error("Error updating like status:", error);
-        }
-    }
-
-    async function handleComment(postId) {
-        const commentText = document.getElementById(`comment-input-${postId}`).value.trim();
-        if (!commentText) return;
-
-        const newComment = {
-            userId: state.userId,
-            username: state.userProfile.username,
-            text: commentText,
-            timestamp: new Date().getTime()
-        };
-
-        try {
-            await updateDoc(getPostDocRef(postId), {
-                comments: arrayUnion(newComment)
-            });
-            document.getElementById(`comment-input-${postId}`).value = ''; // Clear input
-            // Optionally scroll to the new comment
-        } catch (error) {
-            console.error("Error adding comment:", error);
-        }
-    }
-
-    async function handleNewPost(e) {
-        e.preventDefault();
-        const form = e.target;
-        const caption = form.caption.value;
-        const contentType = form.content_type.value;
-        const contentUrl = form.content_url.value || (contentType === 'image' ? 'https://placehold.co/600x400/3b82f6/ffffff?text=Sentagram+Image' : 'https://placehold.co/600x400/ef4444/ffffff?text=Sentagram+Video');
-
-        if (!caption || !contentUrl) {
-            alert('Please provide a caption and a placeholder URL.');
-            return;
-        }
-
-        const newPost = {
-            userId: state.userId,
-            username: state.userProfile.username,
-            contentUrl,
-            contentType,
-            caption,
-            timestamp: new Date().getTime(),
-            likes: [],
-            comments: []
-        };
-
-        try {
-            await addDoc(getPostsCollectionRef(), newPost);
-            switchView('feed');
-        } catch (error) {
-            console.error("Error creating new post:", error);
-        }
-    }
-
-    // --- Chat Logic ---
-
-    // Function to create a chat ID based on two user IDs (sorted)
-    const getChatId = (userA, userB) => [userA, userB].sort().join('_');
-
-    async function startChatWith(targetUserId) {
-        const chatId = getChatId(state.userId, targetUserId);
-        const chatDocRef = getChatDocRef(chatId);
-
-        try {
-            const chatDoc = await getDoc(chatDocRef);
-            if (!chatDoc.exists()) {
-                // Create new chat
-                const newChat = {
-                    participants: [state.userId, targetUserId],
-                    messages: [],
-                    lastMessageTime: new Date().getTime()
-                };
-                await setDoc(chatDocRef, newChat);
-            }
-            // Switch to the chat view
-            const targetUser = state.allUsers.find(u => u.uid === targetUserId);
-            switchView('singleChat', { chatId, targetUsername: targetUser?.username || targetUserId });
-
-        } catch (error) {
-            console.error("Error starting chat:", error);
-        }
-    }
-
-    async function handleNewChatMessage(e) {
-        e.preventDefault();
-        const input = document.getElementById('chat-input');
-        const messageText = input.value.trim();
-        const chatId = state.currentViewData.chatId;
-
-        if (!messageText || !chatId) return;
-
-        const newMessage = {
-            userId: state.userId,
-            text: messageText,
-            timestamp: new Date().getTime()
-        };
-
-        try {
-            await updateDoc(getChatDocRef(chatId), {
-                messages: arrayUnion(newMessage),
-                lastMessageTime: new Date().getTime()
-            });
-            input.value = '';
-            // Scroll to bottom of chat
-            const chatBody = document.getElementById('chat-body');
-            if (chatBody) {
-                setTimeout(() => chatBody.scrollTop = chatBody.scrollHeight, 10);
-            }
-        } catch (error) {
-            console.error("Error sending message:", error);
-        }
-    }
-
-    // --- View Rendering ---
-
-    function switchView(viewName, data = null) {
-        state.currentView = viewName;
-        state.currentViewData = data;
-        renderApp();
-        // After rendering, ensure Lucide icons are correctly rendered
-        setTimeout(() => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) {
-                lucide.createIcons();
-            }
-            // Scroll to bottom of chat if in chat view
-            if (viewName === 'singleChat') {
-                const chatBody = document.getElementById('chat-body');
-                if (chatBody) {
-                    chatBody.scrollTop = chatBody.scrollHeight;
-                }
-            }
-        }, 50);
-    }
-
-    function renderApp() {
-        const appContainer = document.getElementById('app');
-        appContainer.innerHTML = ''; // Clear previous content
-
-        // Render based on Authentication and Ready Status
-        if (!state.isAuthReady) {
-            appContainer.innerHTML = renderLoadingScreen();
-        } else if (!state.userId) {
-            appContainer.innerHTML = renderAuthView();
-        } else if (state.currentView === 'profileSetup') {
-            appContainer.innerHTML = renderProfileSetupView();
-        } else {
-            appContainer.innerHTML = renderMainLayout();
-            const content = document.getElementById('main-content');
-            switch (state.currentView) {
-                case 'feed':
-                    content.innerHTML = renderFeedView();
-                    break;
-                case 'profile':
-                    content.innerHTML = renderProfileView(state.currentViewData.userId);
-                    break;
-                case 'post':
-                    content.innerHTML = renderPostCreationView();
-                    break;
-                case 'chatList':
-                    content.innerHTML = renderChatListView();
-                    break;
-                case 'singleChat':
-                    content.innerHTML = renderSingleChatView(state.currentViewData);
-                    break;
-                default:
-                    content.innerHTML = renderFeedView(); // Default to feed
-            }
-        }
-        // Attach all necessary event listeners (delegation or direct)
-        attachGlobalEventListeners();
-    }
-
-    function attachGlobalEventListeners() {
-        // Clear previous listeners (important for single-file apps)
-        const appContainer = document.getElementById('app');
-        if (appContainer) {
-            appContainer.onclick = null;
-            appContainer.onsubmit = null;
-        }
-
-        // Global Event Delegation for Clicks
-        document.getElementById('app').onclick = async (e) => {
-            const target = e.target.closest('[data-action]');
-            if (!target) return;
-            const action = target.getAttribute('data-action');
-            const postId = target.getAttribute('data-post-id');
-            const userId = target.getAttribute('data-user-id');
-            const targetUid = target.getAttribute('data-target-uid');
-
-            switch (action) {
-                case 'switch-view':
-                    switchView(target.getAttribute('data-view'), { userId: targetUid });
-                    break;
-                case 'like-post':
-                    await handleLike(postId);
-                    break;
-                case 'toggle-follow':
-                    await handleFollow(targetUid);
-                    break;
-                case 'start-chat':
-                    await startChatWith(targetUid);
-                    break;
-                case 'share-post':
-                    // Simulation of sharing
-                    const postUrl = `${window.location.origin}/post/${postId}`;
-                    navigator.clipboard.writeText(postUrl)
-                        .then(() => alert('Post link copied to clipboard!'))
-                        .catch(() => {
-                            // Fallback for clipboard access issues
-                            const dummy = document.createElement('textarea');
-                            document.body.appendChild(dummy);
-                            dummy.value = postUrl;
-                            dummy.select();
-                            document.execCommand('copy');
-                            document.body.removeChild(dummy);
-                            alert('Post link copied to clipboard! (Fallback)');
-                        });
-                    break;
-                case 'sign-out':
-                    await signOut(auth);
-                    break;
-            }
-        };
-
-        // Global Event Delegation for Form Submissions
-        document.getElementById('app').onsubmit = async (e) => {
-            const form = e.target.closest('form');
-            if (!form) return;
-            const formAction = form.getAttribute('data-form-action');
-
-            if (formAction) {
-                e.preventDefault();
-                switch (formAction) {
-                    case 'auth-sign-up':
-                        await handleAuth(e, 'signup');
-                        break;
-                    case 'auth-sign-in':
-                        await handleAuth(e, 'signin');
-                        break;
-                    case 'profile-setup':
-                        await handleProfileSetup(e);
-                        break;
-                    case 'new-post':
-                        await handleNewPost(e);
-                        break;
-                    case 'new-comment':
-                        await handleComment(form.getAttribute('data-post-id'));
-                        break;
-                    case 'new-chat-message':
-                        await handleNewChatMessage(e);
-                        break;
-                }
-            }
-        };
-    }
-
-    // --- Render Components ---
-
-    function renderLoadingScreen() {
-        return `
-            <div class="flex flex-col items-center justify-center h-screen bg-gray-50">
-                <div class="logo-text text-5xl animate-pulse">Sentagram</div>
-                <p class="mt-4 text-gray-500">Loading your feed...</p>
-                ${getIcon('loader', 'w-8 h-8 mt-4 text-blue-500 animate-spin')}
-            </div>
-        `;
-    }
-
-    function renderAuthView() {
-        const isSignUp = state.currentViewData?.isSignUp || false;
-        const toggleHtml = `<p class="mt-6 text-center text-sm text-gray-600">
-            ${isSignUp ? 'Already have an account?' : "Don't have an account?"}
-            <a href="#" class="font-medium text-blue-600 hover:text-blue-500" data-action="switch-view" data-view="auth" data-target-uid='{"isSignUp": ${!isSignUp}}'>
-                ${isSignUp ? 'Sign in' : 'Register'}
-            </a>
-        </p>`;
-
-        return `
-            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div class="max-w-md w-full space-y-8 card bg-white p-8">
-                    <div class="text-center">
-                        <div class="logo-text text-3xl">Sentagram</div>
-                        <h2 class="mt-6 text-xl font-extrabold text-gray-900">${isSignUp ? 'Create your account' : 'Sign in to your account'}</h2>
-                    </div>
-                    <form class="mt-8 space-y-6" data-form-action="auth-${isSignUp ? 'sign-up' : 'sign-in'}">
-                        <input type="hidden" name="remember" value="true">
-                        <div class="rounded-md shadow-sm space-y-4">
-                            <div>
-                                <label for="email" class="sr-only">Email address</label>
-                                <input id="email" name="email" type="email" autocomplete="email" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email address">
-                            </div>
-                            <div>
-                                <label for="password" class="sr-only">Password</label>
-                                <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Password">
-                            </div>
-                        </div>
-                        <div>
-                            <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">
-                                ${isSignUp ? 'Register' : 'Sign in'}
-                            </button>
-                        </div>
-                    </form>
-                    ${toggleHtml}
-                    <div id="auth-error" class="text-red-500 text-center mt-4"></div>
-                </div>
-            </div>
-        `;
-    }
-
-    async function handleAuth(e, type) {
-        const form = e.target;
-        const email = form.email.value;
-        const password = form.password.value;
-        const errorElement = document.getElementById('auth-error');
-        errorElement.textContent = '';
-
-        try {
-            if (type === 'signup') {
-                await createUserWithEmailAndPassword(auth, email, password);
-                // checkOrCreateUser will handle the profile setup view transition
-            } else {
-                await signInWithEmailAndPassword(auth, email, password);
-                // checkOrCreateUser will handle the feed view transition
-            }
-        } catch (error) {
-            console.error("Auth error:", error);
-            errorElement.textContent = `Error: ${error.message}`;
-        }
-    }
-
-    function renderProfileSetupView() {
-        return `
-            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div class="max-w-md w-full space-y-8 card bg-white p-8">
-                    <div class="text-center">
-                        <div class="logo-text text-3xl">Welcome to Sentagram</div>
-                        <h2 class="mt-6 text-xl font-extrabold text-gray-900">One more step! Set up your profile.</h2>
-                    </div>
-                    <form class="mt-8 space-y-6" data-form-action="profile-setup">
-                        <div>
-                            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                            <input id="username" name="username" type="text" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Choose a unique username">
-                        </div>
-                        <div>
-                            <label for="bio" class="block text-sm font-medium text-gray-700">Bio (Optional)</label>
-                            <textarea id="bio" name="bio" rows="3" class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Tell us about yourself..."></textarea>
-                        </div>
-                        <div>
-                            <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
-                                Complete Setup
-                            </button>
-                        </div>
-                        <div id="setup-error" class="text-red-500 text-center mt-4"></div>
-                    </form>
-                </div>
-            </div>
-        `;
-    }
-
-    async function handleProfileSetup(e) {
-        e.preventDefault();
-        const form = e.target;
-        const username = form.username.value.trim();
-        const bio = form.bio.value.trim();
-        const errorElement = document.getElementById('setup-error');
-        errorElement.textContent = '';
-
-        if (!username) {
-            errorElement.textContent = "Username is required.";
-            return;
-        }
-
-        const newUserProfile = {
-            uid: state.userId,
-            username: username,
-            bio: bio || 'Hello, Sentagram!',
-            profilePicUrl: `https://placehold.co/100x100/3b82f6/ffffff?text=${username.charAt(0).toUpperCase()}`,
-            followers: [],
-            following: [],
-            email: auth.currentUser.email || 'N/A' // Store email for management
-        };
-
-        try {
-            await setDoc(getUserDocRef(state.userId), newUserProfile);
-            // checkOrCreateUser listener will automatically update state.userProfile and switch to feed
-        } catch (error) {
-            console.error("Error setting up profile:", error);
-            errorElement.textContent = `Error setting up profile: ${error.message}`;
-        }
-    }
-
-    function renderMainLayout() {
-        return `
-            <header class="sticky top-0 z-10 bg-white shadow-md">
-                <nav class="flex justify-between items-center px-4 py-3 max-w-4xl mx-auto">
-                    <div class="logo-text cursor-pointer" data-action="switch-view" data-view="feed">Sentagram</div>
-                    <div class="flex space-x-4">
-                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="feed" title="Feed">${getIcon('home')}</button>
-                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="post" title="New Post">${getIcon('plus-square')}</button>
-                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="chatList" title="Chats">${getIcon('message-square')}</button>
-                        <button class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150" data-action="switch-view" data-view="profile" data-target-uid="${state.userId}" title="Profile">${getIcon('user')}</button>
-                    </div>
-                </nav>
-            </header>
-            <main id="main-content" class="flex-grow max-w-4xl mx-auto w-full p-4"></main>
-        `;
-    }
-
-    function renderFeedView() {
-        const postsHtml = state.feedPosts.map(post => {
-            const isLiked = post.likes.includes(state.userId);
-            const likeIcon = isLiked ? getIcon('heart', 'w-5 h-5 fill-red-500 text-red-500') : getIcon('heart', 'w-5 h-5 text-gray-500');
-            const poster = state.allUsers.find(u => u.uid === post.userId);
-            const profilePic = poster?.profilePicUrl || 'https://placehold.co/40x40/cccccc/000000?text=?';
-
-            return `
-                <div class="card bg-white mb-6 overflow-hidden">
-                    <!-- Post Header -->
-                    <div class="flex items-center p-4 border-b">
-                        <img src="${profilePic}" alt="${post.username}" class="w-10 h-10 rounded-full object-cover mr-3">
-                        <div class="flex-grow">
-                            <span class="font-semibold text-gray-900 cursor-pointer hover:text-blue-600" data-action="switch-view" data-view="profile" data-target-uid="${post.userId}">${post.username}</span>
-                            <span class="text-xs text-gray-500 block">${formatDate(post.timestamp)}</span>
-                        </div>
-                    </div>
-                    <!-- Post Content (Image/Video Placeholder) -->
-                    <div class="aspect-video bg-gray-200">
-                        <img src="${post.contentUrl}" alt="Post Content" class="w-full h-full object-cover">
-                    </div>
-                    <!-- Post Actions -->
-                    <div class="flex items-center p-3 space-x-4 border-b">
-                        <button class="flex items-center space-x-1 p-2 rounded-full hover:bg-gray-100 transition duration-150" data-action="like-post" data-post-id="${post.postId}">
-                            ${likeIcon}
-                        </button>
-                        <button class="flex items-center space-x-1 p-2 rounded-full hover:bg-gray-100 transition duration-150" onclick="document.getElementById('comment-input-${post.postId}').focus()">
-                            ${getIcon('message-circle', 'w-5 h-5 text-gray-500')}
-                        </button>
-                        <button class="flex items-center space-x-1 p-2 rounded-full hover:bg-gray-100 transition duration-150" data-action="share-post" data-post-id="${post.postId}">
-                            ${getIcon('send', 'w-5 h-5 text-gray-500')}
-                        </button>
-                        <span class="text-sm font-medium text-gray-700 ml-auto">${post.likes.length} Likes</span>
-                    </div>
-                    <!-- Post Caption -->
-                    <div class="p-4 pt-2">
-                        <p class="text-gray-800 mb-2">
-                            <span class="font-semibold">${post.username}</span> ${post.caption}
-                        </p>
-                        <!-- Comments Section -->
-                        <div class="space-y-2 max-h-40 overflow-y-auto scroll-area border-t pt-2 mt-2">
-                            ${post.comments.map(comment => `
-                                <p class="text-sm text-gray-700">
-                                    <span class="font-semibold cursor-pointer hover:text-blue-600" data-action="switch-view" data-view="profile" data-target-uid="${comment.userId}">${comment.username}:</span> ${comment.text}
-                                </p>
-                            `).join('')}
-                            ${post.comments.length === 0 ? '<p class="text-sm text-gray-500 italic">No comments yet.</p>' : ''}
-                        </div>
-                        <!-- Add Comment Form -->
-                        <form class="flex mt-3 border-t pt-3" data-form-action="new-comment" data-post-id="${post.postId}">
-                            <input id="comment-input-${post.postId}" type="text" placeholder="Add a comment..." class="flex-grow px-3 py-2 border-none rounded-l-lg bg-gray-50 text-sm focus:ring-0 focus:outline-none" required>
-                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 text-sm rounded-r-lg hover:bg-blue-600 transition duration-150">Post</button>
-                        </form>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        return `
-            <div class="w-full">
-                <h1 class="text-2xl font-bold mb-6 text-gray-800">Global Feed</h1>
-                ${state.feedPosts.length === 0 ? '<p class="text-center text-gray-500 mt-10">No posts yet. Be the first to post!</p>' : postsHtml}
-            </div>
-        `;
-    }
-
-    function renderPostCreationView() {
-        return `
-            <div class="w-full max-w-xl mx-auto card bg-white p-6">
-                <h1 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-3">Create New Post</h1>
-                <form data-form-action="new-post" class="space-y-4">
-                    <div>
-                        <label for="caption" class="block text-sm font-medium text-gray-700">Caption</label>
-                        <textarea id="caption" name="caption" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="What's on your mind?" required></textarea>
-                    </div>
-                    <div>
-                        <label for="content_type" class="block text-sm font-medium text-gray-700">Content Type (Placeholder)</label>
-                        <select id="content_type" name="content_type" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="image">Image</option>
-                            <option value="video">Video</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="content_url" class="block text-sm font-medium text-gray-700">Content URL (Mock/Placeholder)</label>
-                        <input id="content_url" name="content_url" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="Optional: Enter image or video link. Uses default if empty.">
-                    </div>
-                    <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
-                        Post to Sentagram
-                    </button>
-                </form>
-            </div>
-        `;
-    }
-
-    function renderProfileView(targetUid) {
-        const targetUser = state.allUsers.find(u => u.uid === targetUid) || {};
-        const isCurrentUser = targetUid === state.userId;
-        const userPosts = state.feedPosts.filter(p => p.userId === targetUid);
-
-        // Safely access properties, default to empty arrays
-        const followersCount = targetUser.followers?.length || 0;
-        const followingCount = targetUser.following?.length || 0;
-        const isFollowing = isCurrentUser ? false : state.userProfile?.following?.includes(targetUid);
-        
-        const followButtonHtml = isCurrentUser ? 
-            `<button class="w-full sm:w-auto py-2 px-4 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition duration-150" data-action="sign-out">${getIcon('log-out', 'w-4 h-4 mr-2')}Sign Out</button>` :
-            `<button class="w-full sm:w-auto py-2 px-4 rounded-lg text-sm font-medium transition duration-150 ${isFollowing ? 'bg-gray-300 text-gray-800 hover:bg-gray-400' : 'bg-blue-600 text-white hover:bg-blue-700'}" data-action="toggle-follow" data-target-uid="${targetUid}">
-                ${isFollowing ? `${getIcon('user-check', 'w-4 h-4 mr-2')}Following` : `${getIcon('user-plus', 'w-4 h-4 mr-2')}Follow`}
+<body class="min-h-screen">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-10 bg-[#0f0f0f] p-4 border-b border-gray-800 shadow-lg flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <!-- Mock Logo -->
+            <svg class="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 15.176V8.824L15.346 12 10 15.176Z"/>
+                <path d="M22.5 12.001c0 2.224-.132 3.868-.396 4.965-.288 1.18-.722 1.96-1.393 2.631-1.12 1.12-2.316 1.487-4.218 1.545-2.007.06-4.015.06-6.023.06s-4.016 0-6.023-.06c-1.9-.058-3.098-.425-4.218-1.545-1.12-1.12-1.487-2.316-1.545-4.218-.06-2.007-.06-4.015-.06-6.023s0-4.016.06-6.023c.058-1.9.425-3.098 1.545-4.218 1.12-1.12 2.316-1.487 4.218-1.545 2.007-.06 4.015-.06 6.023-.06s4.016 0 6.023.06c1.9.058 3.098.425 4.218 1.545 1.12 1.12 1.487 2.316 1.545 4.218.06 2.007.06 4.015.06 6.023v.001z"/>
+            </svg>
+            <span class="text-xl font-bold">VideoClone</span>
+        </div>
+        <!-- Mock Search Bar -->
+        <input type="text" placeholder="Search" class="hidden md:block w-96 p-2 rounded-full bg-[#1e1e1e] border border-gray-700 focus:ring-red-600 focus:border-red-600 outline-none transition duration-150">
+        <!-- Mock User/Settings -->
+        <div class="space-x-4 flex items-center">
+            <button class="text-gray-400 hover:text-white transition duration-150">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
             </button>
-            <button class="w-full sm:w-auto py-2 px-4 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition duration-150 mt-2 sm:mt-0" data-action="start-chat" data-target-uid="${targetUid}">
-                ${getIcon('send', 'w-4 h-4 mr-2')}Message
-            </button>`;
+            <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center font-semibold text-sm">
+                U
+            </div>
+        </div>
+    </header>
 
-        return `
-            <div class="w-full">
-                <!-- Profile Header -->
-                <div class="card bg-white p-6 mb-6 text-center">
-                    <img src="${targetUser.profilePicUrl || 'https://placehold.co/100x100/cccccc/000000?text=U'}" alt="${targetUser.username}" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-blue-500 shadow-md">
-                    <h1 class="text-3xl font-bold text-gray-900">${targetUser.username || 'User Not Found'}</h1>
-                    <p class="text-sm text-gray-500 mb-4">UID: ${targetUid}</p>
+    <!-- Main Content Layout -->
+    <main class="p-4 md:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
 
-                    <!-- Stats -->
-                    <div class="flex justify-center space-x-8 mb-6">
-                        <div class="text-center">
-                            <span class="block font-bold text-xl">${userPosts.length}</span>
-                            <span class="text-gray-500 text-sm">Posts</span>
-                        </div>
-                        <div class="text-center cursor-pointer hover:text-blue-600" data-action="show-list" data-list-type="followers">
-                            <span class="block font-bold text-xl">${followersCount}</span>
-                            <span class="text-gray-500 text-sm">Followers</span>
-                        </div>
-                        <div class="text-center cursor-pointer hover:text-blue-600" data-action="show-list" data-list-type="following">
-                            <span class="block font-bold text-xl">${followingCount}</span>
-                            <span class="text-gray-500 text-sm">Following</span>
-                        </div>
-                    </div>
-
-                    <!-- Bio -->
-                    <p class="text-gray-700 mb-6 max-w-md mx-auto italic">${targetUser.bio || 'No bio provided.'}</p>
-
-                    <!-- Actions -->
-                    <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-                        ${followButtonHtml}
-                    </div>
+        <!-- Left Column: Main Video Player and Details (takes 2/3 space on large screens) -->
+        <section id="main-video-section" class="flex-grow lg:w-2/3">
+            <div class="bg-[#1f1f1f] rounded-xl shadow-2xl overflow-hidden">
+                <!-- Main Video Embed -->
+                <div class="video-container">
+                    <!-- The provided embed URL goes here. The 'allowfullscreen' attribute handles the full-screen requirement. -->
+                    <iframe 
+                        src="https://www.youtube.com/embed/0ayXDdSBkz0?si=e-WrpC9AzK50_eL0" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                    </iframe>
                 </div>
 
-                <!-- User Posts Grid -->
-                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Posts</h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    ${userPosts.length > 0 ? userPosts.map(post => `
-                        <div class="relative group aspect-square overflow-hidden rounded-lg cursor-pointer hover:shadow-xl transition duration-300">
-                            <img src="${post.contentUrl}" alt="Post" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                <span class="text-white text-lg font-bold flex items-center">
-                                    ${getIcon('heart', 'w-5 h-5 fill-white mr-1')} ${post.likes.length}
-                                </span>
+                <!-- Video Title and Action Bar -->
+                <div class="p-4">
+                    <h1 class="text-2xl font-bold mb-2">
+                        The Future of Web Development: AI, Frameworks, and Beyond (Mock Title)
+                    </h1>
+                    
+                    <!-- Channel Info and Actions -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-3">
+                        
+                        <!-- Channel Info -->
+                        <div class="flex items-center space-x-3 mb-4 sm:mb-0">
+                            <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center font-medium text-xs">
+                                JC
                             </div>
+                            <div>
+                                <p class="font-semibold">DevChannel Pro</p>
+                                <p class="text-sm text-gray-400">1.2M Subscribers</p>
+                            </div>
+                            <button class="ml-4 px-4 py-2 bg-white text-black font-semibold rounded-full hover:bg-gray-300 transition duration-150">
+                                Subscribe
+                            </button>
                         </div>
-                    `).join('') : `<p class="col-span-3 text-center text-gray-500 mt-4">${targetUser.username} has no posts yet.</p>`}
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-3 text-sm">
+                            <!-- Like/Dislike -->
+                            <div class="flex bg-[#272727] rounded-full overflow-hidden">
+                                <button class="flex items-center space-x-1 p-2 px-4 hover:bg-[#3f3f3f] border-r border-gray-700 rounded-l-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up"><path d="M7 10v12"/><path d="M15 5.882s1.432 0 1.637.262c.319.419.537 1.256.549 2.052.012.796-.134 1.558-.337 2.115-.203.557-.34.901-.482 1.15-.142.249-.247.458-.382.697-.135.239-.28.514-.467.822-.187.308-.435.666-.697 1.055-.262.389-.57.818-.94 1.258-.37.44-.79.882-1.266 1.34-1.266 1.196-2.915 1.571-4.707 1.571h-1.026c-.365 0-.662-.297-.662-.662v-9.338c0-.365.297-.662.662-.662h1.026c1.792 0 3.441.375 4.707 1.571.476.458.896.9.997.771.101-.129-.126-1.558-.262-2.316-.136-.758-.152-1.465-.04-2.126.112-.661.34-1.27.674-1.748.334-.478.784-.813 1.345-.968.561-.155 1.14-.112 1.701-.112h.227c.561 0 1.168.083 1.637.262z"/></svg>
+                                    <span>2.4K</span>
+                                </button>
+                                <button class="p-2 px-4 hover:bg-[#3f3f3f] rounded-r-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-down"><path d="M17 14V2"/><path d="M9 18.118s-1.432 0-1.637-.262c-.319-.419-.537-1.256-.549-2.052-.012-.796.134-1.558.337-2.115.203-.557.34-.901.482-1.15.142-.249.247-.458.382-.697.135-.239.28-.514.467-.822.187-.308.435-.666.697-1.055.262-.389.57-.818.94-1.258.37-.44.79-.882 1.266-1.34 1.266-1.196 2.915-1.571 4.707-1.571h1.026c.365 0 .662.297.662.662v9.338c0 .365-.297.662-.662.662h-1.026c-1.792 0-3.441-.375-4.707-1.571-.476-.458-.896-.9-.997-.771-.101.129.126 1.558.262 2.316.136.758.152 1.465.04 2.126-.112.661-.34 1.27-.674 1.748-.334.478-.784.813-1.345.968-.561.155-1.14.112-1.701.112h-.227c-.561 0-1.168-.083-1.637-.262z"/></svg>
+                                </button>
+                            </div>
+                            
+                            <!-- Share -->
+                            <button class="flex items-center space-x-1 bg-[#272727] p-2 px-4 rounded-full hover:bg-[#3f3f3f] transition duration-150">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/></svg>
+                                <span>Share</span>
+                            </button>
+                            
+                            <!-- More Options -->
+                            <button class="p-2 w-10 h-10 bg-[#272727] rounded-full hover:bg-[#3f3f3f] flex items-center justify-center transition duration-150">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Box -->
+                <div class="bg-[#272727] p-4 mx-4 mb-4 rounded-xl text-sm leading-relaxed">
+                    <p class="font-semibold mb-1">20,542 views • 2 weeks ago</p>
+                    <p class="text-gray-300">
+                        This is a mock video description for the YouTube Clone app. It showcases the responsive design and the use of a single embed URL across the entire application for demonstration purposes. Don't forget to hit the full-screen button on the player to test the full-screen functionality!
+                    </p>
+                    <button class="mt-2 text-gray-200 font-semibold hover:text-red-500 transition duration-150">...more</button>
                 </div>
             </div>
-        `;
-    }
+            
+            <!-- Mock Comment Section (Simplified) -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold mb-4">124 Comments</h2>
+                <div class="flex items-start space-x-3 mb-4">
+                    <div class="w-8 h-8 rounded-full bg-gray-500"></div>
+                    <input type="text" placeholder="Add a comment..." class="flex-grow p-2 rounded-lg bg-[#1e1e1e] border border-gray-700 focus:ring-red-600 focus:border-red-600 outline-none">
+                </div>
+                
+                <!-- Example Comment -->
+                <div class="flex items-start space-x-3 my-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold">A</div>
+                    <div>
+                        <p class="text-sm font-semibold">@User_Awesome <span class="text-gray-400 font-normal">2 days ago</span></p>
+                        <p class="text-sm text-gray-300">This mock clone looks great! The responsive layout is clean.</p>
+                        <div class="flex space-x-4 mt-1 text-xs text-gray-400">
+                            <button class="hover:text-white">Like</button>
+                            <button class="hover:text-white">Reply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    function renderChatListView() {
-        // Find the other participant's profile for each chat
-        const chatItemsHtml = state.chats.map(chat => {
-            const otherUserId = chat.participants.find(uid => uid !== state.userId);
-            const otherUser = state.allUsers.find(u => u.uid === otherUserId) || { username: 'Unknown User', profilePicUrl: 'https://placehold.co/40x40/cccccc/000000?text=?' };
-            const lastMessage = chat.messages[chat.messages.length - 1];
+        </section>
 
-            return `
-                <div class="flex items-center p-4 border-b last:border-b-0 cursor-pointer hover:bg-gray-50 transition duration-150" 
-                     data-action="switch-view" data-view="singleChat" 
-                     data-target-uid='{"chatId": "${chat.chatId}", "targetUsername": "${otherUser.username}"}'>
-                    <img src="${otherUser.profilePicUrl}" alt="${otherUser.username}" class="w-12 h-12 rounded-full object-cover mr-4">
+        <!-- Right Column: Recommended Videos (takes 1/3 space on large screens) -->
+        <section id="recommended-videos" class="lg:w-1/3 flex-shrink-0">
+            <h2 class="text-xl font-bold mb-4">Recommended Videos</h2>
+            
+            <div id="video-list" class="space-y-4">
+                <!-- Recommended Video Cards will be inserted here by JavaScript -->
+            </div>
+            
+        </section>
+    </main>
+
+    <script>
+        // Data for recommended videos (all using the same embed URL for demonstration)
+        const videoData = [
+            { id: 1, title: "1. Advanced TypeScript Patterns for Beginners", channel: "CodeMaster", views: "14K", time: "1 day ago", duration: "12:45" },
+            { id: 2, title: "2. Exploring Modern CSS Grid Layouts", channel: "CSS Wizard", views: "8.1K", time: "3 hours ago", duration: "08:10" },
+            { id: 3, title: "3. State Management with React Hooks", channel: "React Guru", views: "35K", time: "5 months ago", duration: "25:30" },
+            { id: 4, title: "4. Building a Simple API with Node.js", channel: "Backend Boss", views: "19.7K", time: "4 weeks ago", duration: "18:05" },
+            { id: 5, title: "5. Tailwind CSS: Utility-First Deep Dive", channel: "Style King", views: "4.2K", time: "1 hour ago", duration: "05:59" },
+            { id: 6, title: "6. Introduction to Firebase Firestore", channel: "Google Devs", views: "62K", time: "1 year ago", duration: "15:00" },
+        ];
+
+        const embedUrl = "https://www.youtube.com/embed/0ayXDdSBkz0?si=e-WrpC9AzK50_eL0";
+
+        // Function to create a recommended video card
+        function createVideoCard(video) {
+            // Mock thumbnail using a placeholder image with the video duration overlay
+            const thumbnailSrc = `https://placehold.co/160x90/374151/ffffff?text=${video.duration}`;
+
+            const cardHtml = `
+                <div class="flex space-x-3 cursor-pointer rounded-lg hover:bg-[#272727] p-2 transition duration-150">
+                    <!-- Thumbnail/Embed Card -->
+                    <div class="relative flex-shrink-0 w-40 h-24 rounded-lg overflow-hidden">
+                        <!-- Use the iframe for card, but set it as a thumbnail-like element -->
+                        <div class="video-container" style="padding-top: 56.25%;">
+                             <iframe 
+                                src="${embedUrl}" 
+                                title="${video.title}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen
+                                loading="lazy"
+                                class="pointer-events-none"
+                            ></iframe>
+                        </div>
+                        <div class="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded-sm">
+                            ${video.duration}
+                        </div>
+                    </div>
+                    
+                    <!-- Video Details -->
                     <div class="flex-grow">
-                        <p class="font-semibold text-gray-900">${otherUser.username}</p>
-                        <p class="text-sm text-gray-500 truncate max-w-[200px] sm:max-w-none">
-                            ${lastMessage ? (lastMessage.userId === state.userId ? 'You: ' : '') + lastMessage.text : 'Start a conversation.'}
-                        </p>
-                    </div>
-                    ${lastMessage ? `<span class="text-xs text-gray-400 ml-auto">${formatDate(lastMessage.timestamp)}</span>` : ''}
-                </div>
-            `;
-        }).join('');
-
-        return `
-            <div class="w-full max-w-xl mx-auto card bg-white">
-                <h1 class="text-2xl font-bold p-4 border-b">Private Messages</h1>
-                <div class="scroll-area h-[60vh] overflow-y-auto divide-y divide-gray-100">
-                    ${state.chats.length > 0 ? chatItemsHtml : '<p class="p-8 text-center text-gray-500">No active chats. Find a user to message!</p>'}
-                </div>
-            </div>
-        `;
-    }
-
-    function renderSingleChatView({ chatId, targetUsername }) {
-        const currentChat = state.chats.find(c => c.chatId === chatId);
-        const messages = currentChat?.messages || [];
-
-        const messagesHtml = messages.map(msg => {
-            const isMe = msg.userId === state.userId;
-            const messageClass = isMe ? 'bg-blue-500 text-white rounded-bl-lg self-end' : 'bg-gray-200 text-gray-800 rounded-tr-lg self-start';
-            const username = isMe ? 'You' : targetUsername;
-
-            return `
-                <div class="flex flex-col mb-4 ${isMe ? 'items-end' : 'items-start'}">
-                    <div class="text-xs text-gray-500 mb-1">${username} - ${formatDate(msg.timestamp)}</div>
-                    <div class="p-3 max-w-xs md:max-w-md ${messageClass} rounded-t-lg rounded-br-lg shadow-md break-words">
-                        ${msg.text}
+                        <h3 class="text-sm font-semibold line-clamp-2">${video.title}</h3>
+                        <p class="text-xs text-gray-400 mt-1">${video.channel}</p>
+                        <p class="text-xs text-gray-400">${video.views} views • ${video.time}</p>
                     </div>
                 </div>
             `;
-        }).join('');
+            return cardHtml;
+        }
 
-        return `
-            <div class="w-full max-w-xl mx-auto flex flex-col h-[80vh] card bg-white">
-                <!-- Chat Header -->
-                <div class="p-4 border-b flex items-center justify-between">
-                    <button class="text-gray-600 hover:text-blue-500 mr-3" data-action="switch-view" data-view="chatList">${getIcon('arrow-left')}</button>
-                    <h1 class="text-xl font-bold text-gray-900 flex-grow">${targetUsername}</h1>
-                </div>
+        // Render the video cards on load
+        window.onload = function() {
+            const videoList = document.getElementById('video-list');
+            
+            // Generate HTML for all mock videos
+            const videoCardsHtml = videoData.map(createVideoCard).join('');
+            
+            // Insert into the DOM
+            videoList.innerHTML = videoCardsHtml;
 
-                <!-- Chat Body -->
-                <div id="chat-body" class="flex-grow p-4 space-y-4 scroll-area overflow-y-auto">
-                    ${messages.length > 0 ? messagesHtml : '<p class="text-center text-gray-500 mt-auto">Say hello to start the chat!</p>'}
-                </div>
+            // Optional: Add a click listener to all cards to simulate "watching" that video
+            videoList.querySelectorAll('.flex.space-x-3').forEach(card => {
+                card.addEventListener('click', () => {
+                    // In a real app, this would change the main video content.
+                    console.log("Clicked video card. In a real app, this would load the video ID into the main player.");
+                });
+            });
+        };
+    </script>
 
-                <!-- Chat Input Form -->
-                <form data-form-action="new-chat-message" class="p-4 border-t flex">
-                    <input id="chat-input" type="text" placeholder="Type a message..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-blue-500 focus:border-blue-500" required>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition duration-150">
-                        ${getIcon('send', 'w-5 h-5')}
-                    </button>
-                </form>
-            </div>
-        `;
-    }
-
-    // --- Start Application ---
-    initializeFirebase();
-
-</script>
 </body>
 </html>
