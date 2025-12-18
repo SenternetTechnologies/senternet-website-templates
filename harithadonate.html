@@ -3,148 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donate to Haritha | Powered by Senternet Technologies</title>
+    <title>Support Haritha - Senternet Technologies</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        .donate-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .upi-button {
-            transition: all 0.3s ease;
-            background: linear-gradient(45deg, #1d4ed8, #2563eb);
+        .donate-btn:active {
+            transform: scale(0.95);
         }
-        .upi-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(229, 231, 235, 1);
         }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center justify-between p-6">
 
-    <!-- Main Content -->
-    <div class="max-w-md w-full glass-card p-8 mt-10">
-        <div class="text-center mb-8">
-            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-heart text-blue-600 text-3xl"></i>
+    <!-- Main Section -->
+    <main class="w-full max-w-md flex-grow flex flex-col items-center justify-center">
+        <div class="w-full glass-effect rounded-3xl p-8 shadow-xl text-center">
+            <!-- Profile Icon -->
+            <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <i class="fas fa-heart text-emerald-600 text-4xl"></i>
             </div>
-            <h1 class="text-2xl font-bold text-gray-800">Support Haritha</h1>
-            <p class="text-gray-500 mt-2">Your small contribution makes a big difference.</p>
+
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Support Haritha</h1>
+            <p class="text-gray-500 mb-8 font-medium">Join the community in contributing just ₹5 for a cause.</p>
+
+            <!-- Fixed Amount Display -->
+            <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl py-6 mb-8">
+                <span class="text-sm text-gray-400 uppercase tracking-widest block mb-1">Contribution Amount</span>
+                <span class="text-5xl font-black text-gray-800">₹5</span>
+            </div>
+
+            <!-- Action Button -->
+            <a href="https://pay.mypaylink.in?q=DTcQfp" 
+               class="donate-btn w-full block py-5 px-4 text-white font-bold text-xl rounded-2xl shadow-lg hover:shadow-emerald-200 focus:outline-none flex items-center justify-center gap-3">
+                <i class="fas fa-bolt"></i>
+                Donate ₹5 Now
+            </a>
+
+            <p class="mt-6 text-xs text-gray-400">
+                <i class="fas fa-shield-alt mr-1"></i> Secure payment powered by UPI
+            </p>
         </div>
+    </main>
 
-        <div class="space-y-6">
-            <!-- Amount Input -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Enter Amount (INR)</label>
-                <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">₹</span>
-                    <input type="number" id="donationAmount" placeholder="500" 
-                        class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-lg font-semibold">
-                </div>
-            </div>
-
-            <!-- Quick Selection -->
-            <div class="grid grid-cols-3 gap-3">
-                <button onclick="setAmount(100)" class="py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium transition-colors">₹100</button>
-                <button onclick="setAmount(500)" class="py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium transition-colors">₹500</button>
-                <button onclick="setAmount(1000)" class="py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium transition-colors">₹1000</button>
-            </div>
-
-            <!-- Donate Button -->
-            <button onclick="processPayment()" class="upi-button w-full py-4 text-white font-bold rounded-xl flex items-center justify-center gap-3 text-lg">
-                <i class="fas fa-paper-plane"></i>
-                Donate Now
-            </button>
-
-            <!-- Info -->
-            <div class="bg-blue-50 p-4 rounded-xl flex gap-3 items-start">
-                <i class="fas fa-info-circle text-blue-500 mt-1"></i>
-                <p class="text-xs text-blue-700 leading-relaxed">
-                    Clicking the button will open your preferred UPI app (GPay, PhonePe, Paytm, etc.) to securely complete the transaction to Haritha.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Company Footer (Mandatory Branding) -->
-    <footer class="mt-auto py-10 w-full max-w-2xl text-center">
-        <div class="border-t border-gray-300 pt-8 mt-8">
-            <h3 class="text-lg font-bold text-gray-800 tracking-wide uppercase">SENTERNET TECHNOLOGIES</h3>
-            <p class="text-gray-600 text-sm mt-1">Crafting Digital Excellence in Aranthangi, Pudukkottai</p>
+    <!-- Company Branding Footer -->
+    <footer class="w-full max-w-2xl text-center py-8">
+        <div class="border-t border-gray-200 pt-8 mt-4">
+            <h2 class="text-sm font-black text-gray-400 tracking-[0.3em] uppercase mb-4">Developed by</h2>
+            <h3 class="text-xl font-extrabold text-gray-800">SENTERNET TECHNOLOGIES</h3>
+            <p class="text-gray-500 text-sm mt-1 font-medium">Aranthangi, Pudukkottai</p>
             
-            <div class="flex flex-wrap justify-center gap-6 mt-4 text-sm text-gray-600">
-                <a href="https://wa.me/918190038085" class="hover:text-green-600 flex items-center gap-1 transition-colors">
-                    <i class="fab fa-whatsapp"></i> +91 81900 38085
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 mt-6 text-sm text-gray-600">
+                <a href="https://wa.me/918190038085" class="flex items-center gap-2 hover:text-emerald-600 transition-colors">
+                    <i class="fab fa-whatsapp text-lg"></i> +91 81900 38085
                 </a>
-                <a href="mailto:senternettechnologies@gmail.com" class="hover:text-blue-600 flex items-center gap-1 transition-colors">
+                <span class="hidden md:inline text-gray-300">|</span>
+                <a href="mailto:senternettechnologies@gmail.com" class="flex items-center gap-2 hover:text-blue-600 transition-colors">
                     <i class="fas fa-envelope"></i> senternettechnologies@gmail.com
                 </a>
-                <a href="https://rebrand.ly/senternet" target="_blank" class="hover:text-blue-800 flex items-center gap-1 transition-colors font-semibold">
-                    <i class="fas fa-globe"></i> Official Website
+            </div>
+            
+            <div class="mt-6">
+                <a href="https://rebrand.ly/senternet" target="_blank" class="inline-flex items-center gap-2 px-6 py-2 bg-gray-900 text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-gray-800 transition-all">
+                    Visit Official Website <i class="fas fa-external-link-alt text-[10px]"></i>
                 </a>
             </div>
             
-            <p class="text-gray-400 text-[10px] mt-6 uppercase tracking-widest">
-                Designed & Developed by Senthilkumar | Senternet Technologies
+            <p class="text-[10px] text-gray-400 mt-8 font-bold uppercase tracking-tighter italic">
+                A Senthilkumar Signature Project
             </p>
         </div>
     </footer>
 
-    <!-- Custom Modal for Alerts (No native alerts) -->
-    <div id="alertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white p-6 rounded-2xl max-w-xs w-full text-center">
-            <i class="fas fa-exclamation-triangle text-amber-500 text-3xl mb-3"></i>
-            <p id="alertMessage" class="text-gray-800 font-medium"></p>
-            <button onclick="closeAlert()" class="mt-4 w-full py-2 bg-gray-800 text-white rounded-lg">OK</button>
-        </div>
-    </div>
-
-    <script>
-        const HARITHA_UPI = "senthilkumarhari9843@okhdfcbank";
-        const RECIPIENT_NAME = "Haritha";
-
-        function setAmount(val) {
-            document.getElementById('donationAmount').value = val;
-        }
-
-        function showAlert(msg) {
-            document.getElementById('alertMessage').innerText = msg;
-            document.getElementById('alertModal').classList.remove('hidden');
-        }
-
-        function closeAlert() {
-            document.getElementById('alertModal').classList.add('hidden');
-        }
-
-        function processPayment() {
-            const amount = document.getElementById('donationAmount').value;
-            
-            if (!amount || amount <= 0) {
-                showAlert("Please enter a valid amount to donate.");
-                return;
-            }
-
-            // UPI Deep Link Format: upi://pay?pa=VPA&pn=NAME&am=AMOUNT&cu=CURRENCY
-            const upiLink = `upi://pay?pa=${HARITHA_UPI}&pn=${encodeURIComponent(RECIPIENT_NAME)}&am=${amount}&cu=INR&tn=Donation%20to%20Haritha`;
-
-            // Redirect to the UPI link
-            window.location.href = upiLink;
-
-            // Fallback for desktop or if no app found after a delay
-            setTimeout(() => {
-                showAlert("If your payment app didn't open, please ensure you are on a mobile device with a UPI app installed.");
-            }, 2500);
-        }
-    </script>
 </body>
 </html>
 
