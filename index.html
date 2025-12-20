@@ -1,657 +1,432 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senternet webapps collections - Premium Web App Ecosystem</title>
+    <title>Senternet Premium Webapp Ecosystem | Aranthangi's Finest</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        /* Base Styles */
-        html { scroll-behavior: smooth; }
-        .font-inter { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         
-        /* Custom Scrollbar - Clean and bright */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f0f4f8; } /* Light track */
-        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 5px; border: 2px solid #f0f4f8; } /* Primary color thumb */
-        ::-webkit-scrollbar-thumb:hover { background: #3f39c0; }
-
-        /* Loader */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #34d399; /* Neon Green spinner */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s cubic-bezier(0.5, 0.2, 0.5, 0.8) infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* Template Card Styling */
-        .template-card {
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
-        }
-        .template-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); /* Softer shadow for light theme */
-            z-index: 10;
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #e0e7ff 0%, #ffffff 50%, #f1f5f9 100%);
         }
 
-        /* Iframe Preview Container (Scaled Down) */
-        .iframe-container {
-            height: 200px;
-            background: #eef2ff; /* Light indigo background */
+        .card-shimmer {
             position: relative;
             overflow: hidden;
-            border-radius: 0.75rem 0.75rem 0 0;
-            border-bottom: 2px solid #4f46e5; /* Primary color accent line */
         }
-        .iframe-preview {
-            width: 250%; 
-            height: 250%;
-            transform: scale(0.4);
-            transform-origin: top left;
+        .card-shimmer::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            transition: 0.8s;
             pointer-events: none;
-            filter: grayscale(80%) blur(1px);
-            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .template-card:hover .iframe-preview {
-            filter: grayscale(0%) blur(0px);
-            transform: scale(0.42); /* Slight zoom on hover */
+        .card-shimmer:hover::after {
+            left: 100%;
+            top: 100%;
         }
 
-        /* Sticky Filter Panel */
-        @media (min-width: 1024px) {
-            .sticky-filter {
-                position: sticky;
-                top: 96px; /* Below Navbar */
-                height: calc(100vh - 120px);
-                overflow-y: auto;
-            }
+        .featured-border {
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(45deg, #4f46e5, #ec4899, #f59e0b) border-box;
+            animation: border-glow 4s linear infinite;
         }
+
+        @keyframes border-glow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .iframe-wrapper {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .template-card:hover .iframe-wrapper {
+            transform: scale(1.05);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 20px; }
     </style>
 </head>
-<body class="bg-gray-50 font-inter text-slate-800">
+<body class="bg-slate-50 text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50 border-b border-indigo-100/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="bg-indigo-600 text-white p-3 rounded-full shadow-lg shadow-indigo-400/50">
-                        <i class="ph ph-cube-focus text-2xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-extrabold text-slate-900 tracking-wider">SENTERNET TECHNOLOGIES WEB COLLECTION</h1>
-                        <p class="text-xs text-indigo-600 font-medium">By Senthilkumar k, Aranthangi</p>
-                    </div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[100] glass border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="https://rebrand.ly/senternet" target="_blank" class="flex items-center gap-4 group">
+                <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:rotate-12 transition-transform">
+                    <i class="ph ph-lightning text-white text-2xl"></i>
                 </div>
-                <div class="hidden md:flex items-center space-x-4">
-                    <a href="mailto:senternettechnologies@gmail.com" class="text-gray-500 hover:text-indigo-600 transition p-2 rounded-full hover:bg-indigo-50">
-                        <i class="ph ph-envelope-simple text-2xl"></i>
-                    </a>
-                    <button onclick="openRegisterModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full flex items-center gap-2 text-sm font-bold transition shadow-xl shadow-indigo-300 transform hover:scale-105">
-                        <i class="ph ph-rocket text-lg"></i> Start Project
-                    </button>
+                <div>
+                    <span class="block text-xl font-bold tracking-tight text-slate-900">SENTERNET</span>
+                    <span class="block text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Technologies • Aranthangi</span>
                 </div>
-                <button class="md:hidden text-gray-700 p-2" onclick="toggleMobileMenu()">
-                    <i id="menu-icon" class="ph ph-list text-3xl"></i>
-                </button>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 font-semibold text-sm text-slate-600">
+                <a href="#featured" class="hover:text-indigo-600 transition">Featured</a>
+                <a href="#all-templates" class="hover:text-indigo-600 transition">Marketplace</a>
+                <a href="https://wa.me/918190038085" class="bg-slate-900 text-white px-6 py-3 rounded-full hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2">
+                    <i class="ph ph-chat-circle-dots"></i> Hire Senthil
+                </a>
             </div>
-        </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden p-4 bg-indigo-50 border-t border-indigo-200">
-            <button onclick="openRegisterModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm font-bold transition">
-                <i class="ph ph-rocket text-lg"></i> Start Project
-            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="pt-16 pb-12 px-4 relative overflow-hidden bg-indigo-600 border-b border-indigo-700">
-        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-        <div class="max-w-7xl mx-auto text-center relative z-10">
-            <span class="text-sm font-semibold text-white uppercase tracking-widest bg-black/10 px-4 py-1 rounded-full border border-white/50">PREMIUM ASSETS</span>
-            <h2 class="text-5xl md:text-6xl font-black mb-4 mt-3 tracking-tighter text-white">
-DIGITAL COMMUNICATION PORTAL            </h2>
-            <p class="text-indigo-200 max-w-4xl mx-auto text-lg mb-8">
-                Explore our curated collection of professional, performance-optimized, and fully responsive web application templates. Designed in Aranthangi for the global market.
-            </p>
-            <br><marquee bgcolor="white">Here you can Preview and use Templates. Can submit your templates for sell online. Contact admin for more details</marquee>
-            <a href="#template-grid-section" class="bg-yellow-400 text-indigo-900 hover:bg-yellow-500 font-bold px-8 py-3 rounded-full shadow-xl transition transform hover:-translate-y-1 inline-flex items-center gap-2">
-                <i class="ph ph-grid-four text-lg"></i> Discover Templates
-            </a>
-        </div>
-    </header>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
-            
-            <!-- Sticky Filter Panel (lg: block) -->
-            <aside class="hidden lg:block lg:col-span-3">
-                <div class="sticky-filter bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
-                    <h3 class="text-xl font-bold mb-4 text-indigo-600 flex items-center gap-2">
-                        <i class="ph ph-funnel text-2xl"></i> Filters & Search
-                    </h3>
-
-                    <!-- Search Input -->
-                    <div class="relative mb-6">
-                        <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400"></i>
-                        <input type="text" id="search-input-desktop" oninput="filterTemplates()" placeholder="Search by name, creator, or ID..." 
-                               class="w-full pl-12 pr-4 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
-                    </div>
-
-                    <!-- Category Filter -->
-                    <div class="mb-6">
-                        <label for="category-filter-desktop" class="block text-sm font-medium text-gray-600 mb-2">Category Selection</label>
-                        <div class="relative">
-                            <i class="ph ph-folder-open absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400 pointer-events-none"></i>
-                            <select id="category-filter-desktop" onchange="filterTemplates()"
-                                    class="appearance-none w-full pl-12 pr-8 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm cursor-pointer">
-                                <option value="">All Categories</option>
-                            </select>
-                            <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-lg text-gray-400 pointer-events-none"></i>
-                        </div>
-                    </div>
-
-                    <!-- Stats / Contact CTA -->
-                    <div class="mt-8 pt-4 border-t border-gray-200">
-                         <p class="text-sm text-gray-500">Total Available Templates:</p>
-                         <p class="text-3xl font-black text-slate-900" id="total-count">20+</p>
-                         <a href="https://wa.me/918190038085" target="_blank" class="mt-4 w-full flex justify-center items-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-bold transition shadow-lg shadow-green-300">
-                            <i class="ph ph-whatsapp-logo text-xl"></i> Instant Contact
-                        </a>
-                    </div>
-                </div>
-            </aside>
-            
-            <!-- Main Template Grid -->
-            <div class="lg:col-span-9">
-                
-                <!-- Mobile Filter/Search (lg: hidden) -->
-                <div class="lg:hidden bg-white p-4 rounded-xl shadow-lg mb-6 border border-gray-200">
-                    <button class="w-full flex items-center justify-center gap-2 py-2 text-indigo-600 font-semibold" onclick="toggleMobileFilters()">
-                        <i class="ph ph-funnel text-xl"></i> Click to Search Webapps
-                    </button>
-                    <div id="mobile-filters-panel" class="hidden pt-4 border-t border-gray-200 mt-4">
-                         <!-- Search Input -->
-                        <div class="relative mb-4">
-                            <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-500"></i>
-                            <input type="text" id="search-input-mobile" oninput="filterTemplates()" placeholder="Search by name, creator, or ID..." 
-                                class="w-full pl-12 pr-4 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm">
-                        </div>
-                        <!-- Category Filter -->
-                        <div class="relative">
-                            <i class="ph ph-folder-open absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-500 pointer-events-none"></i>
-                            <select id="category-filter-mobile" onchange="filterTemplates()"
-                                    class="appearance-none w-full pl-12 pr-8 py-3 bg-white border border-gray-300 text-slate-800 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm cursor-pointer">
-                                <option value="">All Categories</option>
-                            </select>
-                            <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-lg text-gray-400 pointer-events-none"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Template Sections Container -->
-                <div id="template-sections" class="flex flex-col gap-10" id="template-grid-section">
-                    <!-- Template Sections will be injected here by JS -->
-                </div>
-
-                <div id="no-results" class="hidden text-center py-20 bg-white rounded-xl mt-8 border border-gray-200">
-                    <i class="ph ph-archive text-8xl text-gray-300 mb-4 opacity-50"></i>
-                    <p class="text-2xl text-slate-900 font-bold">No Templates Found</p>
-                    <p class="text-gray-500 mt-2">Try adjusting your search or selecting a different category.</p>
-                </div>
+    <section class="pt-40 pb-20 px-6 hero-gradient relative overflow-hidden">
+        <div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-indigo-100 rounded-full blur-[120px] opacity-50"></div>
+        
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-slate-200 mb-8 animate-bounce">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                <span class="text-xs font-bold text-slate-600 tracking-wide uppercase">New Templates Added Daily</span>
             </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-8">
+                Crafting the Digital <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500">Future of Aranthangi.</span>
+            </h1>
+            
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Explore a curated collection of high-performance web applications, interactive tools, and premium UI clones designed by the <strong>Senternet Technologies</strong> team.
+            </p>
 
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#all-templates" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg hover:bg-indigo-700 hover:scale-105 transition shadow-2xl shadow-indigo-200">
+                    Browse Marketplace
+                </a>
+                <button onclick="openRegisterModal()" class="px-8 py-4 bg-white text-slate-900 border border-slate-200 rounded-2xl font-bold text-lg hover:bg-slate-50 transition">
+                    Custom Project
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marquee Banner -->
+    <div class="bg-indigo-600 py-4 overflow-hidden border-y border-indigo-500">
+        <div class="flex gap-12 whitespace-nowrap animate-marquee items-center text-white font-bold uppercase tracking-widest text-sm">
+            <span>🚀 Custom Web Solutions</span>
+            <span>💎 Premium UI Assets</span>
+            <span>📱 Mobile Responsive Designs</span>
+            <span>🎯 SEO Optimized Templates</span>
+            <span>🛠️ 24/7 Support from Aranthangi</span>
+            <!-- Duplicates for seamless loop -->
+            <span>🚀 Custom Web Solutions</span>
+            <span>💎 Premium UI Assets</span>
+            <span>📱 Mobile Responsive Designs</span>
+            <span>🎯 SEO Optimized Templates</span>
+            <span>🛠️ 24/7 Support from Aranthangi</span>
         </div>
     </div>
 
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-white mt-16 py-10">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="font-extrabold text-white text-2xl tracking-wider">SENTERNET TECHNOLOGIES</p>
-            <p class="text-green-400 text-sm mt-1">Aranthangi, Pudukkottai | Crafting Digital Future</p>
-            <p class="text-gray-400 text-xs mt-4">For Consultation & Purchases:</p>
-            <div class="flex justify-center gap-8 mt-4">
-                <a href="tel:+918190038085" class="text-gray-300 hover:text-indigo-400 transition flex items-center gap-2 font-medium">
-                    <i class="ph ph-phone-call text-xl text-indigo-400"></i> +91 81900 38085
-                </a>
-                <a href="mailto:senternettechnologies@gmail.com" class="text-gray-300 hover:text-indigo-400 transition flex items-center gap-2 font-medium">
-                    <i class="ph ph-envelope text-xl text-indigo-400"></i> senternettechnologies@gmail.com
-                </a>
+    <!-- Featured Spotlight (The Priority Section) -->
+    <section id="featured" class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                    <i class="ph-fill ph-star text-amber-400 text-4xl"></i> Featured Masterpieces
+                </h2>
+                <p class="text-slate-500 mt-2">The highest-rated, most innovative tools in our collection.</p>
             </div>
-            <p class="text-gray-500 text-xs mt-8">&copy; 2025 Senternet Technologies. All rights reserved.</p>
+        </div>
+        
+        <div id="featured-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Featured items injected here -->
+        </div>
+    </section>
+
+    <!-- Main Content & Filters -->
+    <section id="all-templates" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-12">
+                
+                <!-- Sidebar Filters -->
+                <aside class="lg:w-72 shrink-0">
+                    <div class="sticky top-28 space-y-8">
+                        <div>
+                            <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="ph ph-magnifying-glass"></i> Quick Search
+                            </h3>
+                            <input type="text" id="main-search" oninput="handleSearch()" placeholder="Type to search..." 
+                                   class="w-full bg-slate-100 border-none rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 transition">
+                        </div>
+
+                        <div>
+                            <h3 class="font-bold text-slate-900 mb-4">Categories</h3>
+                            <div id="category-chips" class="flex flex-wrap lg:flex-col gap-2">
+                                <!-- Chips injected here -->
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
+                            <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" 
+                                 alt="Senthilkumar CEO" class="w-16 h-16 rounded-2xl shadow-lg mb-4 object-cover border-2 border-white">
+                            <h4 class="font-bold text-indigo-900">Need Custom Work?</h4>
+                            <p class="text-sm text-indigo-700/80 mb-4">Talk directly to Senthil for your specialized web requirements.</p>
+                            <a href="https://wa.me/918190038085" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-center block font-bold text-sm hover:bg-indigo-700">Chat Now</a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Grid -->
+                <div class="flex-grow">
+                    <div id="template-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Standard cards injected here -->
+                    </div>
+                    
+                    <div id="no-results" class="hidden py-20 text-center">
+                        <i class="ph ph-mask-sad text-6xl text-slate-300 mb-4"></i>
+                        <h3 class="text-xl font-bold text-slate-900">No matches found</h3>
+                        <p class="text-slate-500">Try checking your spelling or selecting a different category.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Footer -->
+    <footer class="bg-slate-900 text-white py-20 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="col-span-1 md:col-span-2">
+                <a href="https://rebrand.ly/senternet" class="text-2xl font-black tracking-tighter mb-6 block">SENTERNET TECHNOLOGIES</a>
+                <p class="text-slate-400 max-w-md leading-relaxed mb-8">
+                    Established in Aranthangi, Pudukkottai. We bridge the gap between imagination and digital reality. Specializing in high-end web design, graphic design, and marketing strategies.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-indigo-600 transition"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="https://wa.me/918190038085" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-green-600 transition"><i class="ph ph-whatsapp-logo"></i></a>
+                    <a href="mailto:senternettechnologies@gmail.com" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-indigo-600 transition"><i class="ph ph-envelope"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-6">Our Services</h4>
+                <ul class="space-y-4 text-slate-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Web Development</a></li>
+                    <li><a href="#" class="hover:text-white transition">Graphic Design</a></li>
+                    <li><a href="#" class="hover:text-white transition">AppScript Solutions</a></li>
+                    <li><a href="#" class="hover:text-white transition">Digital Marketing</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-6">Get in Touch</h4>
+                <div class="space-y-4 text-sm">
+                    <p class="flex items-center gap-3 text-slate-400"><i class="ph ph-phone text-indigo-400"></i> +91 81900 38085</p>
+                    <p class="flex items-center gap-3 text-slate-400"><i class="ph ph-map-pin text-indigo-400"></i> Aranthangi, TN, India</p>
+                    <p class="flex items-center gap-3 text-slate-400"><i class="ph ph-at text-indigo-400"></i> senternettechnologies@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto border-t border-slate-800 mt-16 pt-8 text-center text-xs text-slate-500">
+            &copy; 2025 Senternet Technologies. Powered by Senthilkumar K (CEO). All rights reserved.
         </div>
     </footer>
 
-    <!-- Fullscreen Preview Modal -->
-    <div id="preview-modal" class="fixed inset-0 z-50 hidden bg-white transition-opacity duration-300">
-        <!-- Modal Header -->
-        <div class="h-16 bg-white border-b border-gray-200 flex justify-between items-center px-4 shadow-md relative z-50">
-            <div class="flex items-center gap-3">
-                <button onclick="closePreview()" class="p-2 hover:bg-gray-100 rounded-full transition text-gray-600">
-                    <i class="ph ph-arrow-left text-xl"></i>
-                </button>
-                <div>
-                    <h3 id="modal-title" class="font-bold text-slate-900 text-base md:text-xl">Template Preview</h3>
-                    <p class="text-xs text-green-600 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live Interactive Demo</p>
-                </div>
+    <!-- Fullscreen Preview -->
+    <div id="preview-modal" class="fixed inset-0 z-[200] hidden bg-white flex flex-col">
+        <div class="h-16 px-6 border-b flex items-center justify-between bg-white shadow-sm">
+            <div class="flex items-center gap-4">
+                <button onclick="closePreview()" class="text-slate-500 hover:text-slate-900 transition"><i class="ph ph-arrow-left text-2xl"></i></button>
+                <h3 id="modal-title" class="font-bold text-slate-900">Preview</h3>
             </div>
-            
-            <div class="flex items-center gap-3">
-                <button onclick="refreshIframe()" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Refresh">
-                    <i class="ph ph-arrow-clockwise text-xl"></i>
-                </button>
-                <button onclick="closePreview()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg shadow-red-300/50">
-                    <i class="ph ph-x text-lg"></i> Close
-                </button>
+            <div class="flex items-center gap-4">
+                <button onclick="refreshPreview()" class="p-2 hover:bg-slate-100 rounded-lg text-slate-600"><i class="ph ph-arrow-clockwise"></i></button>
+                <a id="modal-buy-btn" href="#" class="px-5 py-2 bg-green-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-100">Buy License</a>
             </div>
         </div>
-
-        <!-- Iframe Container -->
-        <div class="w-full h-[calc(100%-4rem)] bg-gray-100 relative">
-            <div id="loader" class="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-10 hidden transition-opacity duration-200">
-                <div class="loader"></div>
+        <div class="flex-grow bg-slate-100 relative">
+            <div id="preview-loader" class="absolute inset-0 flex items-center justify-center bg-white z-10 hidden">
+                <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
             </div>
             <iframe id="preview-frame" class="w-full h-full border-0" src=""></iframe>
         </div>
     </div>
-    
-    <!-- Registration/Consultation Modal -->
-    <div id="register-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center p-4" onclick="if(event.target.id === 'register-modal') closeRegisterModal()">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all border border-indigo-500/50">
-            <div class="flex justify-between items-center mb-6 border-b pb-4 border-gray-200">
-                <h3 class="text-2xl font-bold text-indigo-700"><i class="ph ph-handshake text-2xl mr-2"></i> Free Consultation</h3>
-                <button onclick="closeRegisterModal()" class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition">
-                    <i class="ph ph-x text-xl"></i>
+
+    <!-- Consulting Modal -->
+    <div id="reg-modal" class="fixed inset-0 z-[300] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl relative">
+            <button onclick="closeRegisterModal()" class="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><i class="ph ph-x text-2xl"></i></button>
+            <h3 class="text-3xl font-extrabold text-slate-900 mb-2">Start a Project</h3>
+            <p class="text-slate-500 mb-8">Briefly share your details, and Senthil will contact you.</p>
+            <form onsubmit="handleConsultation(event)" class="space-y-5">
+                <input type="text" id="c-name" placeholder="Full Name" required class="w-full p-4 bg-slate-100 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500">
+                <input type="text" id="c-location" placeholder="Your Location" required class="w-full p-4 bg-slate-100 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500">
+                <textarea id="c-msg" placeholder="Tell us about your project..." rows="3" class="w-full p-4 bg-slate-100 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 flex items-center justify-center gap-3 hover:bg-indigo-700">
+                    <i class="ph ph-paper-plane-tilt"></i> Send Request
                 </button>
-            </div>
-            <form id="register-form" onsubmit="handleRegisterSubmit(event)">
-                <div class="space-y-4">
-                    <input type="text" id="reg-username" placeholder="Your Name" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
-                    <input type="number" id="reg-age" placeholder="Your Age" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
-                    <input type="text" id="reg-qualification" placeholder="Qualification (e.g., MCA, B.E.)" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
-                    <input type="text" id="reg-location" placeholder="Current Location" required class="w-full px-4 py-3 bg-white text-slate-800 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
-                </div>
-                <button type="submit" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-xl shadow-green-300/50 flex items-center justify-center gap-2">
-                    <i class="ph ph-whatsapp-logo text-xl"></i> Connect with our CEO (Senthil)
-                </button>
-                <p class="text-xs text-gray-500 text-center mt-3">We will initiate a chat on WhatsApp for personalized project discussion.</p>
             </form>
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
     <script>
-        // --- DATA ---
-        const WHATSAPP_NUMBER = '918190038085'; // Senthilkumar's WhatsApp number
-
+        const WHATSAPP = "918190038085";
         const templates = [
-            // Using bright theme colors for template categories
-            <!--business tools-->
-            { id: '1 Contactssender', title: '<mark>SMS / WhatsApp Sender-Haritha</mark>', url: 'sms.html', desc: 'A bulk message sender tool for direct WhatsApp / SMS, spam-free communication for Normal SMS & WhatsApp.', category: 'Business Tools', color: 'text-green-600', creator: 'Haritha (Chennai)', price_in_inr: 98 },
-            { id: 'Contactssender', title: 'Contacts Sender Tool for whatsapp', url: 'contacts.html', desc: 'A bulk message sender tool for direct, spam-free communication.', category: 'Business Tools', color: 'text-green-600', creator: 'Haritha', price_in_inr: 97 },
-            { id: 'invoice Generator and Tracker web application called InvoiceFlow', title: 'Invoice Flow Generator', url: 'invoice1.html', desc: 'A webapp of invoice generator, here can generate and calculate taxes from entries.', category: 'Business Tools', color: 'text-fuchsia-600', creator: 'Senthil', price_in_inr: 1299 },
-            { id: 'home', title: 'Senternet Home Landing', url: 'home.html', desc: 'The official company landing page template with a service overview structure.', category: 'Business Tools', color: 'text-indigo-600', creator: 'Senthil (CEO)', price_in_inr: 299 },
-
-
-
-
-<!--Haritha donation-->
- { id: '1Haritha', title: 'Haritha Donation Website', url: 'harithadonate.html', desc: 'app created website by haritha', category: 'Haritha designs', color: 'text-indigo-600', creator: 'haritha', price_in_inr: 150 },
-
-
-
-
-            <!--ecommerce-->
-            { id: 'honeyselling', title: 'Honey Selling Website', url: 'honey.html', desc: 'Simple, conversion-focused landing page for premium honey products.', category: 'E-commerce', color: 'text-amber-600', creator: 'Kumar (Web Designer)', price_in_inr: 199 },
-            { id: 'roller', title: 'Roller Menu Boutique', url: 'rollermenu.html', desc: 'An interactive scrolling menu concept for high-end fashion boutiques or restaurants.', category: 'E-commerce', color: 'text-amber-600', creator: 'Anitha (Backend Worker)', price_in_inr: 399 },
-
-
-
-            <!--products showcase-->
-            { id: 'paint', title: 'Lumina Paints Webapp', url: 'lumina.html', desc: 'Allows customers to check color mixing, visualize paints on walls, and place orders.', category: 'Product Showcase', color: 'text-pink-600', creator: 'Santhosh (Web Dev)', price_in_inr: 599 },
-
-
-
-           
-
-
-            <!--portofolio-->
-            { id: 'riya', title: 'Riya Mehandi Portfolio', url: 'riya.html', desc: 'Artistic case study and portfolio showcase for Mehandi designs.', category: 'Portfolio', color: 'text-purple-600', creator: 'Sathish (Graphic Designer)', price_in_inr: 149 },
-            { id: 'portfolio', title: 'Developer Portfolio', url: 'portfolio1.html', desc: 'A professional personal branding site template for modern developers.', category: 'Portfolio', color: 'text-purple-600', creator: 'Santhosh (Web Dev)', price_in_inr: 149 },
-
-
-
-            <!--experimental-->
-            { id: 'os', title: 'Sen Windows OS Clone', url: 'sen-os.html', desc: 'An experimental web-based operating system simulation concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 999 },
-            { id: 'camera', title: 'Sen camera basic template', url: 'camera.html', desc: 'An experimental web-based camera simulation concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 99 },
-            { id: 'to do list', title: 'To Do List App', url: 'todo.html', desc: 'A modern, simple to-do list web app concept UI.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 12 },
-           { id: 'vortex experimental' , title: 'vortex', url: 'vortex.html', desc: 'virtex experimental project, wave lines.', category: 'Experimental/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 645 },
-          { id: 'water ripple wave simulation ', title: 'Water ripple digital 2d wave', url: 'ripple.html', desc: '2d water ripples, interactive.', category: 'Experimental', color: 'text-sky-600', creator: 'Senthil(Backend/Web)', price_in_inr: 645 },
-
-
-
-
-            <!--media-->
-            { id: 'jio stream', title: 'Jio stream basic template', url: 'jiostream.html', desc: 'Template for Jio Stream app - modern media UI replication.', category: 'Media/UI', color: 'text-red-600', creator: 'Saran (SMM)', price_in_inr: 99 },
-            { id: 'youtube', title: 'YouTube Clone UI', url: 'youtube.html', desc: 'Video streaming platform UI template with a fully responsive grid layout.', category: 'Media/UI', color: 'text-red-600', creator: 'Shanthi (Digital Mkt.)', price_in_inr: 249 },
-         { id: 'connect feed templte social app', title: 'Connect feed', url: 'connectfeed.html', desc: 'template static webapp, contact admin for make dynamic and free bckend.', category: 'Media/UI', color: 'text-sky-600', creator: 'Senthil (Backend/Web)', price_in_inr: 645 },
-         { id: 'sentagram social app', title: 'sentagram social app template', url: 'sentagram.html', desc: 'template static webapp, contact admin for make dynamic and free bckend.', category: 'Media/UI', color: 'text-sky-600', creator: 'Senthil (Backend/Web)', price_in_inr: 2350 },
-        { id: 'chatsphere', title: 'Chatsphere', url: 'chatsphere.html', desc: 'chatting template webapp, contct admin for bckend.', category: 'Media/UI', color: 'text-sky-600', creator: 'Surya (Backend/Web)', price_in_inr: 645 },
-
-
-
-
-
-            <!--finance-->
-            { id: 'gpay', title: 'G-Pay Clone UI', url: 'gpay.html', desc: 'A sleek UI replication of the Google Pay payment interface for fintech concepts.', category: 'Finance', color: 'text-emerald-600', creator: 'Kumar (Web Designer)', price_in_inr: 199 },
-          
-            
-            <!--travel-->
-            { id: 'FlightBooking', title: 'Flight Booking App', url: 'FlightBookingApp.html', desc: 'A basic-level flight ticket booking template for travel agencies.', category: 'Travel', color: 'text-yellow-600', creator: 'Arun (Design)', price_in_inr: 349 },
-
-
-
-            <!--gallery-->
-            { id: 'articans', title: 'Articans Gallery', url: 'articans.html', desc: 'A creative arts and craft gallery showcase template.', category: 'Gallery', color: 'text-orange-600', creator: 'Saran (SMM)', price_in_inr: 199 },
-          
-            
-            <!--riddle-->
-            { id: 'maths', title: 'Horse allocation riddle🐎', url: 'horse.html', desc: 'Simple riddle calculation of allocating horse.', category: 'Riddle', color: 'text-orange-600', creator: 'Senthil (CEO)', price_in_inr: 59 },
-
-
-
-            <!--job-->
-            { id: 'earn money online data entry', title: 'earn money Data entry work', url: 'earn1.html', desc: 'here you can just make data entry for given datas, also here you can check and validate datas of workers.', category: 'job', color: 'text-orange-600', creator: 'Senthil (CEO)', price_in_inr: 50 },
-          
-            
-            <!--Games-->
-            { id: 'Chess Offline game', title: 'Chess Offline - Game', url: 'chess.html', desc: 'A simple "chess" basic game template for interactive content.', category: 'Games', color: 'text-fuchsia-600', creator: 'Siva (Product Mkt.)', price_in_inr: 39 },
-            { id: 'Flavour fusion game', title: 'Flavour Fusion - Game', url: 'flavourfusion.html', desc: 'A simple "cook and serve" basic game template for interactive content.', category: 'Games', color: 'text-fuchsia-600', creator: 'Siva (Product Mkt.)', price_in_inr: 299 },
-                 { id: 'snake game 2d', title: 'snake clssic 2d', url: 'snake1.html', desc: '2d classic snake game.', category: 'Games', color: 'text-sky-600', creator: 'Senthil(Backend/Web)', price_in_inr: 645 },
-
-        
-        
-        
+            { id: 'bulk-sender', title: 'SMS / WhatsApp Sender PRO', url: 'sms.html', desc: 'Bulk message sender for high-volume communication.', category: 'Business Tools', creator: 'Haritha', price: 98, isFeatured: true },
+            { id: 'invoice-flow', title: 'Invoice Flow Generator', url: 'invoice1.html', desc: 'Enterprise-grade billing and tax calculation system.', category: 'Fintech', creator: 'Senthil', price: 1299, isFeatured: true },
+            { id: 'haritha-donate', title: 'Haritha Donation Portal', url: 'harithadonate.html', desc: 'Clean, trust-focused charity collection platform.', category: 'Websites', creator: 'Haritha', price: 150 },
+            { id: 'honey-sell', title: 'Golden Honey Store', url: 'honey.html', desc: 'Convert more sales with this specialized landing page.', category: 'E-commerce', creator: 'Kumar', price: 199 },
+            { id: 'lumina-paints', title: 'Lumina Color Visualizer', url: 'lumina.html', desc: 'Check color mixing and wall visualization.', category: 'Industrial', creator: 'Santhosh', price: 599, isFeatured: true },
+            { id: 'sen-os', title: 'Sen Windows Simulator', url: 'sen-os.html', desc: 'A complex web-based OS simulation interface.', category: 'Experimental', creator: 'Surya', price: 999 },
+            { id: 'riya-mehandi', title: 'Riya Art Portfolio', url: 'riya.html', desc: 'Stunning showcase for Mehandi and henna artists.', category: 'Portfolio', creator: 'Sathish', price: 149 },
+            { id: 'sentagram', title: 'Sentagram Social App', url: 'sentagram.html', desc: 'Advanced feed and social interaction UI.', category: 'Media', creator: 'Senthil', price: 2350, isFeatured: true },
+            { id: 'chess-off', title: 'Grandmaster Chess', url: 'chess.html', desc: 'Offline board game logic with smooth UI.', category: 'Games', creator: 'Siva', price: 39 },
+            { id: 'flavour-fusion', title: 'Flavour Fusion Game', url: 'flavourfusion.html', desc: 'Cooking simulation game for web users.', category: 'Games', creator: 'Siva', price: 299 },
+            { id: 'vortex', title: 'Vortex Visuals', url: 'vortex.html', desc: 'Interactive wave-line experimental project.', category: 'Experimental', creator: 'Surya', price: 645 }
         ];
 
-        // --- DOM ELEMENTS (Identical to dark mode, just referencing bright elements) ---
-        const sectionsContainer = document.getElementById('template-sections');
-        const modal = document.getElementById('preview-modal');
-        const iframe = document.getElementById('preview-frame');
-        const modalTitle = document.getElementById('modal-title');
-        const loader = document.getElementById('loader');
-        const noResultsDiv = document.getElementById('no-results');
-        const registerModal = document.getElementById('register-modal');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = document.getElementById('menu-icon');
-        const mobileFilterPanel = document.getElementById('mobile-filters-panel');
+        let activeCategory = "";
 
-        const searchInputDesktop = document.getElementById('search-input-desktop');
-        const categoryFilterDesktop = document.getElementById('category-filter-desktop');
-        const searchInputMobile = document.getElementById('search-input-mobile');
-        const categoryFilterMobile = document.getElementById('category-filter-mobile');
-        const totalCountDisplay = document.getElementById('total-count');
-
-        // --- UTILITY FUNCTIONS ---
-        
-        function groupTemplatesByCategory(filteredTemplates) {
-            return filteredTemplates.reduce((groups, item) => {
-                const category = item.category || 'Uncategorized';
-                if (!groups[category]) { groups[category] = []; }
-                groups[category].push(item);
-                return groups;
-            }, {});
-        }
-
-        // Generate template card HTML (Updated for light theme styling)
-        function generateCardHTML(item) {
-            let iconClass = 'ph-browsers';
-            if (item.category.includes('Games')) iconClass = 'ph-game-controller';
-            else if (item.category.includes('AI Tools')) iconClass = 'ph-brain';
-            else if (item.category.includes('E-commerce')) iconClass = 'ph-storefront';
-            else if (item.category.includes('Fintech')) iconClass = 'ph-currency-circle-dollar';
-            else if (item.category.includes('Portfolio')) iconClass = 'ph-user-list';
-            else if (item.category.includes('Experimental')) iconClass = 'ph-flask-gear';
-
-            const priceFormatted = new Intl.NumberFormat('en-IN', {
-                style: 'currency',
-                currency: 'INR',
-                maximumFractionDigits: 0,
-            }).format(item.price_in_inr);
-
+        function createCard(item, isFeatured = false) {
+            const priceINR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(item.price);
+            
             return `
-                <div class="template-card bg-white rounded-xl shadow-lg border border-gray-200 flex flex-col h-full overflow-hidden">
-                    
-                    <!-- Iframe Preview Area -->
-                    <div class="iframe-container">
-                        <iframe src="${item.url}" 
-                            class="iframe-preview" 
-                            scrolling="no" loading="lazy" tabindex="-1">
-                        </iframe>
-                        <div class="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 z-10">
-                             <span class="text-xs font-bold text-white p-2 rounded bg-indigo-600/80 shadow-md">LIVE PREVIEW</span>
+                <div class="template-card flex flex-col bg-white rounded-[2rem] border border-slate-200 overflow-hidden card-shimmer group transition-all hover:shadow-2xl hover:-translate-y-2 ${isFeatured ? 'featured-border' : ''}">
+                    <div class="h-56 bg-slate-100 relative overflow-hidden">
+                        <div class="iframe-wrapper w-full h-full pointer-events-none">
+                             <iframe src="${item.url}" class="w-[200%] h-[200%] scale-50 origin-top-left border-none opacity-80 group-hover:opacity-100 transition-opacity"></iframe>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-slate-900 shadow-sm">
+                            ID: ${item.id.toUpperCase()}
                         </div>
                     </div>
-
-                    <!-- Card Body -->
-                    <div class="p-5 flex-grow flex flex-col relative z-20 bg-white">
-                        <span class="text-xs font-bold uppercase tracking-wider ${item.color} bg-indigo-50 px-3 py-1 rounded-full self-start flex items-center gap-1">
-                            <i class="ph ${iconClass} text-base"></i> ${item.category.split('/')[0]}
-                        </span>
-                        
-                        <h3 class="text-xl font-bold text-slate-900 mt-3 mb-1 line-clamp-1">${item.title}</h3>
-                        <p class="text-gray-500 text-sm line-clamp-2 mb-4">${item.desc}</p>
-                        
-                        <!-- Price and Creator -->
-                        <div class="flex justify-between items-center text-sm font-semibold mb-4 border-t border-gray-200 pt-3 mt-auto">
-                            <p class="flex items-center gap-1 text-indigo-600 text-lg font-black">
-                                ${priceFormatted} <span class="text-xs font-medium text-gray-400">Only</span>
-                            </p>
-                            <p class="text-gray-500 text-xs text-right">
-                                Crafted by: <br><span class="text-slate-800 font-medium">${item.creator}</span>
-                            </p>
+                    <div class="p-8 flex-grow flex flex-col">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">${item.category}</span>
+                            ${isFeatured ? '<span class="text-[10px] font-extrabold uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full flex items-center gap-1"><i class="ph-fill ph-crown"></i> Elite</span>' : ''}
                         </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">${item.title}</h3>
+                        <p class="text-slate-500 text-sm line-clamp-2 mb-6">${item.desc}</p>
                         
-                        <!-- Actions -->
-                        <div class="flex gap-3">
-                            <button onclick="openPreview('${item.url}', '${item.title}')" 
-                                class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 px-3 rounded-xl text-sm transition-colors shadow-lg shadow-gray-300 flex justify-center items-center gap-2">
-                                <i class="ph ph-eye text-lg"></i> Preview Demo
-                            </button>
-                            <button onclick="openBuyChat('${item.title}', '${item.id}', '${item.price_in_inr}')"
-                                class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-3 rounded-xl text-sm transition-colors shadow-lg shadow-green-300/50 flex justify-center items-center gap-2">
-                                <i class="ph ph-whatsapp-logo text-lg"></i> Buy/Customize
-                            </button>
+                        <div class="mt-auto flex items-center justify-between border-t border-slate-100 pt-6">
+                            <div>
+                                <span class="text-2xl font-black text-slate-900">${priceINR}</span>
+                                <span class="block text-[10px] text-slate-400 font-bold uppercase">Crafted by ${item.creator}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openPreview('${item.url}', '${item.title}', '${item.id}', ${item.price})" class="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-indigo-600 transition shadow-lg shadow-slate-200">
+                                    <i class="ph ph-eye text-xl"></i>
+                                </button>
+                                <button onclick="buyNow('${item.title}', '${item.id}', ${item.price})" class="px-6 h-12 bg-green-500 text-white rounded-xl flex items-center justify-center font-bold hover:bg-green-600 transition shadow-lg shadow-green-100">
+                                    Buy Now
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        // Render templates - logic is the same, but styling elements changed in HTML
-        function renderTemplates(filteredTemplates) {
-            sectionsContainer.innerHTML = '';
-            totalCountDisplay.innerText = filteredTemplates.length;
+        function render() {
+            const search = document.getElementById('main-search').value.toLowerCase();
+            const filtered = templates.filter(t => 
+                (t.title.toLowerCase().includes(search) || t.id.toLowerCase().includes(search)) &&
+                (activeCategory === "" || t.category === activeCategory)
+            );
 
-            if (filteredTemplates.length === 0) {
-                noResultsDiv.classList.remove('hidden');
-                return;
+            const grid = document.getElementById('template-grid');
+            const featuredGrid = document.getElementById('featured-grid');
+            const noResults = document.getElementById('no-results');
+
+            // Render Featured
+            const featuredList = templates.filter(t => t.isFeatured);
+            featuredGrid.innerHTML = featuredList.map(t => createCard(t, true)).join('');
+
+            // Render Marketplace
+            if(filtered.length === 0) {
+                grid.innerHTML = "";
+                noResults.classList.remove('hidden');
             } else {
-                noResultsDiv.classList.add('hidden');
+                noResults.classList.add('hidden');
+                grid.innerHTML = filtered.map(t => createCard(t)).join('');
             }
-
-            const groupedTemplates = groupTemplatesByCategory(filteredTemplates);
-            const categories = Object.keys(groupedTemplates).sort();
-
-            categories.forEach(category => {
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'category-section';
-
-                sectionDiv.innerHTML = `
-                    <div class="flex items-center justify-between mb-6 border-b border-indigo-200 pb-3">
-                        <h4 class="text-3xl font-extrabold text-slate-800">
-                            ${category} 
-                        </h4>
-                        <span class="text-sm font-medium text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">${groupedTemplates[category].length} Assets</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        ${groupedTemplates[category].map(generateCardHTML).join('')}
-                    </div>
-                `;
-                sectionsContainer.appendChild(sectionDiv);
-            });
         }
 
-        // Populate category filter dropdowns (Same logic)
-        function populateCategoryFilters() {
-            const categories = [...new Set(templates.map(t => t.category))].sort();
-            
-            const optionsHtml = categories.map(category => 
-                `<option value="${category}">${category}</option>`
-            ).join('');
-            
-            const allOption = '<option value="">All Categories</option>';
-            
-            categoryFilterDesktop.innerHTML = allOption + optionsHtml;
-            categoryFilterMobile.innerHTML = allOption + optionsHtml;
+        function initCategories() {
+            const cats = ["All", ...new Set(templates.map(t => t.category))];
+            const chipContainer = document.getElementById('category-chips');
+            chipContainer.innerHTML = cats.map(c => `
+                <button onclick="setCategory('${c === 'All' ? '' : c}')" 
+                        class="px-5 py-3 rounded-2xl text-sm font-bold transition-all text-left ${((c === 'All' && activeCategory === '') || c === activeCategory) ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                    ${c}
+                </button>
+            `).join('');
         }
 
-        // Filter logic (Same logic)
-        window.filterTemplates = function() {
-            const isDesktop = window.innerWidth >= 1024;
-            const searchInput = isDesktop ? searchInputDesktop : searchInputMobile;
-            const categoryFilter = isDesktop ? categoryFilterDesktop : categoryFilterMobile;
-
-            const searchTerm = (searchInput?.value || '').toLowerCase().trim();
-            const selectedCategory = categoryFilter?.value || '';
-
-            if (isDesktop) {
-                searchInputMobile.value = searchTerm;
-                categoryFilterMobile.value = selectedCategory;
-            } else {
-                searchInputDesktop.value = searchTerm;
-                categoryFilterDesktop.value = selectedCategory;
-            }
-
-            const filtered = templates.filter(item => {
-                const matchesSearch = !searchTerm || 
-                                      item.title.toLowerCase().includes(searchTerm) ||
-                                      item.desc.toLowerCase().includes(searchTerm) ||
-                                      item.creator.toLowerCase().includes(searchTerm) ||
-                                      item.id.toLowerCase().includes(searchTerm);
-                
-                const matchesCategory = !selectedCategory || item.category === selectedCategory;
-
-                return matchesSearch && matchesCategory;
-            });
-
-            renderTemplates(filtered);
-        };
-
-        // --- MOBILE UI FUNCTIONS (Same logic) ---
-        window.toggleMobileMenu = function() {
-            mobileMenu.classList.toggle('hidden');
-            if (mobileMenu.classList.contains('hidden')) {
-                menuIcon.classList.replace('ph-x', 'ph-list');
-            } else {
-                menuIcon.classList.replace('ph-list', 'ph-x');
-            }
-        };
-
-        window.toggleMobileFilters = function() {
-            mobileFilterPanel.classList.toggle('hidden');
-        };
-
-
-        // --- MODAL FUNCTIONS (Same logic) ---
-
-        window.openPreview = function(url, title) {
-            modalTitle.innerText = title;
+        window.setCategory = (c) => { activeCategory = c; initCategories(); render(); };
+        window.handleSearch = () => render();
+        
+        window.openPreview = (url, title, id, price) => {
+            const modal = document.getElementById('preview-modal');
+            const frame = document.getElementById('preview-frame');
+            const loader = document.getElementById('preview-loader');
+            const buyBtn = document.getElementById('modal-buy-btn');
+            
+            document.getElementById('modal-title').innerText = title;
+            buyBtn.onclick = () => buyNow(title, id, price);
+            
             modal.classList.remove('hidden');
             loader.classList.remove('hidden');
-            iframe.src = url;
-            iframe.onload = function() {
-                loader.classList.add('hidden');
-            };
+            frame.src = url;
+            frame.onload = () => loader.classList.add('hidden');
             document.body.style.overflow = 'hidden';
         };
 
-        window.closePreview = function() {
-            modal.classList.add('hidden');
-            iframe.src = 'about:blank';
+        window.closePreview = () => {
+            document.getElementById('preview-modal').classList.add('hidden');
+            document.getElementById('preview-frame').src = "";
             document.body.style.overflow = 'auto';
         };
 
-        window.refreshIframe = function() {
-            if(iframe.src && iframe.src !== 'about:blank') {
-                loader.classList.remove('hidden');
-                const currentUrl = iframe.src;
-                iframe.src = 'about:blank'; 
-                setTimeout(() => {
-                    iframe.src = currentUrl; 
-                }, 50);
-            }
+        window.refreshPreview = () => {
+            const frame = document.getElementById('preview-frame');
+            const url = frame.src;
+            frame.src = "";
+            setTimeout(() => frame.src = url, 10);
         };
 
-        window.openRegisterModal = function() {
-            registerModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+        window.buyNow = (title, id, price) => {
+            const text = `Vanakam Senternet! I want to buy this template:%0A- *Template*: ${title}%0A- *ID*: ${id}%0A- *Price*: ₹${price}%0A%0APlease guide me on the payment process.`;
+            window.open(`https://wa.me/${WHATSAPP}?text=${text}`, '_blank');
         };
 
-        window.closeRegisterModal = function() {
-            registerModal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        };
+        window.openRegisterModal = () => document.getElementById('reg-modal').classList.remove('hidden');
+        window.closeRegisterModal = () => document.getElementById('reg-modal').classList.add('hidden');
 
-        window.handleRegisterSubmit = function(event) {
-            event.preventDefault();
-            const name = document.getElementById('reg-username').value;
-            const age = document.getElementById('reg-age').value;
-            const qual = document.getElementById('reg-qualification').value;
-            const loc = document.getElementById('reg-location').value;
-
-            const message = `*New Senternet Project Consultation Request* (From Template Forge):%0A%0A- *Name*: ${name}%0A- *Age*: ${age}%0A- *Qualification*: ${qual}%0A- *Location*: ${loc}%0A%0AHello Senthil! I am requesting a free consultation to discuss a new web app project/template customization.`;
-            
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-            
-            window.open(whatsappUrl, '_blank');
+        window.handleConsultation = (e) => {
+            e.preventDefault();
+            const name = document.getElementById('c-name').value;
+            const loc = document.getElementById('c-location').value;
+            const msg = document.getElementById('c-msg').value;
+            const text = `*New Project Consultation*%0A%0A- *Client*: ${name}%0A- *Location*: ${loc}%0A- *Project Details*: ${msg}%0A%0AInterested in custom development from Senternet Technologies.`;
+            window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
             closeRegisterModal();
         };
 
-        window.openBuyChat = function(title, id, price) {
-            const priceFormatted = new Intl.NumberFormat('en-IN', {
-                style: 'currency',
-                currency: 'INR',
-                maximumFractionDigits: 0,
-            }).format(price);
-            
-            const message = `*Template Purchase/Customization Inquiry* (From Template Forge):%0A%0AHello Senternet Team! I am interested in buying/customizing the following asset:%0A- *Title*: ${title}%0A- *ID*: ${id}%0A- *Price*: ${priceFormatted}%0A%0APlease provide payment and next steps, or discuss customization options.`;
-            
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-            
-            window.open(whatsappUrl, '_blank');
+        window.onload = () => {
+            initCategories();
+            render();
         };
-
-
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            populateCategoryFilters();
-            renderTemplates(templates);
-            totalCountDisplay.innerText = templates.length;
-        };
-        
-        window.onresize = filterTemplates;
-
     </script>
 </body>
 </html>
+
