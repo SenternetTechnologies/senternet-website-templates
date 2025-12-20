@@ -3,334 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENTERNET Air - Flight Booking</title>
-    <!-- Load Tailwind CSS -->
+    <title>SENTERNET Air | Premium Flight Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --primary-color: #3b82f6; /* Blue-500 */
-            --secondary-color: #10b981; /* Emerald-500 */
-            --bg-color: #f3f4f6; /* Gray-100 */
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-        }
-        .form-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .tab-button.active {
-            background-color: var(--primary-color);
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-        }
-        .shadow-custom {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-        }
-        .btn-primary {
-            background-color: var(--secondary-color);
-            transition: background-color 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #059669; /* Emerald-600 */
-        }
-        .input-field {
-            border: 1px solid #d1d5db;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input-field:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
-        }
-        .footer-bg {
-            background-color: #1f2937; /* Gray-800 */
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+        .hero-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .tab-active { border-bottom: 3px solid #3b82f6; color: #1e3a8a; }
+        .seat.selected { background-color: #10b981 !important; color: white; }
+        .seat.occupied { background-color: #d1d5db !important; cursor: not-allowed; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-slide { animation: slideIn 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="antialiased">
+<body class="text-slate-900">
 
-    <!-- Header & Navigation -->
-    <header class="bg-white shadow-custom sticky top-0 z-10">
-        <div class="form-container flex justify-between items-center py-4">
-            <h1 class="text-3xl font-bold text-gray-900">
-                <span class="text-blue-600">SENTERNET</span> <span class="text-gray-900">Air</span>
-            </h1>
-            <nav class="hidden md:flex space-x-6 text-gray-600 font-medium">
-                <a href="#" class="hover:text-blue-500 transition duration-150">Flights</a>
-                <a href="#" class="hover:text-blue-500 transition duration-150">Hotels</a>
-                <a href="#" class="hover:text-blue-500 transition duration-150">Packages</a>
-                <a href="#" class="hover:text-blue-500 transition duration-150">Check-in</a>
-            </nav>
+    <!-- Navbar -->
+    <nav class="glass-effect sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 p-2 rounded-lg">
+                    <i data-lucide="plane" class="text-white w-6 h-6"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight">
+                    <span class="text-blue-600">SENTERNET</span> <span class="text-slate-800">Air</span>
+                </h1>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-semibold text-slate-600">
+                <a href="#" class="hover:text-blue-600 transition">Explore</a>
+                <a href="#" class="hover:text-blue-600 transition">My Trips</a>
+                <a href="#" class="hover:text-blue-600 transition">Support</a>
+                <button class="bg-slate-900 text-white px-5 py-2.5 rounded-full hover:bg-blue-600 transition shadow-lg">Sign In</button>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="py-12">
-        <div class="form-container bg-white rounded-xl shadow-2xl p-6 md:p-10">
-            <h2 class="text-4xl font-extrabold text-gray-900 mb-8 text-center">Book Your Flight Now</h2>
-
-            <!-- Travel Type Tabs -->
-            <div class="flex flex-wrap justify-center space-x-2 mb-8">
-                <button id="oneWayTab" onclick="selectTab('oneWay')" class="tab-button active px-6 py-2 rounded-full font-semibold transition duration-200">One-Way</button>
-                <button id="roundTripTab" onclick="selectTab('roundTrip')" class="tab-button px-6 py-2 rounded-full font-semibold transition duration-200 text-gray-700 bg-gray-200 hover:bg-gray-300">Round Trip</button>
+    <main id="app-container">
+        <!-- View 1: Search & Landing -->
+        <section id="search-view" class="animate-slide">
+            <div class="hero-gradient pt-16 pb-32 px-4">
+                <div class="max-w-5xl mx-auto text-center text-white">
+                    <h2 class="text-4xl md:text-6xl font-extrabold mb-6">Fly beyond limits with Senternet.</h2>
+                    <p class="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">Experience premium travel with the world's most innovative flight booking engine.</p>
+                </div>
             </div>
 
-            <!-- Booking Form -->
-            <form id="bookingForm">
-                <!-- Trip Details (Origin, Destination, Dates) -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <!-- Origin -->
-                    <div class="col-span-1 md:col-span-1">
-                        <label for="origin" class="block text-sm font-medium text-gray-700 mb-2">Flying From</label>
-                        <input type="text" id="origin" name="origin" placeholder="City or Airport" required
-                               class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            <div class="max-w-6xl mx-auto px-4 -mt-20">
+                <div class="bg-white rounded-3xl shadow-2xl p-6 md:p-8">
+                    <!-- Flight Type Tabs -->
+                    <div class="flex gap-6 mb-8 border-b border-slate-100 pb-2">
+                        <button onclick="toggleTripType('round')" id="btn-round" class="pb-3 font-bold text-blue-600 border-b-2 border-blue-600">Round Trip</button>
+                        <button onclick="toggleTripType('one')" id="btn-one" class="pb-3 font-bold text-slate-400 hover:text-slate-600 transition">One Way</button>
                     </div>
 
-                    <!-- Destination -->
-                    <div class="col-span-1 md:col-span-1">
-                        <label for="destination" class="block text-sm font-medium text-gray-700 mb-2">Flying To</label>
-                        <input type="text" id="destination" name="destination" placeholder="City or Airport" required
-                               class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
+                    <form id="searchForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="relative">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block ml-1">From</label>
+                            <div class="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-3 focus-within:border-blue-500 transition">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-slate-400 mr-2"></i>
+                                <input type="text" id="fromLoc" placeholder="Chennai (MAA)" class="bg-transparent w-full outline-none font-semibold" required>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block ml-1">To</label>
+                            <div class="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-3 focus-within:border-blue-500 transition">
+                                <i data-lucide="navigation" class="w-5 h-5 text-slate-400 mr-2"></i>
+                                <input type="text" id="toLoc" placeholder="Dubai (DXB)" class="bg-transparent w-full outline-none font-semibold" required>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block ml-1">Departure</label>
+                            <div class="flex items-center bg-slate-50 border border-slate-200 rounded-2xl p-3 focus-within:border-blue-500 transition">
+                                <i data-lucide="calendar" class="w-5 h-5 text-slate-400 mr-2"></i>
+                                <input type="date" id="depDate" class="bg-transparent w-full outline-none font-semibold" required>
+                            </div>
+                        </div>
+                        <div class="relative flex items-end">
+                            <button type="submit" class="w-full bg-blue-600 text-white h-14 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-200">
+                                <span>Search Flights</span>
+                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-                    <!-- Departure Date -->
-                    <div class="col-span-1 md:col-span-1">
-                        <label for="departureDate" class="block text-sm font-medium text-gray-700 mb-2">Departure Date</label>
-                        <input type="date" id="departureDate" name="departureDate" required
-                               class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+            <!-- Destinations Grid -->
+            <div class="max-w-7xl mx-auto px-4 py-20">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <h3 class="text-3xl font-bold">Popular Destinations</h3>
+                        <p class="text-slate-500 mt-2">Explore top picked places by SENTERNET travelers</p>
                     </div>
+                    <button class="text-blue-600 font-bold flex items-center gap-1">View All <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                            <h4 class="text-xl font-bold">Dubai</h4>
+                            <p class="text-sm opacity-80">Starting from $450</p>
+                        </div>
+                    </div>
+                    <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1493246507139-91e8bef99c02?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                            <h4 class="text-xl font-bold">Maldives</h4>
+                            <p class="text-sm opacity-80">Starting from $899</p>
+                        </div>
+                    </div>
+                    <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                            <h4 class="text-xl font-bold">Tokyo</h4>
+                            <p class="text-sm opacity-80">Starting from $1,200</p>
+                        </div>
+                    </div>
+                    <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                            <h4 class="text-xl font-bold">Paris</h4>
+                            <p class="text-sm opacity-80">Starting from $750</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    <!-- Return Date (Only for Round Trip) -->
-                    <div class="col-span-1 md:col-span-1" id="returnDateGroup">
-                        <label for="returnDate" class="block text-sm font-medium text-gray-700 mb-2">Return Date</label>
-                        <input type="date" id="returnDate" name="returnDate"
-                               class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+        <!-- View 2: Flight Listings -->
+        <section id="listing-view" class="hidden animate-slide bg-slate-50 min-h-screen py-10 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <button onclick="navigateView('search-view')" class="flex items-center gap-2 text-slate-500 font-bold hover:text-slate-800 transition">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        <span>Modify Search</span>
+                    </button>
+                    <div class="text-right">
+                        <h3 id="route-display" class="text-xl font-bold">MAA → DXB</h3>
+                        <p id="date-display" class="text-slate-500">Dec 25, 2025 • 1 Passenger</p>
                     </div>
                 </div>
 
-                <!-- Passenger and Class Details -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <!-- Passengers -->
-                    <div class="col-span-1">
-                        <label for="passengers" class="block text-sm font-medium text-gray-700 mb-2">Passengers</label>
-                        <select id="passengers" name="passengers" required
-                                class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white">
-                            <option value="1">1 Passenger</option>
-                            <option value="2">2 Passengers</option>
-                            <option value="3">3 Passengers</option>
-                            <option value="4">4+ Passengers</option>
-                        </select>
+                <div id="flight-results" class="space-y-4">
+                    <!-- Dynamic Flight Cards will be injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- View 3: Seat Selection -->
+        <section id="seat-view" class="hidden animate-slide bg-white py-12 px-4">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold mb-2">Select Your Seat</h2>
+                    <p class="text-slate-500">Choose your favorite spot for the journey</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-12 items-start justify-center">
+                    <!-- Plane Map -->
+                    <div class="bg-slate-100 rounded-t-[100px] p-8 border-x-4 border-t-4 border-slate-200">
+                        <div class="grid grid-cols-6 gap-3 mb-4">
+                            <div class="text-center font-bold text-slate-400">A</div>
+                            <div class="text-center font-bold text-slate-400">B</div>
+                            <div class="text-center font-bold text-slate-400">C</div>
+                            <div class="w-8"></div>
+                            <div class="text-center font-bold text-slate-400">D</div>
+                            <div class="text-center font-bold text-slate-400">E</div>
+                        </div>
+                        <div id="seat-grid" class="space-y-3">
+                            <!-- Seats injected via JS -->
+                        </div>
                     </div>
 
-                    <!-- Travel Class -->
-                    <div class="col-span-1">
-                        <label for="travelClass" class="block text-sm font-medium text-gray-700 mb-2">Travel Class</label>
-                        <select id="travelClass" name="travelClass" required
-                                class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white">
-                            <option value="Economy">Economy</option>
-                            <option value="Premium Economy">Premium Economy</option>
-                            <option value="Business">Business</option>
-                            <option value="First Class">First Class</option>
-                        </select>
-                    </div>
-
-                    <!-- Search Button -->
-                    <div class="col-span-1 flex items-end">
-                        <button type="submit" class="btn-primary w-full p-3 rounded-lg text-white font-bold text-lg hover:shadow-lg transition duration-200 transform hover:scale-[1.01]">
-                            Search Flights
+                    <!-- Selected Info -->
+                    <div class="w-full md:w-80 bg-slate-50 p-6 rounded-3xl border border-slate-200">
+                        <h4 class="font-bold text-lg mb-4">Trip Summary</h4>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Flight</span>
+                                <span id="summary-flight-no" class="font-bold">SN-8085</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Seat</span>
+                                <span id="summary-seat" class="font-bold text-blue-600">Not Selected</span>
+                            </div>
+                            <div class="flex justify-between text-sm pt-3 border-t">
+                                <span class="text-slate-500">Base Fare</span>
+                                <span id="summary-price" class="font-bold">$0</span>
+                            </div>
+                        </div>
+                        <button onclick="confirmBooking()" id="confirm-btn" disabled class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold opacity-50 cursor-not-allowed hover:bg-blue-700 transition">
+                            Book Now
                         </button>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Message Box for JS feedback -->
-                <div id="messageBox" class="hidden p-4 rounded-lg bg-blue-100 text-blue-800 border border-blue-300 font-medium transition duration-300">
-                    <!-- Feedback message will appear here -->
+        <!-- View 4: Success Message -->
+        <section id="success-view" class="hidden animate-slide flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
+            <div class="bg-emerald-100 p-6 rounded-full mb-6">
+                <i data-lucide="check-circle" class="w-16 h-16 text-emerald-600"></i>
+            </div>
+            <h2 class="text-4xl font-extrabold mb-4">Booking Successful!</h2>
+            <p class="text-slate-500 text-lg mb-8">Your tickets for SN-8085 have been sent to your email.</p>
+            <div class="bg-white border-2 border-dashed border-slate-200 p-8 rounded-3xl max-w-md w-full mb-8">
+                <div class="flex justify-between mb-4">
+                    <div class="text-left">
+                        <p class="text-xs text-slate-400 uppercase font-bold">Passenger</p>
+                        <p class="font-bold">Senthilkumar (CEO)</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-slate-400 uppercase font-bold">Seat</p>
+                        <p id="final-seat" class="font-bold">12A</p>
+                    </div>
                 </div>
-            </form>
-        </div>
+                <div class="py-4 border-y border-slate-100 flex justify-between items-center">
+                    <div class="text-left">
+                        <h4 id="final-route" class="text-xl font-bold">MAA</h4>
+                        <p class="text-xs text-slate-400">Chennai</p>
+                    </div>
+                    <i data-lucide="plane" class="text-slate-200 rotate-90"></i>
+                    <div class="text-right">
+                        <h4 id="final-dest" class="text-xl font-bold">DXB</h4>
+                        <p class="text-xs text-slate-400">Dubai</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="location.reload()" class="bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-600 transition shadow-xl">
+                Book Another Flight
+            </button>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer-bg text-white py-10 mt-12">
-        <div class="form-container grid grid-cols-1 md:grid-cols-4 gap-8">
-            <!-- Company Info -->
-            <div>
-                <h3 class="text-xl font-bold mb-4 text-blue-400">SENTERNET Air</h3>
-                <p class="text-gray-400 text-sm">Your reliable partner in digital travel solutions.</p>
-                <p class="text-sm mt-4">A subsidiary of <span class="font-semibold text-white">SENTERNET TECHNOLOGIES</span>.</p>
+    <!-- Detailed Footer -->
+    <footer class="bg-slate-900 text-slate-300 pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-12">
+            <!-- Brand -->
+            <div class="md:col-span-4">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="bg-blue-600 p-2 rounded-lg">
+                        <i data-lucide="plane" class="text-white w-5 h-5"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white uppercase tracking-tighter">SENTERNET <span class="text-blue-500">Air</span></h2>
+                </div>
+                <p class="leading-relaxed mb-8">
+                    A subsidiary of <a href="https://rebrand.ly/senternet" target="_blank" class="text-blue-400 hover:underline">SENTERNET TECHNOLOGIES</a>. 
+                    Redefining air travel with digital-first solutions and customer-centric hospitality.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition text-white"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition text-white"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                    <a href="https://instagram.com/senternet" target="_blank" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition text-white"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                </div>
             </div>
 
-            <!-- Quick Links -->
-            <div>
-                <h3 class="text-lg font-semibold mb-4 text-white">Quick Links</h3>
-                <ul class="space-y-2 text-sm text-gray-400">
+            <!-- Links -->
+            <div class="md:col-span-2">
+                <h4 class="text-white font-bold mb-6">Company</h4>
+                <ul class="space-y-4 text-sm">
                     <li><a href="#" class="hover:text-blue-400 transition">About Us</a></li>
                     <li><a href="#" class="hover:text-blue-400 transition">Careers</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">FAQ</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Sustainability</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Press Office</a></li>
                 </ul>
             </div>
 
-            <!-- Destinations -->
-            <div>
-                <h3 class="text-lg font-semibold mb-4 text-white">Top Destinations</h3>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li>New York</li>
-                    <li>Chennai</li>
-                    <li>Dubai</li>
-                    <li>Singapore</li>
+            <div class="md:col-span-2">
+                <h4 class="text-white font-bold mb-6">Services</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="#" class="hover:text-blue-400 transition">Business Class</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Senternet Cargo</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Group Bookings</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Private Jets</a></li>
                 </ul>
             </div>
 
-            <!-- Contact Information (Senternet Details) -->
-            <div>
-                <h3 class="text-lg font-semibold mb-4 text-white">Contact SENTERNET</h3>
-                <p class="text-sm text-gray-400">Location: Aranthangi, Pudukkottai</p>
-                <p class="text-sm text-gray-400 mt-2">WhatsApp: <a href="tel:+918190038085" class="text-blue-300 hover:text-blue-400">+91 81900 38085</a></p>
-                <p class="text-sm text-gray-400">Gmail: <a href="mailto:senternettechnologies@gmail.com" class="text-blue-300 hover:text-blue-400">senternettechnologies@gmail.com</a></p>
+            <!-- Contact -->
+            <div class="md:col-span-4 bg-slate-800/50 p-6 rounded-3xl border border-slate-700">
+                <h4 class="text-white font-bold mb-4">Support & Contact</h4>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-blue-400 mt-0.5"></i>
+                        <p class="text-sm">Main HQ: Aranthangi, Pudukkottai, Tamil Nadu.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="phone" class="w-5 h-5 text-blue-400"></i>
+                        <a href="https://wa.me/918190038085" class="text-sm hover:text-white transition">+91 81900 38085</a>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="mail" class="w-5 h-5 text-blue-400"></i>
+                        <a href="mailto:senternettechnologies@gmail.com" class="text-sm hover:text-white transition">senternettechnologies@gmail.com</a>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-700 flex items-center gap-4">
+                        <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" class="w-12 h-12 rounded-full border-2 border-blue-500 object-cover" alt="CEO">
+                        <div>
+                            <p class="text-xs font-bold text-white">Senthilkumar</p>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest">Founder & CEO</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-container border-t border-gray-700 mt-8 pt-6 text-center">
-            <p class="text-sm text-gray-500">&copy; 2025 SENTERNET TECHNOLOGIES. All rights reserved.</p>
+        <div class="max-w-7xl mx-auto px-4 mt-20 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+            <p>&copy; 2025 SENTERNET TECHNOLOGIES. All Rights Reserved.</p>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-white">Privacy Policy</a>
+                <a href="#" class="hover:text-white">Terms of Use</a>
+                <a href="#" class="hover:text-white">Cookie Policy</a>
+            </div>
         </div>
     </footer>
 
-    <!-- JavaScript Functions -->
     <script>
-        // Global variable to track the selected trip type
-        let tripType = 'oneWay';
+        // Data Store
+        let selectedFlight = null;
+        let selectedSeat = null;
+        let searchParams = {};
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set initial min date for departure to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('departureDate').setAttribute('min', today);
-            document.getElementById('returnDate').setAttribute('min', today);
+        // Icons
+        lucide.createIcons();
 
-            // Hide return date by default for one-way
-            document.getElementById('returnDateGroup').classList.add('hidden');
-            document.getElementById('returnDate').removeAttribute('required');
+        // View Navigation
+        function navigateView(viewId) {
+            const views = ['search-view', 'listing-view', 'seat-view', 'success-view'];
+            views.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
 
-            // Attach form submission listener
-            document.getElementById('bookingForm').addEventListener('submit', handleFormSubmit);
+        // Tab Toggle
+        function toggleTripType(type) {
+            const btnRound = document.getElementById('btn-round');
+            const btnOne = document.getElementById('btn-one');
+            if(type === 'round') {
+                btnRound.classList.add('text-blue-600', 'border-blue-600', 'border-b-2');
+                btnRound.classList.remove('text-slate-400');
+                btnOne.classList.remove('text-blue-600', 'border-blue-600', 'border-b-2');
+                btnOne.classList.add('text-slate-400');
+            } else {
+                btnOne.classList.add('text-blue-600', 'border-blue-600', 'border-b-2');
+                btnOne.classList.remove('text-slate-400');
+                btnRound.classList.remove('text-blue-600', 'border-blue-600', 'border-b-2');
+                btnRound.classList.add('text-slate-400');
+            }
+        }
 
-            // Listen for changes in the departure date to update the return date minimum
-            document.getElementById('departureDate').addEventListener('change', updateReturnDateMin);
+        // Search Form
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            searchParams = {
+                from: document.getElementById('fromLoc').value || 'MAA',
+                to: document.getElementById('toLoc').value || 'DXB',
+                date: document.getElementById('depDate').value
+            };
+            
+            renderFlights();
+            navigateView('listing-view');
         });
 
-        /**
-         * Updates the min attribute of the return date input based on the departure date.
-         */
-        function updateReturnDateMin() {
-            const departureDate = document.getElementById('departureDate').value;
-            const returnDateInput = document.getElementById('returnDate');
+        function renderFlights() {
+            const container = document.getElementById('flight-results');
+            const routeDisplay = document.getElementById('route-display');
+            const dateDisplay = document.getElementById('date-display');
             
-            // Set the minimum selectable date for return to be the departure date
-            returnDateInput.setAttribute('min', departureDate);
+            routeDisplay.innerText = `${searchParams.from.toUpperCase()} → ${searchParams.to.toUpperCase()}`;
+            dateDisplay.innerText = `${searchParams.date} • 1 Passenger`;
+
+            const flights = [
+                { id: 'SN101', airline: 'Senternet Air', dep: '08:00', arr: '11:45', price: 450, duration: '3h 45m' },
+                { id: 'SN202', airline: 'Senternet Air', dep: '13:30', arr: '17:15', price: 520, duration: '3h 45m' },
+                { id: 'SN303', airline: 'Senternet Air', dep: '21:00', arr: '00:45', price: 380, duration: '3h 45m' }
+            ];
+
+            container.innerHTML = flights.map(f => `
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 hover:border-blue-300 transition-all hover:shadow-xl group">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div class="flex items-center gap-4 w-full md:w-auto">
+                            <div class="bg-blue-50 p-3 rounded-2xl">
+                                <i data-lucide="plane" class="text-blue-600 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">${f.airline}</h4>
+                                <span class="text-xs text-slate-400 font-bold uppercase">${f.id}</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex justify-around items-center gap-8 w-full md:w-auto">
+                            <div class="text-center">
+                                <h5 class="text-xl font-extrabold">${f.dep}</h5>
+                                <p class="text-xs font-bold text-slate-400">${searchParams.from.toUpperCase()}</p>
+                            </div>
+                            <div class="flex flex-col items-center flex-1 max-w-[120px]">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase mb-1">${f.duration}</span>
+                                <div class="h-[1px] w-full bg-slate-200 relative">
+                                    <div class="absolute -top-1 left-1/2 -translate-x-1/2 text-blue-500"><i data-lucide="plane" class="w-3 h-3"></i></div>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 mt-1">NON-STOP</span>
+                            </div>
+                            <div class="text-center">
+                                <h5 class="text-xl font-extrabold">${f.arr}</h5>
+                                <p class="text-xs font-bold text-slate-400">${searchParams.to.toUpperCase()}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-row md:flex-col items-center justify-between md:justify-center w-full md:w-40 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6">
+                            <div class="mb-2">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">From</p>
+                                <h5 class="text-2xl font-black text-slate-900">$${f.price}</h5>
+                            </div>
+                            <button onclick="selectFlight('${f.id}', ${f.price})" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600 transition group-hover:scale-105">Select</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function selectFlight(id, price) {
+            selectedFlight = { id, price };
+            document.getElementById('summary-flight-no').innerText = id;
+            document.getElementById('summary-price').innerText = `$${price}`;
             
-            // If the currently selected return date is earlier than the new departure date, clear it.
-            if (returnDateInput.value && departureDate && returnDateInput.value < departureDate) {
-                returnDateInput.value = departureDate;
+            // Render Seats
+            renderSeats();
+            navigateView('seat-view');
+        }
+
+        function renderSeats() {
+            const grid = document.getElementById('seat-grid');
+            grid.innerHTML = '';
+            for(let i = 1; i <= 10; i++) {
+                const row = document.createElement('div');
+                row.className = 'flex gap-3 justify-center items-center';
+                
+                ['A', 'B', 'C', 'GAP', 'D', 'E'].forEach(col => {
+                    if(col === 'GAP') {
+                        const gap = document.createElement('div');
+                        gap.className = 'w-8 text-[10px] font-bold text-slate-300 flex items-center justify-center';
+                        gap.innerText = i;
+                        row.appendChild(gap);
+                        return;
+                    }
+                    const isOccupied = Math.random() < 0.3;
+                    const seatId = `${i}${col}`;
+                    const seat = document.createElement('button');
+                    seat.className = `seat w-10 h-10 rounded-lg font-bold text-xs transition-all ${isOccupied ? 'occupied' : 'bg-white border-2 border-slate-200 hover:border-blue-400'}`;
+                    seat.innerText = seatId;
+                    if(!isOccupied) {
+                        seat.onclick = () => pickSeat(seatId, seat);
+                    }
+                    row.appendChild(seat);
+                });
+                grid.appendChild(row);
             }
         }
 
-        /**
-         * Toggles between One-Way and Round Trip tabs and updates the UI accordingly.
-         * @param {string} type - 'oneWay' or 'roundTrip'
-         */
-        function selectTab(type) {
-            tripType = type;
-            const oneWayTab = document.getElementById('oneWayTab');
-            const roundTripTab = document.getElementById('roundTripTab');
-            const returnDateGroup = document.getElementById('returnDateGroup');
-            const returnDateInput = document.getElementById('returnDate');
-
-            // Update button styles
-            oneWayTab.classList.remove('active', 'bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-            roundTripTab.classList.remove('active', 'bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-            oneWayTab.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-            roundTripTab.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+        function pickSeat(id, element) {
+            // Remove previous selection
+            document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedSeat = id;
+            document.getElementById('summary-seat').innerText = id;
             
-            if (type === 'oneWay') {
-                oneWayTab.classList.add('active');
-                roundTripTab.classList.remove('active');
-                returnDateGroup.classList.add('hidden');
-                returnDateInput.removeAttribute('required');
-            } else { // roundTrip
-                roundTripTab.classList.add('active');
-                oneWayTab.classList.remove('active');
-                returnDateGroup.classList.remove('hidden');
-                returnDateInput.setAttribute('required', 'required');
-                // Ensure return date min is set when switching to round trip
-                updateReturnDateMin();
-            }
+            const confirmBtn = document.getElementById('confirm-btn');
+            confirmBtn.disabled = false;
+            confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
 
-        /**
-         * Handles the form submission (simulated booking logic).
-         * @param {Event} e - The form submit event.
-         */
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            
-            const form = e.target;
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => { data[key] = value; });
-
-            // Basic validation
-            if (data.origin.trim() === '' || data.destination.trim() === '' || data.departureDate === '') {
-                 showMessage('Please fill in all required fields (Origin, Destination, Departure Date).', 'bg-red-100 text-red-800 border-red-300');
-                 return;
-            }
-
-            if (data.origin.toLowerCase() === data.destination.toLowerCase()) {
-                 showMessage('Origin and Destination cannot be the same.', 'bg-yellow-100 text-yellow-800 border-yellow-300');
-                 return;
-            }
-
-            if (tripType === 'roundTrip' && (!data.returnDate || data.returnDate < data.departureDate)) {
-                 showMessage('For Round Trip, please select a valid Return Date on or after the Departure Date.', 'bg-yellow-100 text-yellow-800 border-yellow-300');
-                 return;
-            }
-
-            // --- Simulation of a successful search/booking ---
-            console.log('Flight Search Parameters:', data);
-            
-            let message = `Searching for a ${tripType.toUpperCase()} flight from ${data.origin} to ${data.destination} for ${data.passengers} passenger(s) in ${data.travelClass} class on ${data.departureDate}.`;
-            
-            if (tripType === 'roundTrip') {
-                message += ` Returning on ${data.returnDate}.`;
-            }
-
-            message += `\n\n(This is a simulation. A real booking API call would happen here.)`;
-
-            showMessage(message, 'bg-green-100 text-green-800 border-green-300');
-            
-            // In a real application, you would make an API call here.
-            // Example: fetch('/api/search-flights', { method: 'POST', body: JSON.stringify(data) })
-        }
-
-        /**
-         * Displays a message in the designated message box.
-         * @param {string} message - The text message to display.
-         * @param {string} classes - Tailwind classes for styling the message box (e.g., color).
-         */
-        function showMessage(message, classes) {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.className = `p-4 rounded-lg font-medium transition duration-300 ${classes}`;
-            messageBox.classList.remove('hidden');
-
-            // Automatically hide after 8 seconds (8000 milliseconds)
-            clearTimeout(messageBox.timer);
-            messageBox.timer = setTimeout(() => {
-                messageBox.classList.add('hidden');
-                messageBox.textContent = '';
-            }, 8000);
+        function confirmBooking() {
+            document.getElementById('final-seat').innerText = selectedSeat;
+            document.getElementById('final-route').innerText = searchParams.from.toUpperCase();
+            document.getElementById('final-dest').innerText = searchParams.to.toUpperCase();
+            navigateView('success-view');
         }
     </script>
-
 </body>
 </html>
+
