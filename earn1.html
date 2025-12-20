@@ -57,43 +57,6 @@
 </head>
 <body>
 <!-- Senternet Chat Widget Start -->
-<script>
-(function() {
-    const config = {
-        name: "Senternet Support",
-        welcome: "Vanakkam! Senternet Technologies-ku ungalai varaverkirom. Enna udhavi venum?",
-        color: "#2563eb"
-    };
-    
-    // Inject CSS
-    const style = document.createElement('style');
-    style.innerHTML = `.sn-chat { position: fixed; bottom: 20px; right: 20px; z-index: 9999; font-family: sans-serif; }
-    .sn-bubble { width: 55px; height: 55px; background: ${config.color}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-    .sn-window { display: none; width: 320px; height: 450px; background: white; position: absolute; bottom: 70px; right: 0; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border: 1px solid #eee; flex-direction: column; overflow: hidden; }`;
-    document.head.appendChild(style);
-
-    // Create Elements
-    const container = document.createElement('div');
-    container.className = 'sn-chat';
-    container.innerHTML = `
-        <div class="sn-window" id="snWindow">
-            <div style="background:${config.color}; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
-                <strong>${config.name}</strong>
-                <button onclick="document.getElementById('snWindow').style.display='none'" style="background:none; border:none; color:white; cursor:pointer;">X</button>
-            </div>
-            <div id="snBody" style="flex:1; padding:15px; overflow-y:auto; background:#f9f9f9; font-size:14px;">
-                <div style="background:#eee; padding:8px; border-radius:5px; margin-bottom:10px; display:inline-block;">${config.welcome}</div>
-            </div>
-            <div style="padding:10px; border-top:1px solid #eee; display:flex;">
-                <input type="text" id="snInput" placeholder="Enter message..." style="flex:1; border:1px solid #ddd; padding:8px; border-radius:5px; outline:none;">
-            </div>
-        </div>
-        <div class="sn-bubble" onclick="const w=document.getElementById('snWindow'); w.style.display=w.style.display==='flex'?'none':'flex'">💬</div>
-    `;
-    document.body.appendChild(container);
-})();
-</script>
-<!-- Senternet Chat Widget End -->
 
     <!-- PIN LOCK SCREEN - VISIBLE BY DEFAULT -->
     <div id="pin-lock-screen">
