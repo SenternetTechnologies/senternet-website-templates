@@ -3,391 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Easy SMS/WhatsApp message sender | Senternet Technologies</title>
-    <!-- Load Tailwind CSS -->
+    <title>Haritha Message Pro | Senternet Technologies</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use Inter font family -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light grey background */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
         }
-        /* Custom scrollbar for message input */
-        textarea::-webkit-scrollbar {
-            width: 8px;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        textarea::-webkit-scrollbar-thumb {
-            background-color: #9ca3af; /* Grey scrollbar */
-            border-radius: 4px;
+        .haritha-gradient {
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
         }
-        textarea::-webkit-scrollbar-track {
-            background-color: #f3f4f6;
+        .custom-shadow {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        
-        /* Transition for smooth color change */
-        .result-card {
-            transition: background-color 0.4s ease-in-out, box-shadow 0.3s ease-in-out;
+        .status-chip {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* Shake animation for invalid action feedback */
-        @keyframes shake {
-          0% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          50% { transform: translateX(5px); }
-          75% { transform: translateX(-5px); }
-          100% { transform: translateX(0); }
-        }
-        .shake {
-          animation: shake 0.3s;
+        textarea {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f8fafc;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="p-4 md:p-8">
 
-    <!-- Main Container - Mobile App Style -->
-    <div class="w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden md:h-auto h-[90vh] flex flex-col">
-
-        <!-- Header - Indigo/Blue Theme -->
-        <header class="bg-[#4f46e5] text-white p-4 flex items-center justify-between shadow-md">
-            <div class="flex items-center">
-                <!-- Generic Link Tool Icon (Chain link) -->
-                <svg class="w-6 h-6 mr-3 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.881a4 4 0 000-5.656l4-4a4 4 0 015.656 0l1.102 1.102"></path></svg>
-                <h1 class="text-xl font-semibold">Senternet Link Generator (SMS/WA)</h1>
-            </div>
-            <span class="text-sm opacity-80 font-light">Aranthangi</span>
-        </header>
-
-        <!-- Main Content Area -->
-        <main class="flex-grow p-4 space-y-4 overflow-y-auto bg-gray-50">
-
-            <!-- Number Input Card (Step 1) -->
-            <div class="bg-white p-5 rounded-xl shadow-lg border border-gray-100">
-                <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                    <span class="bg-[#4f46e5] text-white w-7 h-7 flex items-center justify-center rounded-full mr-3 text-sm font-extrabold">1</span>
-                    Paste Contact Numbers
-                </h2>
-                <label for="numbers" class="block text-sm font-medium text-gray-700 mb-2">
-                    One number per line (Standard mobile format)
-                </label>
-                <textarea id="numbers" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out resize-none" placeholder="919876543210 or 9876543210 (will auto-add '91' for 10-digit numbers)"></textarea>
-
-                <!-- Checklist for Numbers List -->
-                <div class="mt-4 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-                    <h3 class="text-sm font-semibold text-indigo-700 mb-2 flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        Checklist for Numbers (Important)
-                    </h3>
-                    <ul class="text-xs text-gray-600 space-y-1 ml-4 list-disc list-outside">
-                        <li>Ensure each number is on a new line.</li>
-                        <li>Non-digit characters (like dashes, spaces) will be automatically removed.</li>
-                        <li>For 10-digit numbers (e.g., in India), the tool automatically prepends the country code '91'.</li>
-                        <li>For other countries, please include the international dialing code.</li>
-                    </ul>
+    <div class="max-w-4xl mx-auto">
+        <!-- Brand Header Section -->
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white/50 p-6 rounded-3xl border border-white/50">
+            <div class="flex items-center mb-4 md:mb-0">
+                <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" 
+                     alt="Senthilkumar CEO" 
+                     class="w-16 h-16 rounded-full border-2 border-indigo-500 shadow-md">
+                <div class="ml-4">
+                    <h1 class="text-2xl font-bold text-gray-800">Haritha <span class="text-indigo-600">Message Pro</span></h1>
+                    <p class="text-sm text-gray-500">Official Tool of <a href="https://rebrand.ly/senternet" target="_blank" class="text-indigo-500 font-semibold hover:underline">Senternet Technologies</a></p>
                 </div>
             </div>
-
-            <!-- Message Input Card (Step 2) -->
-            <div class="bg-white p-5 rounded-xl shadow-lg border border-gray-100">
-                <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                    <span class="bg-[#4f46e5] text-white w-7 h-7 flex items-center justify-center rounded-full mr-3 text-sm font-extrabold">2</span>
-                    Type Your Message
-                </h2>
-                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-                    Message to Send (URL Encoded automatically)
-                </label>
-                <textarea id="message" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out resize-none" placeholder="This is a direct text message from Senternet regarding your website enquiry..."></textarea>
-            </div>
-
-            <!-- Action Button (Step 3) -->
-            <div class="pt-2">
-                <button onclick="generateLinks()" class="w-full bg-[#4f46e5] text-white font-bold py-3 rounded-xl shadow-lg hover:bg-[#4338ca] transition duration-200 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
-                    <span class="mr-2">🚀</span> STEP 3: Generate SMS & WhatsApp Links
-                </button>
-            </div>
-
-            <!-- Results Section -->
-            <div id="results-container" class="space-y-3 pt-4">
-                <!-- Links will be injected here -->
-            </div>
-
-            <!-- Footer for Branding -->
-            <div class="text-center text-xs text-gray-400 pt-4">
-                Powered by <span class="font-bold text-[#4f46e5]">SENTERNET TECHNOLOGIES</span>
-            </div>
-
-        </main>
-
-        <!-- Message Box Modal (for alerts/confirmations) -->
-        <div id="message-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full transform transition-all scale-100">
-                <h3 class="text-lg font-bold text-gray-800 mb-3" id="modal-title"></h3>
-                <p class="text-sm text-gray-600 mb-6" id="modal-message"></p>
-                <button onclick="closeModal()" class="w-full bg-[#4f46e5] text-white font-medium py-2 rounded-lg hover:bg-[#4338ca] transition">
-                    OK
-                </button>
+            <div class="text-right hidden md:block">
+                <p class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Powered by Senternet</p>
+                <p class="text-sm text-gray-600">Aranthangi, Pudukkottai</p>
             </div>
         </div>
 
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Input Column -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- Step 1: Contacts -->
+                <div class="glass-card p-6 rounded-3xl custom-shadow border-t-4 border-indigo-500">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full haritha-gradient text-white flex items-center justify-center text-sm font-bold shadow-lg mr-3">1</div>
+                        <h2 class="text-lg font-bold text-gray-800">Contact List</h2>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3 italic">Managed by Haritha & Team</p>
+                    <textarea id="numbers" rows="6" 
+                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-400 focus:outline-none transition-all placeholder:text-gray-300 text-sm"
+                        placeholder="Paste numbers here...&#10;918190038085&#10;9360291050"></textarea>
+                    <div class="mt-3 flex items-start text-[11px] text-gray-400 leading-relaxed bg-gray-50 p-3 rounded-xl">
+                        <svg class="w-4 h-4 mr-2 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Automated detection for 10-digit numbers (Adds +91). Unique filtering enabled for Haritha's marketing efficiency.</span>
+                    </div>
+                </div>
+
+                <!-- Step 2: Message Content -->
+                <div class="glass-card p-6 rounded-3xl custom-shadow border-t-4 border-purple-500">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-lg mr-3">2</div>
+                        <h2 class="text-lg font-bold text-gray-800">Draft Content</h2>
+                    </div>
+                    <textarea id="message" rows="4" 
+                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition-all placeholder:text-gray-300 text-sm"
+                        placeholder="Type your message for Haritha to process..."></textarea>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="generateLinks()" 
+                    class="w-full py-4 haritha-gradient text-white rounded-2xl font-bold shadow-xl hover:opacity-90 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <span>Generate Workspace Links</span>
+                </button>
+            </div>
+
+            <!-- Results Column -->
+            <div class="lg:col-span-7">
+                <div id="results-placeholder" class="h-full flex flex-col items-center justify-center text-center p-12 glass-card rounded-3xl border-2 border-dashed border-gray-200">
+                    <div class="bg-indigo-100 p-4 rounded-full mb-4">
+                        <svg class="w-12 h-12 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-700">Waiting for Haritha's Input</h3>
+                    <p class="text-gray-400 max-w-xs mt-2">Enter numbers and message on the left to generate clickable sending links.</p>
+                </div>
+
+                <div id="results-container" class="space-y-4 hidden">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center pb-8">
+            <div class="flex flex-col items-center space-y-4">
+                <div class="flex space-x-6">
+                    <a href="https://instagram.com/senternet" class="text-gray-400 hover:text-pink-500 transition-colors">Instagram</a>
+                    <a href="mailto:senternettechnologies@gmail.com" class="text-gray-400 hover:text-indigo-500 transition-colors">Email</a>
+                    <a href="https://rebrand.ly/senternet" class="text-gray-400 hover:text-blue-500 transition-colors">Website</a>
+                </div>
+                <p class="text-sm text-gray-500">
+                    &copy; 2025 <span class="font-bold text-indigo-600">SENTERNET TECHNOLOGIES</span> | Designed for <strong>Haritha</strong>
+                </p>
+                <p class="text-xs text-gray-400 italic">Aranthangi • Pudukkottai • Tamil Nadu</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alert-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform scale-100">
+            <div id="modal-icon" class="mb-4 flex justify-center"></div>
+            <h3 id="modal-title" class="text-xl font-bold text-gray-800 mb-2"></h3>
+            <p id="modal-body" class="text-gray-600 mb-6"></p>
+            <button onclick="closeModal()" class="w-full py-3 haritha-gradient text-white rounded-xl font-bold">Armathu!</button>
+        </div>
     </div>
 
     <script>
-        // --- MANDATORY FIREBASE BOILERPLATE (Not used for current feature, but required) ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        // --- END FIREBASE BOILERPLATE ---
-        
-        const LOCAL_STORAGE_KEY_PREFIX = 'senternet_link_status_';
+        const STORAGE_KEY = 'haritha_pro_v1_';
 
-        /**
-         * Cleans a phone number by removing non-digit characters.
-         * @param {string} number - The raw phone number string.
-         * @returns {string} The cleaned, digit-only number string.
-         */
-        function cleanNumber(number) {
-            return number.replace(/\D/g, '');
+        function showModal(title, body, type = 'info') {
+            const modal = document.getElementById('alert-modal');
+            const iconBox = document.getElementById('modal-icon');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerText = body;
+            
+            iconBox.innerHTML = type === 'error' ? 
+                '<div class="p-3 bg-red-100 rounded-full"><svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>' :
+                '<div class="p-3 bg-indigo-100 rounded-full"><svg class="w-10 h-10 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>';
+
+            modal.classList.remove('hidden');
         }
 
-        /**
-         * Displays a custom modal message instead of alert().
-         * @param {string} title - The title of the message box.
-         * @param {string} message - The content of the message.
-         */
-        function showModal(title, message) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-message').textContent = message;
-            document.getElementById('message-modal').classList.remove('hidden');
-        }
-
-        /**
-         * Closes the custom modal message.
-         */
         function closeModal() {
-            document.getElementById('message-modal').classList.add('hidden');
+            document.getElementById('alert-modal').classList.add('hidden');
         }
 
-        /**
-         * Saves the selected channel preference (or invalid status) to localStorage for persistence.
-         * If the status is 'default' or null, the item is removed from localStorage.
-         * @param {string} number - The phone number.
-         * @param {string|null} status - The selected status ('sms', 'wa', or 'invalid', or 'default' to remove).
-         */
-        function saveStatus(number, status) {
-            if (!status || status === 'default') {
-                localStorage.removeItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`);
-            } else {
-                localStorage.setItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`, status);
-            }
-        }
-
-        /**
-         * Loads the selected channel preference or status from localStorage.
-         * @param {string} number - The phone number.
-         * @returns {string|null} The saved status ('sms', 'wa', 'invalid'), or null if not set.
-         */
-        function loadStatus(number) {
-            return localStorage.getItem(`${LOCAL_STORAGE_KEY_PREFIX}${number}`);
-        }
-
-        /**
-         * Applies the correct permanent color class based on the status.
-         * @param {HTMLElement} cardElement - The result card div.
-         * @param {string|null} status - The status ('sms', 'wa', 'invalid', or null/undefined for default).
-         */
-        function applyColorClass(cardElement, status) {
-            // Remove all channel-specific colors first
-            cardElement.classList.remove('bg-yellow-100', 'bg-green-100', 'bg-red-100', 'shadow-lg', 'border-yellow-200', 'border-green-200', 'border-red-200');
+        function setStatus(num, status, cardId) {
+            const card = document.getElementById(cardId);
+            localStorage.setItem(STORAGE_KEY + num, status);
             
-            // Default appearance
-            cardElement.classList.add('bg-white', 'shadow-md', 'border', 'border-gray-100'); 
-
-            if (status === 'sms') {
-                cardElement.classList.remove('bg-white', 'border-gray-100', 'shadow-md');
-                cardElement.classList.add('bg-yellow-100', 'shadow-lg', 'border-yellow-200');
-            } else if (status === 'wa') {
-                cardElement.classList.remove('bg-white', 'border-gray-100', 'shadow-md');
-                cardElement.classList.add('bg-green-100', 'shadow-lg', 'border-green-200');
-            } else if (status === 'invalid') {
-                cardElement.classList.remove('bg-white', 'border-gray-100', 'shadow-md');
-                cardElement.classList.add('bg-red-100', 'shadow-lg', 'border-red-200');
-            }
-        }
-
-        /**
-         * Opens the link, records the click, and applies permanent visual feedback.
-         * This function is attached to the SMS and WhatsApp buttons.
-         * @param {string} link - The SMS or WhatsApp link to open.
-         * @param {string} number - The phone number associated with the link.
-         * @param {string} channel - The channel clicked ('sms' or 'wa').
-         * @param {string} elementId - The ID of the card element.
-         */
-        function handleLinkClick(link, number, channel, elementId) {
-            const card = document.getElementById(elementId);
-            if (card) {
-                // Check if already marked invalid
-                if (loadStatus(number) === 'invalid') {
-                    card.classList.add('shake');
-                    setTimeout(() => card.classList.remove('shake'), 500);
-                    showModal("Invalid Number", "Dei, this number is already marked as INVALID! Cannot send message.");
-                    return;
-                }
-
-                // 1. Record the status for persistence
-                saveStatus(number, channel);
-
-                // 2. Apply the permanent color
-                applyColorClass(card, channel);
-
-                // 3. Open the link
-                window.open(link, '_blank');
-            }
-        }
-        
-        /**
-         * Toggles the 'invalid' status for a number. If currently invalid, it resets to default.
-         * @param {string} number - The phone number.
-         * @param {string} elementId - The ID of the card element.
-         */
-        function handleInvalidClick(number, elementId) {
-            const card = document.getElementById(elementId);
-            if (!card) return;
-
-            const currentStatus = loadStatus(number);
-            let newStatus;
-            let modalTitle;
-            let modalMessage;
-
-            if (currentStatus === 'invalid') {
-                // Toggle OFF: Reset to default
-                newStatus = 'default'; 
-                modalTitle = "Number Status Reset";
-                modalMessage = `Number ${number} has been reset to default status (valid). You can now send messages again.`;
-            } else {
-                // Toggle ON: Mark as invalid
-                newStatus = 'invalid';
-                modalTitle = "Number Marked Invalid";
-                modalMessage = `Number ${number} has been marked as invalid. It is now red and cannot be messaged. Click the 'X' again to reset.`;
-            }
-
-            // 1. Record the status for persistence ('default' removes it from storage)
-            saveStatus(number, newStatus);
+            // Remove all specific classes
+            card.classList.remove('border-green-400', 'bg-green-50', 'border-yellow-400', 'bg-yellow-50', 'border-red-400', 'bg-red-50', 'opacity-60', 'scale-95');
             
-            // 2. Apply the permanent color
-            applyColorClass(card, newStatus);
-
-            // 3. Show feedback
-            showModal(modalTitle, modalMessage);
+            if (status === 'whatsapp') {
+                card.classList.add('border-green-400', 'bg-green-50');
+            } else if (status === 'sms') {
+                card.classList.add('border-yellow-400', 'bg-yellow-50');
+            } else if (status === 'junk') {
+                card.classList.add('border-red-400', 'bg-red-50', 'opacity-60', 'scale-95');
+            }
         }
 
-        /**
-         * Generates and displays SMS and WhatsApp text message links based on user input.
-         */
         function generateLinks() {
-            const numbersInput = document.getElementById('numbers').value;
-            const messageInput = document.getElementById('message').value;
-            const resultsContainer = document.getElementById('results-container');
+            const numbersTxt = document.getElementById('numbers').value;
+            const messageTxt = document.getElementById('message').value;
+            const resultsBox = document.getElementById('results-container');
+            const placeholder = document.getElementById('results-placeholder');
 
-            // 1. Validate inputs
-            if (!numbersInput.trim()) {
-                showModal("Input Missing", "Dei, you need to paste at least one contact number first!");
-                return;
-            }
-            if (!messageInput.trim()) {
-                showModal("Input Missing", "Enga, enter the message you want to send in the chat!");
-                return;
-            }
+            if (!numbersTxt.trim()) return showModal('Input Empty', 'Macha, please enter some contact numbers!', 'error');
+            if (!messageTxt.trim()) return showModal('Message Empty', 'Haritha cannot send empty messages. Type something!', 'error');
 
-            // 2. Process numbers
-            const rawNumbersArray = numbersInput.split('\n');
-            const processedNumbers = rawNumbersArray
-                .map(num => cleanNumber(num))
-                .filter(num => num.length > 0);
-            
-            const uniqueProcessedNumbers = Array.from(new Set(
-                processedNumbers.map(num => {
-                    // Prepend '91' for 10-digit numbers (Indian context)
-                    if (num.length === 10) {
-                        return '91' + num;
-                    }
-                    return num;
-                })
-            )).filter(num => num.length >= 10);
+            const numbers = [...new Set(numbersTxt.split('\n')
+                .map(n => n.replace(/\D/g, ''))
+                .filter(n => n.length >= 10)
+                .map(n => n.length === 10 ? '91' + n : n)
+            )];
 
-            if (uniqueProcessedNumbers.length === 0) {
-                showModal("Invalid Numbers", "Macha, none of the numbers looked valid. Please check if they are 10-digit or include a valid country code.");
-                return;
-            }
+            if (numbers.length === 0) return showModal('Invalid Data', 'Check the numbers. 10 digits required!', 'error');
 
-            // 3. Encode message
-            const encodedMessage = encodeURIComponent(messageInput.trim());
-
-            // 4. Generate Links and HTML
-            let resultHtml = `
-                <div class="p-4 bg-indigo-50 rounded-xl shadow-inner border border-indigo-200">
-                    <p class="text-sm font-semibold text-indigo-700">✅ Links Generated: ${uniqueProcessedNumbers.length} Unique Contacts</p>
-                    <p class="text-xs text-indigo-600 mt-1">Click the icons to open your phone's default messaging app. Status is saved per number.</p>
+            placeholder.classList.add('hidden');
+            resultsBox.classList.remove('hidden');
+            resultsBox.innerHTML = `<div class="p-4 bg-white rounded-2xl border border-indigo-100 mb-6 flex justify-between items-center shadow-sm">
+                <div>
+                    <h4 class="font-bold text-gray-800">${numbers.length} Contacts Found</h4>
+                    <p class="text-xs text-gray-400">Haritha's Dashboard • Unique & Cleaned</p>
                 </div>
-            `;
+                <div class="text-[10px] text-indigo-400 font-bold bg-indigo-50 px-3 py-1 rounded-full uppercase">Processing Active</div>
+            </div>`;
 
-            uniqueProcessedNumbers.forEach((number, index) => {
-                const cardId = `result-card-${index}`;
-                const serialNumber = index + 1;
+            const encodedMsg = encodeURIComponent(messageTxt);
 
-                // Check saved status for this number
-                const savedStatus = loadStatus(number);
+            numbers.forEach((num, idx) => {
+                const cardId = `card-${idx}`;
+                const saved = localStorage.getItem(STORAGE_KEY + num);
                 
-                // Set initial color class based on saved status (default to white)
-                let initialColorClass = 'bg-white shadow-md border border-gray-100';
-                if (savedStatus === 'sms') {
-                    initialColorClass = 'bg-yellow-100 shadow-lg border border-yellow-200';
-                } else if (savedStatus === 'wa') {
-                    initialColorClass = 'bg-green-100 shadow-lg border border-green-200';
-                } else if (savedStatus === 'invalid') {
-                    initialColorClass = 'bg-red-100 shadow-lg border border-red-200';
-                }
+                let extraClasses = '';
+                if (saved === 'whatsapp') extraClasses = 'border-green-400 bg-green-50';
+                else if (saved === 'sms') extraClasses = 'border-yellow-400 bg-yellow-50';
+                else if (saved === 'junk') extraClasses = 'border-red-400 bg-red-50 opacity-60 scale-95';
 
-                // SMS link format: sms:NUMBER?body=MESSAGE
-                const smsLink = `sms:${number}?body=${encodedMessage}`;
-                // WhatsApp link format: https://wa.me/COUNTRYCODE+NUMBER?text=MESSAGE
-                const waLink = `https://wa.me/${number}?text=${encodedMessage}`;
-
-                resultHtml += `
-                    <div id="${cardId}" class="result-card flex items-center justify-between p-3 rounded-lg ${initialColorClass}">
-                        <div class="flex items-center space-x-2 w-1/2">
-                            <span class="text-sm font-bold text-gray-800 w-6 flex-shrink-0">${serialNumber}.</span>
-                            <span class="font-mono text-gray-700 text-sm md:text-base truncate">${number}</span>
+                const html = `
+                    <div id="${cardId}" class="status-chip glass-card p-4 rounded-2xl flex items-center justify-between border-2 border-transparent hover:border-indigo-200 transition-all ${extraClasses}">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs font-bold text-gray-300">#${idx + 1}</span>
+                            <div>
+                                <p class="text-sm font-bold text-gray-800 tracking-wider">${num}</p>
+                                <p class="text-[10px] text-gray-400 uppercase tracking-tighter">Aranthangi Network</p>
+                            </div>
                         </div>
-                        <div class="flex space-x-2 flex-shrink-0">
-                            
-                            <!-- Open SMS App Button (Uses persistent click handler) -->
-                            <button onclick="handleLinkClick('${smsLink}', '${number}', 'sms', '${cardId}')" class="p-2 bg-yellow-600 text-white rounded-full hover:bg-yellow-700 transition duration-150 ease-in-out focus:outline-none" title="Open SMS Text App">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <div class="flex space-x-2">
+                            <!-- WhatsApp -->
+                            <button onclick="setStatus('${num}', 'whatsapp', '${cardId}'); window.open('https://wa.me/${num}?text=${encodedMsg}', '_blank')" 
+                                class="p-2 bg-green-500 text-white rounded-xl shadow-md hover:bg-green-600 transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.24 21.75l5.06-1.3c1.45.79 3.08 1.19 4.74 1.19 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.15 14.14c-.27.57-1.1 1-1.51 1.08-.41.09-1.01.1-1.77-.1-.76-.2-1.87-.55-3.28-1.44-1.42-.88-2.55-2.08-3.36-3.35-.72-1.1-.73-2.14-.64-2.65.09-.51.72-.92.99-1.48.27-.56.45-.62.7-.62.25 0 .53 0 .77 0 .2 0 .39.16.53.5.14.33.56 1.34.64 1.6.09.26.17.57.07.77-.1.2-.18.29-.32.46-.14.17-.26.34-.37.54-.11.2-.02.32.13.58.15.26.92 1.4 2.02 2.36.85.75 1.5 1 1.75 1.15.25.15.49.12.65-.08.16-.2.65-.76.95-1.13.3-.37.57-.43.84-.29.27.14 1.6.78 1.87.9.27.12.44.19.52.34.08.15.08.57-.19.91z"/></svg>
                             </button>
-                            
-                            <!-- Open WhatsApp App Button (Uses persistent click handler) -->
-                            <button onclick="handleLinkClick('${waLink}', '${number}', 'wa', '${cardId}')" class="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition duration-150 ease-in-out focus:outline-none" title="Open WhatsApp">
-                                <!-- WhatsApp Icon (Inline SVG) -->
-                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.24 21.75L7.3 20.45C8.75 21.24 10.38 21.64 12.04 21.64C17.5 21.64 21.95 17.19 21.95 11.73C21.95 6.27 17.5 2 12.04 2ZM17.19 16.14C16.92 16.71 16.09 17.13 15.68 17.21C15.27 17.3 14.67 17.31 13.91 17.11C13.15 16.92 12.04 16.57 10.63 15.68C9.21 14.8 8.08 13.6 7.27 12.33C6.55 11.23 6.13 10.19 6.22 9.68C6.31 9.17 6.94 8.76 7.21 8.2C7.48 7.64 7.66 7.58 7.91 7.58C8.16 7.58 8.44 7.58 8.68 7.58C8.88 7.58 9.07 7.74 9.21 8.08C9.35 8.41 9.77 9.42 9.85 9.68C9.94 9.94 10.02 10.25 9.92 10.45C9.83 10.65 9.75 10.74 9.61 10.91C9.47 11.08 9.35 11.25 9.24 11.45C9.13 11.65 9.02 11.77 9.17 12.03C9.32 12.29 10.09 13.43 11.19 14.39C12.04 15.14 12.69 15.34 12.94 15.49C13.19 15.64 13.43 15.61 13.59 15.41C13.75 15.21 14.24 14.65 14.54 14.28C14.84 13.91 15.11 13.85 15.38 13.99C15.65 14.13 16.98 14.77 17.25 14.89C17.52 15.01 17.69 15.08 17.77 15.23C17.85 15.38 17.85 15.8 17.58 16.14Z"/>
-                                </svg>
+                            <!-- SMS -->
+                            <button onclick="setStatus('${num}', 'sms', '${cardId}'); window.open('sms:${num}?body=${encodedMsg}', '_blank')" 
+                                class="p-2 bg-yellow-500 text-white rounded-xl shadow-md hover:bg-yellow-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                             </button>
-                            
-                            <!-- Mark Invalid Button (Now Toggles Status) -->
-                            <button onclick="handleInvalidClick('${number}', '${cardId}')" class="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none" title="Toggle Invalid/Reset Status">
-                                <!-- X-mark Icon (to signify invalid/error) -->
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                            <!-- Junk -->
+                            <button onclick="setStatus('${num}', 'junk', '${cardId}')" 
+                                class="p-2 bg-red-100 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
                     </div>
                 `;
+                resultsBox.insertAdjacentHTML('beforeend', html);
             });
-
-            // 5. Update UI
-            resultsContainer.innerHTML = resultHtml;
         }
-
-        // Removed copyToClipboard as per user request to remove the copy button.
     </script>
-
 </body>
 </html>
+
