@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senternet Resources | Tips & Tricks</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#4fd1c5',
+                            DEFAULT: '#319795',
+                            dark: '#285e61',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0; 
+        }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Logo / Brand Name -->
+                    <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
+                        <div class="h-10 w-10 bg-brand rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                            ST
+                        </div>
+                        <div class="hidden md:block">
+                            <h1 class="text-lg font-bold text-gray-900 leading-tight">SENTERNET</h1>
+                            <p class="text-xs text-brand font-medium tracking-wider">TECHNOLOGIES</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="https://rebrand.ly/senternet" target="_blank" class="text-gray-500 hover:text-brand transition-colors text-sm font-medium">
+                        Official Site <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                    <button class="bg-brand hover:bg-brand-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                        <i class="fas fa-plus mr-1"></i> Submit Trick
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-brand-dark text-white pb-24 pt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
+                Our Digital Treasure Trove
+            </h2>
+            <p class="text-gray-300 max-w-2xl mx-auto text-lg mb-8">
+                A collection of cool websites, tools, and hidden gems curated by the Senternet Technologies Team.
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-xl mx-auto relative">
+                <input type="text" id="searchInput" placeholder="Search for tools, games, or tips..." 
+                    class="w-full px-6 py-4 rounded-full text-gray-900 shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-light transition-all text-lg"
+                    onkeyup="filterResources()">
+                <div class="absolute right-4 top-4 text-gray-400">
+                    <i class="fas fa-search fa-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow -mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 mb-12">
+        
+        <!-- Filters -->
+        <div class="flex flex-wrap justify-center gap-2 mb-8" id="categoryFilters">
+            <button class="filter-btn active bg-white text-brand font-bold py-2 px-6 rounded-full shadow-md hover:bg-gray-50 transition-all border-2 border-transparent focus:border-brand" onclick="filterCategory('All')">
+                All
+            </button>
+            <button class="filter-btn bg-white/90 text-gray-600 py-2 px-6 rounded-full shadow hover:bg-white hover:text-brand transition-all" onclick="filterCategory('Entertainment')">
+                Entertainment
+            </button>
+            <button class="filter-btn bg-white/90 text-gray-600 py-2 px-6 rounded-full shadow hover:bg-white hover:text-brand transition-all" onclick="filterCategory('Design')">
+                Design
+            </button>
+            <button class="filter-btn bg-white/90 text-gray-600 py-2 px-6 rounded-full shadow hover:bg-white hover:text-brand transition-all" onclick="filterCategory('Development')">
+                Development
+            </button>
+            <button class="filter-btn bg-white/90 text-gray-600 py-2 px-6 rounded-full shadow hover:bg-white hover:text-brand transition-all" onclick="filterCategory('Tools')">
+                Tools
+            </button>
+        </div>
+
+        <!-- Grid Container -->
+        <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Content will be injected here by JavaScript -->
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="hidden text-center py-12">
+            <i class="fas fa-ghost text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-medium text-gray-600">No resources found matching your search.</h3>
+            <p class="text-gray-500">Try a different keyword.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Company Info -->
+                <div class="col-span-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" alt="CEO" class="w-12 h-12 rounded-full border-2 border-brand object-cover">
+                        <div>
+                            <h3 class="text-lg font-bold text-brand">SENTERNET</h3>
+                            <p class="text-xs text-gray-400">TECHNOLOGIES</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                        Innovative web solutions and creative designs from Aranthangi to the World.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://rebrand.ly/senternet" class="text-gray-400 hover:text-white transition-colors"><i class="fas fa-globe"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:senternettechnologies@gmail.com" class="text-gray-400 hover:text-white transition-colors"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-span-1">
+                    <h3 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-block">Contact Us</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-start"><i class="fas fa-map-marker-alt mt-1 mr-2 text-brand"></i> Aranthangi, Pudukkottai, TN</li>
+                        <li class="flex items-center"><i class="fas fa-phone-alt mr-2 text-brand"></i> +91 81900 38085</li>
+                        <li class="flex items-center"><i class="fas fa-mobile-alt mr-2 text-brand"></i> +91 93602 91050</li>
+                        <li class="flex items-center"><i class="fab fa-whatsapp mr-2 text-brand"></i> +91 81900 38085</li>
+                    </ul>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-span-1">
+                    <h3 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-block">Team Hub</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-brand transition-colors">Internal Dashboard</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Design Assets</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Project Status</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Submit a Ticket</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+                &copy; <script>document.write(new Date().getFullYear())</script> Senternet Technologies. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ==========================================
+        //  DATA SOURCE (ADD NEW LINKS HERE)
+        // ==========================================
+        // Format: 
+        // {
+        //    title: "Name of the site",
+        //    desc: "Short description",
+        //    link: "URL",
+        //    category: "Development/Design/Entertainment/Tools",
+        //    tag: "New/Hot/Free",
+        //    author: "Who added this"
+        // }
+        
+        const resources = [
+            {
+                title: "GeoFS Flight Simulator",
+                desc: "Play free online flight simulator games directly in your browser. No installation required. Just fly!",
+                link: "https://www.geo-fs.com/",
+                category: "Entertainment",
+                tag: "Game",
+                author: "Senthil"
+            },
+            {
+                title: "Remove.bg",
+                desc: "Remove image backgrounds automatically in 5 seconds with one click. Essential for quick designs.",
+                link: "https://www.remove.bg/",
+                category: "Design",
+                tag: "Tool",
+                author: "Sathish"
+            },
+            {
+                title: "Coolors",
+                desc: "The super fast color palettes generator. Create the perfect palette or get inspired by thousands of beautiful color schemes.",
+                link: "https://coolors.co/",
+                category: "Design",
+                tag: "Colors",
+                author: "Kumar"
+            },
+            {
+                title: "Senternet Official",
+                desc: "Our official landing page and business links portfolio. Share this with clients.",
+                link: "https://rebrand.ly/senternet",
+                category: "Tools",
+                tag: "Official",
+                author: "Admin"
+            }
+     
+        ];
+
+        // ==========================================
+        //  APP LOGIC
+        // ==========================================
+
+        const grid = document.getElementById('resourceGrid');
+        const noResults = document.getElementById('noResults');
+        let currentCategory = 'All';
+
+        // Function to get icon based on category
+        function getCategoryIcon(category) {
+            switch(category) {
+                case 'Entertainment': return 'fa-gamepad';
+                case 'Design': return 'fa-paint-brush';
+                case 'Development': return 'fa-code';
+                case 'Tools': return 'fa-tools';
+                default: return 'fa-link';
+            }
+        }
+
+        // Function to get random image based on keywords (using Picsum/Unsplash logic mockup)
+        // Since we can't fetch real metadata, we use relevant placeholder images
+        function getPlaceholderImage(category, index) {
+            const seed = index + category; // Simple randomizer
+            return `https://picsum.photos/seed/${seed}/400/200`;
+        }
+
+        // Render Cards
+        function renderResources(data) {
+            grid.innerHTML = '';
+            
+            if (data.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            data.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden card-hover animate-fade-in flex flex-col h-full';
+                
+                const icon = getCategoryIcon(item.category);
+                const imageSrc = getPlaceholderImage(item.category, index);
+
+                card.innerHTML = `
+                    <div class="h-40 bg-gray-200 relative overflow-hidden group">
+                        <img src="${imageSrc}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-brand shadow-sm">
+                            ${item.tag}
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="w-8 h-8 rounded-full bg-brand/10 text-brand flex items-center justify-center text-xs">
+                                <i class="fas ${icon}"></i>
+                            </span>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">${item.category}</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 leading-tight">${item.title}</h3>
+                        <p class="text-gray-600 text-sm mb-4 flex-grow line-clamp-3">${item.desc}</p>
+                        
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-600">
+                                    ${item.author.charAt(0)}
+                                </div>
+                                <span class="text-xs text-gray-500">By ${item.author}</span>
+                            </div>
+                            <a href="${item.link}" target="_blank" class="text-brand font-medium text-sm hover:underline flex items-center group-hover:gap-2 transition-all">
+                                Visit <i class="fas fa-arrow-right ml-1 transform group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Search Filter Logic
+        function filterResources() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            
+            const filtered = resources.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(query) || 
+                                      item.desc.toLowerCase().includes(query) ||
+                                      item.tag.toLowerCase().includes(query);
+                const matchesCategory = currentCategory === 'All' || item.category === currentCategory;
+                
+                return matchesSearch && matchesCategory;
+            });
+
+            renderResources(filtered);
+        }
+
+        // Category Filter Logic
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Update buttons visual state
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent.trim() === category) {
+                    btn.classList.remove('bg-white/90', 'text-gray-600');
+                    btn.classList.add('bg-white', 'text-brand', 'font-bold', 'border-brand');
+                } else {
+                    btn.classList.add('bg-white/90', 'text-gray-600');
+                    btn.classList.remove('bg-white', 'text-brand', 'font-bold', 'border-brand');
+                }
+            });
+
+            filterResources(); // Re-run filter to combine with search
+        }
+
+        // Initial Render
+        document.addEventListener('DOMContentLoaded', () => {
+            renderResources(resources);
+        });
+
+    </script>
+</body>
+</html>
+
