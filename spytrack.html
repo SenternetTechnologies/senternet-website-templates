@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senternet Visitor Tracker | Premium Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+
+        .glass-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .iframe-container {
+            height: calc(100vh - 80px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background: white;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .nav-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item:hover {
+            background: #eff6ff;
+            color: #2563eb;
+            transform: translateX(4px);
+        }
+
+        .active-nav {
+            background: #2563eb;
+            color: white !important;
+        }
+
+        .loader {
+            border-top-color: #2563eb;
+            animation: spinner 0.6s linear infinite;
+        }
+
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- Mobile Header -->
+    <header class="lg:hidden bg-white px-4 py-3 flex items-center justify-between border-b">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
+            <span class="font-bold text-slate-800">SENTERNET</span>
+        </div>
+        <button id="mobileMenuBtn" class="p-2 text-slate-600"><i class="fas fa-bars text-xl"></i></button>
+    </header>
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 glass-sidebar transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="p-6">
+                <div class="flex items-center space-x-3 mb-10">
+                    <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" class="w-10 h-10 rounded-full border-2 border-blue-500 shadow-sm" alt="CEO">
+                    <div>
+                        <h1 class="text-xs font-bold text-blue-600 uppercase tracking-widest">Senternet</h1>
+                        <p class="text-sm font-semibold text-slate-700">Visitor Tracker</p>
+                    </div>
+                </div>
+
+                <nav class="space-y-1">
+                    <a href="#" class="nav-item active-nav flex items-center px-4 py-3 rounded-xl text-sm font-medium">
+                        <i class="fas fa-chart-line w-6"></i>
+                        Live Dashboard
+                    </a>
+                    <a href="#" class="nav-item text-slate-500 flex items-center px-4 py-3 rounded-xl text-sm font-medium">
+                        <i class="fas fa-users w-6"></i>
+                        Traffic Logs
+                    </a>
+                    <a href="#" class="nav-item text-slate-500 flex items-center px-4 py-3 rounded-xl text-sm font-medium">
+                        <i class="fas fa-globe w-6"></i>
+                        Geolocation
+                    </a>
+                    <a href="#" class="nav-item text-slate-500 flex items-center px-4 py-3 rounded-xl text-sm font-medium">
+                        <i class="fas fa-cog w-6"></i>
+                        Settings
+                    </a>
+                </nav>
+
+                <div class="absolute bottom-6 left-6 right-6">
+                    <div class="bg-blue-600 rounded-2xl p-4 text-white">
+                        <p class="text-xs opacity-80 mb-2">Developed By</p>
+                        <a href="https://rebrand.ly/senternet" target="_blank" class="font-bold hover:underline">Senternet Technologies</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0 lg:ml-64 relative">
+            
+            <!-- Top Navbar -->
+            <header class="bg-white/80 backdrop-blur-md h-20 flex items-center justify-between px-8 border-b hidden lg:flex">
+                <div class="flex items-center space-x-4">
+                    <h2 class="text-xl font-bold text-slate-800">Tracking Console</h2>
+                    <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full flex items-center">
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                        LIVE
+                    </span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="text-right">
+                        <p class="text-xs text-slate-400">Aranthangi, Pudukkottai</p>
+                        <p class="text-sm font-bold text-slate-700">Senternet Admin</p>
+                    </div>
+                    <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" class="w-10 h-10 rounded-full border border-slate-200" alt="Admin">
+                </div>
+            </header>
+
+            <!-- Dashboard Frame -->
+            <div class="flex-1 p-4 lg:p-8 bg-slate-50 overflow-hidden">
+                <div id="loadingOverlay" class="absolute inset-0 z-10 bg-white flex flex-col items-center justify-center pointer-events-none transition-opacity duration-500">
+                    <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                    <p class="text-slate-500 font-medium">Loading Real-time Data...</p>
+                </div>
+
+                <div class="iframe-container h-full">
+                    <iframe 
+                        id="trackingIframe"
+                        src="https://script.google.com/macros/s/AKfycbwSwgsqOPaLqE_WIaYnVGq1o77GFQYprwKCPW1rpZPsv-GoqmT5McSMyKaitiDGE-Pp/exec" 
+                        allow="geolocation"
+                        onload="hideLoader()">
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Footer Meta -->
+            <footer class="bg-white py-4 px-8 border-t flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+                <p>&copy; 2025 SENTERNET TECHNOLOGIES. All Rights Reserved.</p>
+                <div class="flex space-x-4 mt-2 md:mt-0">
+                    <span><i class="fab fa-whatsapp text-green-500 mr-1"></i> +91 81900 38085</span>
+                    <span><i class="far fa-envelope text-blue-500 mr-1"></i> senternettechnologies@gmail.com</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Mobile Backdrop -->
+    <div id="backdrop" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const backdrop = document.getElementById('backdrop');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        mobileMenuBtn.onclick = toggleSidebar;
+        backdrop.onclick = toggleSidebar;
+
+        function hideLoader() {
+            const loader = document.getElementById('loadingOverlay');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
+        }
+
+        // Auto-refresh logic (Optional)
+        // setInterval(() => {
+        //     document.getElementById('trackingIframe').src += '';
+        // }, 60000);
+    </script>
+</body>
+</html>
