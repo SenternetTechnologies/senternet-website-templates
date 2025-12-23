@@ -187,6 +187,69 @@
         </div>
     </section>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<!-- Senternet DB Script -->
+<script>
+  const SENT_DB_ID = "DB_senternettechnologies_gmail_com_test";
+  const SENT_API = "https://script.google.com/macros/s/AKfycbzXWFhaxlYOH64zl6Br6VGF_96Dj9mGaff-y7GHkLVxLrRwV2Hg0O4VzcOfLcVBwo9VmA/exec";
+  
+  // Example function to send data
+  function senternetSave(data) {
+    fetch(SENT_API, {
+      method: 'POST',
+      body: JSON.stringify({ dbId: SENT_DB_ID, type: 'save', data: data })
+    }).then(res => console.log('Data Saved to Senternet Cloud'));
+  }
+
+  // Example for View Count
+  function senternetTrackView() {
+    fetch(SENT_API, {
+        method: 'POST',
+        body: JSON.stringify({ dbId: SENT_DB_ID, type: 'viewcount' })
+    }).then(r => r.json()).then(d => {
+        const el = document.getElementById('sent-views');
+        if(el) el.innerText = d.views;
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     <!-- Marquee Banner -->
     <div class="bg-indigo-600 py-3 overflow-hidden border-y border-indigo-500">
         <div class="animate-marquee items-center text-white font-bold uppercase tracking-widest text-[10px]">
