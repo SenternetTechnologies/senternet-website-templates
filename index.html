@@ -1,6 +1,257 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+    Senternet Technologies - Deepavali Interactive Script
+    CEO: Senthilkumar | Aranthangi
+    Instructions: Paste this before </body> tag.
+-->
+<script>
+(function() {
+    // 1. Festive Styles (Non-intrusive)
+    const style = document.createElement('style');
+    style.innerHTML = `
+        :root { --diwali-gold: #FFD700; --diwali-orange: #FF8C00; }
+        
+        canvas#diwali-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999999;
+        }
+
+        /* Thoranam (Mango Leaves) for Headings */
+        h1, h2, h3 {
+            position: relative;
+            padding-top: 30px !important;
+        }
+        h1::before, h2::before, h3::before {
+            content: "🍃🍃🍃🪔🍃🍃🍃";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            letter-spacing: 5px;
+            white-space: nowrap;
+        }
+
+        /* Floating Lamps in Corners */
+        .diwali-lamp {
+            position: fixed;
+            bottom: 10px;
+            font-size: 40px;
+            z-index: 1000001;
+            filter: drop-shadow(0 0 10px orange);
+            animation: flicker 1s infinite alternate;
+        }
+        @keyframes flicker {
+            from { opacity: 0.8; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Blast Animation */
+        .blast-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000002;
+        }
+
+        /* Branding Badge */
+        .senternet-deepavali-badge {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-family: sans-serif;
+            font-size: 12px;
+            border: 1px solid var(--diwali-gold);
+            z-index: 1000003;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .senternet-deepavali-badge img {
+            width: 30px; height: 30px; border-radius: 50%;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Setup Canvas for Fireworks
+    const canvas = document.createElement('canvas');
+    canvas.id = 'diwali-canvas';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x; this.y = y; this.color = color;
+            this.velocity = {
+                x: (Math.random() - 0.5) * 8,
+                y: (Math.random() - 0.5) * 8
+            };
+            this.alpha = 1;
+            this.friction = 0.95;
+        }
+        draw() {
+            ctx.globalAlpha = this.alpha;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+        update() {
+            this.velocity.x *= this.friction;
+            this.velocity.y *= this.friction;
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            this.alpha -= 0.02;
+        }
+    }
+
+    function createFirework(x, y) {
+        const colors = ['#FFD700', '#FF0000', '#00FF00', '#0000FF', '#FF00FF'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        for (let i = 0; i < 30; i++) {
+            particles.push(new Particle(x, y, color));
+        }
+    }
+
+    function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles = particles.filter(p => p.alpha > 0);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // 3. Trigger Events
+    
+    // A. Scroll Rocket
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+        if (Math.abs(window.scrollY - lastScrollY) > 500) {
+            createFirework(Math.random() * canvas.width, 100);
+            lastScrollY = window.scrollY;
+        }
+    });
+
+    // B. Touch/Click Atom Bomb
+    document.addEventListener('mousedown', (e) => {
+        createFirework(e.clientX, e.clientY);
+    });
+
+    // C. Swipe Left to Right (Sarakaddi/Chara Round)
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+    document.addEventListener('touchend', e => {
+        let touchEndX = e.changedTouches[0].clientX;
+        if (touchEndX - touchStartX > 100) { // Right Swipe
+            let i = 0;
+            const interval = setInterval(() => {
+                createFirework(Math.random() * canvas.width, canvas.height - 50);
+                i++;
+                if(i > 10) clearInterval(interval);
+            }, 100);
+        }
+    });
+
+    // 4. Inject Visual Elements
+    function injectVisuals() {
+        const lampLeft = document.createElement('div');
+        lampLeft.className = 'diwali-lamp';
+        lampLeft.style.left = '20px';
+        lampLeft.innerHTML = '🪔';
+        document.body.appendChild(lampLeft);
+
+        const lampRight = document.createElement('div');
+        lampRight.className = 'diwali-lamp';
+        lampRight.style.right = '20px';
+        lampRight.innerHTML = '🪔';
+        document.body.appendChild(lampRight);
+
+        const badge = document.createElement('div');
+        badge.className = 'senternet-deepavali-badge';
+        badge.innerHTML = `
+            <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" alt="CEO">
+            <span>Happy Deepavali from <b>Senternet Technologies</b></span>
+        `;
+        document.body.appendChild(badge);
+    }
+
+    injectVisuals();
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Senternet Premium Webapp Ecosystem | Aranthangi's Finest</title>
