@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALERIUS | Royal Haute Parfumerie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@200;300;400;600&display=swap');
+        
+        :root {
+            --primary: #080808;
+            --accent: #c5a059;
+            --bg: #ffffff;
+            --gold-gradient: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+        }
+
+        * {
+            cursor: none !important;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            overflow-x: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        .font-luxury { font-family: 'Cinzel', serif; }
+        .gold-text {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Cursor Style */
+        #cursor {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease;
+        }
+        #cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.15s ease-out;
+            opacity: 0.5;
+        }
+
+        /* Page Transition */
+        .page-content {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Component Styles */
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+        }
+
+        .product-card {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-15px);
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+    </style>
+</head>
+<body class="opacity-0">
+
+    <!-- Global Cursor -->
+    <div id="cursor"></div>
+    <div id="cursor-outline"></div>
+
+    <!-- Master Navigation -->
+    <nav class="fixed w-full z-50 nav-glass border-b border-black/5">
+        <div class="max-w-[1600px] mx-auto px-10 h-24 flex justify-between items-center">
+            <div class="flex-1 hidden lg:flex space-x-12 text-[10px] uppercase tracking-[0.5em] font-bold text-gray-400">
+                <button onclick="navigateTo('home')" class="nav-link hover:text-[#c5a059] transition">Maison</button>
+                <button onclick="navigateTo('vault')" class="nav-link hover:text-[#c5a059] transition">Vault</button>
+            </div>
+
+            <div class="flex-shrink-0 text-center cursor-pointer" onclick="navigateTo('home')">
+                <h1 class="font-luxury text-4xl tracking-[0.2em] font-bold">VALERIUS</h1>
+                <p class="text-[8px] tracking-[0.8em] text-[#c5a059] uppercase -mt-1 font-semibold">Parfumeur Royal</p>
+            </div>
+
+            <div class="flex-1 flex justify-end items-center space-x-12">
+                <div class="hidden lg:flex space-x-12 text-[10px] uppercase tracking-[0.5em] font-bold text-gray-400">
+                    <button onclick="navigateTo('heritage')" class="nav-link hover:text-[#c5a059] transition">Heritage</button>
+                    <button onclick="navigateTo('concierge')" class="nav-link hover:text-[#c5a059] transition">Concierge</button>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <div class="relative cursor-pointer group" onclick="toggleCart()">
+                        <i class="fa-solid fa-crown text-sm group-hover:text-[#c5a059] transition"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-3 bg-black text-white text-[7px] w-4 h-4 rounded-full flex items-center justify-center border border-[#c5a059]">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dynamic Content Area -->
+    <main id="app-viewport" class="pt-24 min-h-screen">
+        <!-- Content injected here via navigateTo() -->
+    </main>
+
+    <!-- Shared Footer -->
+    <footer class="bg-[#080808] text-white pt-32 pb-12">
+        <div class="max-w-[1500px] mx-auto px-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-20 mb-20 border-b border-white/5 pb-20">
+                <div class="col-span-1">
+                    <h4 class="font-luxury text-2xl mb-8 tracking-widest">VALERIUS</h4>
+                    <p class="text-gray-500 text-xs leading-loose font-light tracking-widest">A legacy of olfactory excellence since 1724. Sourcing the rarest botanicals to create liquid emotion.</p>
+                </div>
+                <div>
+                    <h5 class="text-[#c5a059] text-[10px] font-bold tracking-[0.4em] uppercase mb-8">Navigation</h5>
+                    <ul class="text-gray-400 text-xs space-y-4 tracking-widest font-light">
+                        <li class="hover:text-white transition"><button onclick="navigateTo('home')">The Maison</button></li>
+                        <li class="hover:text-white transition"><button onclick="navigateTo('vault')">The Collection</button></li>
+                        <li class="hover:text-white transition"><button onclick="navigateTo('heritage')">Bespoke Service</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-[#c5a059] text-[10px] font-bold tracking-[0.4em] uppercase mb-8">Boutiques</h5>
+                    <ul class="text-gray-400 text-xs space-y-4 tracking-widest font-light">
+                        <li>Place Vendôme, Paris</li>
+                        <li>Mayfair, London</li>
+                        <li>Downtown, Dubai</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-[#c5a059] text-[10px] font-bold tracking-[0.4em] uppercase mb-8">Newsletter</h5>
+                    <div class="relative">
+                        <input type="text" placeholder="GUEST LIST" class="bg-transparent border-b border-white/10 w-full py-4 text-[10px] tracking-[0.3em] outline-none focus:border-[#c5a059] transition">
+                        <button class="absolute right-0 bottom-4 text-[#c5a059]"><i class="fa-solid fa-arrow-right-long"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center text-[9px] tracking-[0.5em] text-gray-600 font-bold uppercase">
+                <p>&copy; 2025 VALERIUS ROYAL PARFUMS. PRIVATE REPOSITORY.</p>
+                <div class="flex gap-8 mt-4 md:mt-0">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Templates Section (Not displayed) -->
+    <template id="page-home">
+        <div class="page-content">
+            <section class="h-[90vh] relative flex items-center justify-center overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-60 scale-110" id="hero-img">
+                <div class="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white"></div>
+                <div class="relative z-10 text-center px-6">
+                    <p class="text-[9px] uppercase tracking-[1em] mb-6 text-gray-500 font-bold">L'Art de Vivre</p>
+                    <h2 class="font-luxury text-7xl md:text-[140px] leading-none mb-10">Absolute <br><span class="gold-text italic">Sovereign</span></h2>
+                    <button onclick="navigateTo('vault')" class="bg-black text-white px-16 py-6 text-[10px] tracking-[0.5em] font-bold uppercase hover:bg-[#c5a059] transition-all duration-700">Enter The Collection</button>
+                </div>
+            </section>
+        </div>
+    </template>
+
+    <template id="page-vault">
+        <div class="page-content py-24 bg-[#fafafa]">
+            <div class="max-w-[1600px] mx-auto px-10">
+                <div class="text-center mb-32">
+                    <h2 class="font-luxury text-6xl mb-6 italic">The Collection</h2>
+                    <div class="h-[1px] w-20 bg-[#c5a059] mx-auto"></div>
+                </div>
+                <div id="vault-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                    <!-- Products injected by vaultScript -->
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="page-heritage">
+        <div class="page-content py-32">
+            <div class="max-w-7xl mx-auto px-10 text-center">
+                <h2 class="font-luxury text-8xl mb-20 gold-text opacity-20">HERITAGE</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                    <img src="https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=1200" class="w-full h-[600px] object-cover grayscale">
+                    <div class="text-left">
+                        <h3 class="font-luxury text-4xl mb-8 italic">The Master's Touch</h3>
+                        <p class="text-gray-500 font-light leading-loose tracking-widest text-sm mb-12">
+                            Every bottle of Valerius is a vessel of history. We follow the 18th-century extraction methods, ensuring the molecular integrity of every petal. No synthetics. No shortcuts. Just the raw, untamed essence of nature.
+                        </p>
+                        <button class="border border-black px-12 py-5 text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-black hover:text-white transition">The Archives</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="page-concierge">
+        <div class="page-content py-32 flex items-center justify-center bg-black text-white min-h-[80vh]">
+            <div class="max-w-2xl text-center">
+                <h2 class="font-luxury text-5xl mb-12">Private Consultation</h2>
+                <p class="text-gray-500 tracking-[0.2em] text-xs leading-loose mb-12">Speak with our Master Parfumeurs for a bespoke creation. Reserved for the inner circle only.</p>
+                <div class="flex flex-col gap-6">
+                    <input type="text" placeholder="NAME" class="bg-transparent border-b border-white/20 py-4 outline-none text-[10px] tracking-[0.5em] focus:border-[#c5a059]">
+                    <input type="email" placeholder="EMAIL" class="bg-transparent border-b border-white/20 py-4 outline-none text-[10px] tracking-[0.5em] focus:border-[#c5a059]">
+                    <button class="mt-12 bg-white text-black py-6 text-[10px] tracking-[0.8em] font-bold uppercase hover:bg-[#c5a059] transition">Request Invitation</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Master Control Script -->
+    <script>
+        // Router State
+        let currentPage = 'home';
+        let cartItems = 0;
+
+        // Custom Cursor Logic
+        const initCursor = () => {
+            const cursor = document.getElementById('cursor');
+            const outline = document.getElementById('cursor-outline');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                outline.animate({
+                    left: `${e.clientX - 20}px`,
+                    top: `${e.clientY - 20}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+
+            document.addEventListener('mousedown', () => {
+                outline.style.transform = 'scale(1.5)';
+                outline.style.borderColor = '#ffffff';
+            });
+            document.addEventListener('mouseup', () => {
+                outline.style.transform = 'scale(1)';
+                outline.style.borderColor = '#c5a059';
+            });
+        };
+
+        // Navigation Logic
+        const navigateTo = (pageId) => {
+            const viewport = document.getElementById('app-viewport');
+            const template = document.getElementById(`page-${pageId}`);
+            
+            if (!template) return;
+
+            // Fade out current
+            viewport.style.opacity = '0';
+            
+            setTimeout(() => {
+                viewport.innerHTML = template.innerHTML;
+                currentPage = pageId;
+                viewport.style.opacity = '1';
+                
+                // Initialize page-specific scripts
+                if (pageId === 'vault') initVaultScript();
+                if (pageId === 'home') initHomeScript();
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 400);
+        };
+
+        // Component: Home Script
+        const initHomeScript = () => {
+            const heroImg = document.getElementById('hero-img');
+            window.addEventListener('scroll', () => {
+                if(heroImg) {
+                    let val = window.scrollY;
+                    heroImg.style.transform = `scale(${1.1 + val/2000}) translateY(${val/10}px)`;
+                }
+            });
+        };
+
+        // Component: Vault Script
+        const initVaultScript = () => {
+            const products = [
+                { id: 1, name: 'Amber Sovereignty', type: 'Grand Extract', price: 850, img: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800' },
+                { id: 2, name: 'Velvet Oud', type: 'Parfum De Nuit', price: 920, img: 'https://images.unsplash.com/photo-1583445013765-48c220463125?auto=format&fit=crop&q=80&w=800' },
+                { id: 3, name: 'Imperial Iris', type: 'Floral Absolute', price: 780, img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800' },
+                { id: 4, name: 'Lunar Smoke', type: 'Private Blend', price: 1100, img: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=800' },
+                { id: 5, name: 'Citron Royal', type: 'Cologne Royale', price: 450, img: 'https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=800' },
+                { id: 6, name: 'Onyx Rose', type: 'Extract', price: 890, img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=800' },
+                { id: 7, name: 'Gilded Cedar', type: 'Parfum', price: 670, img: 'https://images.unsplash.com/photo-1592914610354-fd354ea45e48?auto=format&fit=crop&q=80&w=800' },
+                { id: 8, name: 'Ivory Mist', type: 'Essence', price: 540, img: 'https://images.unsplash.com/photo-1615484477778-ca3b77942c23?auto=format&fit=crop&q=80&w=800' }
+            ];
+
+            const grid = document.getElementById('vault-grid');
+            if(!grid) return;
+
+            grid.innerHTML = products.map(p => `
+                <div class="product-card group cursor-none">
+                    <div class="relative aspect-[3/4] overflow-hidden mb-8 bg-gray-50 border border-black/5">
+                        <img src="${p.img}" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-[1.5s]">
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button onclick="addToCart()" class="bg-white text-black px-10 py-4 text-[9px] font-bold tracking-[0.4em] uppercase transform translate-y-10 group-hover:translate-y-0 transition-transform duration-700">Acquire Selection</button>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[8px] text-[#c5a059] tracking-[0.5em] uppercase mb-2 font-bold">${p.type}</p>
+                        <h4 class="font-luxury text-xl mb-2">${p.name}</h4>
+                        <p class="text-[10px] tracking-widest text-gray-400 font-light">$${p.price}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Global Cart Logic
+        const addToCart = () => {
+            cartItems++;
+            document.getElementById('cart-count').innerText = cartItems;
+            
+            // Visual feedback
+            const cartIcon = document.querySelector('.fa-crown');
+            cartIcon.classList.add('scale-150', 'text-[#c5a059]');
+            setTimeout(() => cartIcon.classList.remove('scale-150', 'text-[#c5a059]'), 500);
+        };
+
+        // App Initialization
+        window.onload = () => {
+            document.body.classList.remove('opacity-0');
+            initCursor();
+            navigateTo('home');
+        };
+    </script>
+</body>
+</html>
