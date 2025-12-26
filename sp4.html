@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAISON D'ESSENCE | Haute Parfumerie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@200;300;400;600&display=swap');
+        
+        :root {
+            --primary: #1a1a1a;
+            --accent: #c5a059;
+            --off-white: #faf9f6;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+            background-color: var(--off-white);
+            color: var(--primary);
+        }
+
+        .serif {
+            font-family: 'Bodoni Moda', serif;
+        }
+
+        .nav-glass {
+            background: rgba(250, 249, 246, 0.85);
+            backdrop-filter: blur(12px);
+            transition: all 0.4s ease;
+        }
+
+        .hero-zoom {
+            animation: slowZoom 20s infinite alternate;
+        }
+
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
+        .product-card {
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px);
+        }
+
+        .btn-luxe {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid var(--primary);
+        }
+
+        .btn-luxe::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-luxe:hover {
+            color: white;
+        }
+
+        .btn-luxe:hover::before {
+            left: 0;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c5a059; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 nav-glass border-b border-black/5">
+        <div class="max-w-7xl mx-auto px-6 h-24 flex justify-between items-center">
+            <div class="flex-1 hidden lg:flex space-x-8 text-[10px] uppercase tracking-[0.3em] font-semibold">
+                <a href="#collection" class="hover:text-[#c5a059] transition">Collection</a>
+                <a href="#atelier" class="hover:text-[#c5a059] transition">The Atelier</a>
+            </div>
+
+            <div class="flex-shrink-0">
+                <h1 class="serif text-3xl font-bold tracking-widest text-center">MAISON D'ESSENCE</h1>
+                <p class="text-[8px] tracking-[0.6em] text-center text-[#c5a059] -mt-1 uppercase">Paris • London • New York</p>
+            </div>
+
+            <div class="flex-1 flex justify-end items-center space-x-8">
+                <div class="hidden lg:flex space-x-8 text-[10px] uppercase tracking-[0.3em] font-semibold">
+                    <a href="#heritage" class="hover:text-[#c5a059] transition">Heritage</a>
+                    <a href="#contact" class="hover:text-[#c5a059] transition">Bespoke</a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <button class="hover:scale-110 transition"><i class="fa-solid fa-magnifying-glass text-sm"></i></button>
+                    <div class="relative cursor-pointer group" onclick="toggleCart()">
+                        <i class="fa-solid fa-briefcase text-sm"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-[#c5a059] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=2000" 
+                 alt="Hero" class="w-full h-full object-cover hero-zoom opacity-90">
+            <div class="absolute inset-0 bg-black/20"></div>
+        </div>
+        
+        <div class="relative z-10 text-center text-white px-4">
+            <p class="uppercase tracking-[0.8em] text-[10px] mb-6 reveal">Private Reserve Collection</p>
+            <h2 class="serif text-6xl md:text-9xl font-light mb-12 reveal">Soul of <br><span class="italic font-normal">Botanics</span></h2>
+            <div class="reveal">
+                <a href="#collection" class="inline-block border border-white px-12 py-5 text-[10px] tracking-[0.4em] font-bold hover:bg-white hover:text-black transition-all duration-500 uppercase">Discover the Scent</a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <span class="text-[8px] tracking-[0.5em] uppercase text-white/60 mb-4">Scroll to Explore</span>
+            <div class="w-[1px] h-16 bg-white/30 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1/2 bg-white animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Atelier - Craftsmanship -->
+    <section id="atelier" class="py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+                <div class="reveal">
+                    <span class="text-[#c5a059] text-[10px] tracking-[0.5em] uppercase block mb-6">The Craft</span>
+                    <h3 class="serif text-5xl mb-8 leading-tight">Mastering the Art <br>of Maceration</h3>
+                    <p class="text-gray-500 font-light leading-loose text-lg mb-10">
+                        Every bottle is a culmination of a two-year process. From the hand-picked Damask roses of Bulgaria to the ethically sourced Sandalwood of Mysore, our ingredients are aged in French oak barrels to reach their olfactive peak.
+                    </p>
+                    <div class="grid grid-cols-2 gap-8 border-t border-gray-100 pt-10">
+                        <div>
+                            <p class="serif text-3xl mb-2 italic">1884</p>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400">Foundation Year</p>
+                        </div>
+                        <div>
+                            <p class="serif text-3xl mb-2 italic">320+</p>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400">Unique Botanicals</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative reveal">
+                    <img src="https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=800" class="w-full h-[600px] object-cover rounded-sm shadow-2xl" alt="Atelier">
+                    <div class="absolute -bottom-10 -left-10 bg-[#c5a059] p-12 hidden md:block">
+                        <p class="serif text-white text-2xl italic">"Perfume is the <br>most intense <br>form of memory."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collection Grid -->
+    <section id="collection" class="py-32 bg-[#fcfbf9]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal">
+                <div>
+                    <h4 class="serif text-5xl">The Olfactive Gallery</h4>
+                </div>
+                <div class="flex gap-8 mt-8 md:mt-0">
+                    <button onclick="filterItems('all')" class="text-[10px] uppercase tracking-[0.4em] pb-2 border-b-2 border-black transition">All</button>
+                    <button onclick="filterItems('floral')" class="text-[10px] uppercase tracking-[0.4em] pb-2 border-b-2 border-transparent hover:border-[#c5a059] transition">Floral</button>
+                    <button onclick="filterItems('woody')" class="text-[10px] uppercase tracking-[0.4em] pb-2 border-b-2 border-transparent hover:border-[#c5a059] transition">Woody</button>
+                    <button onclick="filterItems('oriental')" class="text-[10px] uppercase tracking-[0.4em] pb-2 border-b-2 border-transparent hover:border-[#c5a059] transition">Oriental</button>
+                </div>
+            </div>
+
+            <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24">
+                <!-- Products injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Parallax Image Section -->
+    <section class="h-[60vh] relative overflow-hidden flex items-center justify-center">
+        <img src="https://images.unsplash.com/photo-1615484477778-ca3b77942c23?auto=format&fit=crop&q=80&w=2000" class="absolute inset-0 w-full h-full object-cover scale-110 grayscale" style="filter: brightness(40%);" alt="Parallax">
+        <div class="relative z-10 text-center reveal">
+            <h5 class="serif text-white text-4xl md:text-6xl italic">The Signature of Luxury</h5>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-[#1a1a1a] text-white pt-32 pb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-20 mb-32">
+                <div class="col-span-1 md:col-span-2">
+                    <h6 class="serif text-4xl mb-8">MAISON D'ESSENCE</h6>
+                    <p class="text-white/40 font-light leading-loose max-w-sm mb-12">
+                        Receive exclusive access to private vintage releases and artisanal masterclasses.
+                    </p>
+                    <form onsubmit="subscribe(event)" class="relative max-w-md">
+                        <input type="email" placeholder="YOUR EMAIL ADDRESS" class="w-full bg-transparent border-b border-white/20 py-4 text-[10px] tracking-[0.4em] outline-none focus:border-[#c5a059] transition">
+                        <button class="absolute right-0 top-4 text-[#c5a059] text-[10px] font-bold tracking-[0.4em]">JOIN</button>
+                    </form>
+                </div>
+                <div>
+                    <p class="text-[10px] tracking-[0.5em] text-[#c5a059] uppercase mb-10 font-bold">Menu</p>
+                    <ul class="space-y-4 text-[11px] tracking-widest text-white/50 uppercase">
+                        <li class="hover:text-white transition cursor-pointer">Stockists</li>
+                        <li class="hover:text-white transition cursor-pointer">Bespoke Gifting</li>
+                        <li class="hover:text-white transition cursor-pointer">Shipping & Returns</li>
+                        <li class="hover:text-white transition cursor-pointer">Sustainability</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-[10px] tracking-[0.5em] text-[#c5a059] uppercase mb-10 font-bold">Social</p>
+                    <ul class="space-y-4 text-[11px] tracking-widest text-white/50 uppercase">
+                        <li class="hover:text-white transition cursor-pointer">Instagram</li>
+                        <li class="hover:text-white transition cursor-pointer">Journal</li>
+                        <li class="hover:text-white transition cursor-pointer">Pinterest</li>
+                        <li class="hover:text-white transition cursor-pointer">Vimeo</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center text-[9px] tracking-[0.5em] text-white/20 border-t border-white/5 pt-12">
+                <p>© 2025 MAISON D'ESSENCE. ALL RIGHTS RESERVED.</p>
+                <div class="flex gap-8 mt-6 md:mt-0">
+                    <span class="hover:text-white transition cursor-pointer">PRIVACY</span>
+                    <span class="hover:text-white transition cursor-pointer">LEGAL</span>
+                    <span class="hover:text-white transition cursor-pointer">TERMS</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bag Toast -->
+    <div id="toast" class="fixed bottom-10 right-10 bg-white text-black px-10 py-5 shadow-2xl transform translate-y-32 transition-transform duration-500 z-[100] flex items-center gap-6 border-l-4 border-[#c5a059]">
+        <div class="w-2 h-2 rounded-full bg-[#c5a059] animate-pulse"></div>
+        <span class="text-[10px] font-bold tracking-[0.4em] uppercase">Added to Curated Bag</span>
+    </div>
+
+    <script>
+        const perfumes = [
+            { id: 1, name: 'Lumière Noire', price: 285, category: 'oriental', img: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800' },
+            { id: 2, name: 'Rose De Grasse', price: 310, category: 'floral', img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800' },
+            { id: 3, name: 'Silver Cedar', price: 245, category: 'woody', img: 'https://images.unsplash.com/photo-1583445013765-48c220463125?auto=format&fit=crop&q=80&w=800' },
+            { id: 4, name: 'Oud Imperial', price: 350, category: 'oriental', img: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=800' },
+            { id: 5, name: 'White Tuberose', price: 275, category: 'floral', img: 'https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=800' },
+            { id: 6, name: 'Amber Myth', price: 295, category: 'oriental', img: 'https://images.unsplash.com/photo-1615484477778-ca3b77942c23?auto=format&fit=crop&q=80&w=800' }
+        ];
+
+        function render(list) {
+            const container = document.getElementById('product-list');
+            container.innerHTML = list.map(p => `
+                <div class="product-card group reveal">
+                    <div class="relative aspect-[3/4] overflow-hidden mb-10 bg-[#f5f5f5]">
+                        <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500"></div>
+                        <button onclick="addToBag()" class="absolute bottom-0 left-0 w-full bg-black text-white py-5 text-[9px] font-bold tracking-[0.5em] translate-y-full group-hover:translate-y-0 transition-transform duration-500 uppercase">Secure Scent</button>
+                    </div>
+                    <div class="flex justify-between items-end border-b border-gray-100 pb-6">
+                        <div>
+                            <p class="text-[8px] text-[#c5a059] tracking-[0.6em] uppercase mb-3">${p.category}</p>
+                            <h5 class="serif text-2xl">${p.name}</h5>
+                        </div>
+                        <span class="serif text-xl font-light">$${p.price}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Re-trigger reveal after render
+            handleScroll();
+        }
+
+        function filterItems(cat) {
+            const buttons = document.querySelectorAll('#collection button');
+            buttons.forEach(b => b.classList.remove('border-black'));
+            event.target.classList.add('border-black');
+
+            if (cat === 'all') render(perfumes);
+            else render(perfumes.filter(p => p.category === cat));
+        }
+
+        let count = 0;
+        function addToBag() {
+            count++;
+            document.getElementById('cart-count').innerText = count;
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-32');
+            setTimeout(() => toast.classList.add('translate-y-32'), 3000);
+        }
+
+        function subscribe(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "CONFIRMED";
+            e.target.reset();
+        }
+
+        // Reveal on scroll logic
+        function handleScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.onload = () => {
+            render(perfumes);
+            handleScroll();
+        };
+    </script>
+</body>
+</html>
