@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Haute Parfumerie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@200;400;600&display=swap');
+        
+        :root {
+            --gold: #D4AF37;
+            --dark: #0A0A0A;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark);
+            color: #fff;
+            scroll-behavior: smooth;
+        }
+
+        .font-brand {
+            font-family: 'Syncopate', sans-serif;
+            letter-spacing: 0.2em;
+        }
+
+        .gold-gradient {
+            background: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+        }
+
+        .btn-gold {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="font-brand text-xl font-bold">AURA</div>
+            
+            <div class="hidden lg:flex space-x-12 text-sm uppercase tracking-widest font-light">
+                <a href="#home" class="hover:text-[#D4AF37] transition">Essence</a>
+                <a href="#discover" class="hover:text-[#D4AF37] transition">Discover</a>
+                <a href="#gallery" class="hover:text-[#D4AF37] transition">Gallery</a>
+                <a href="#concierge" class="hover:text-[#D4AF37] transition">Concierge</a>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <button class="hover:text-[#D4AF37]"><i class="fa-solid fa-search"></i></button>
+                <div class="relative cursor-pointer hover:text-[#D4AF37]" onclick="toggleCart()">
+                    <i class="fa-solid fa-shopping-bag"></i>
+                    <span id="cart-dot" class="absolute -top-1 -right-2 w-2 h-2 bg-[#D4AF37] rounded-full hidden"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cinematic Hero -->
+    <section id="home" class="relative h-screen flex items-center justify-start px-8 lg:px-24 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=2000" 
+                 alt="Main Scent" class="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-1000">
+            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>
+        </div>
+
+        <div class="relative z-10 max-w-2xl">
+            <p class="font-brand text-xs mb-4 text-[#D4AF37]">COLLECTION NO. 07</p>
+            <h1 class="font-brand text-5xl md:text-7xl font-bold leading-tight mb-8">
+                BEYOND <br> <span class="gold-gradient">SENSATION</span>
+            </h1>
+            <p class="text-gray-400 font-light text-lg mb-10 leading-relaxed">
+                Invisible jewelry for the soul. Handcrafted in limited batches with rare botanicals sourced from around the globe.
+            </p>
+            <div class="flex gap-6">
+                <a href="#discover" class="btn-gold px-10 py-4 uppercase tracking-tighter text-sm font-bold">Shop the Scent</a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-30">
+            <i class="fa-solid fa-arrow-down"></i>
+        </div>
+    </section>
+
+    <!-- Categories / Notes -->
+    <section id="discover" class="py-32 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20">
+                <div>
+                    <h2 class="font-brand text-3xl mb-4">THE OLFACTIVE <br>LIBRARY</h2>
+                    <div class="h-1 w-20 bg-[#D4AF37]"></div>
+                </div>
+                <div class="flex gap-4 mt-8 md:mt-0">
+                    <button onclick="filter('all')" class="text-xs uppercase tracking-widest border-b border-white/20 pb-1 px-2 hover:border-[#D4AF37]">All</button>
+                    <button onclick="filter('nocturnal')" class="text-xs uppercase tracking-widest border-b border-white/20 pb-1 px-2 hover:border-[#D4AF37]">Nocturnal</button>
+                    <button onclick="filter('ethereal')" class="text-xs uppercase tracking-widest border-b border-white/20 pb-1 px-2 hover:border-[#D4AF37]">Ethereal</button>
+                </div>
+            </div>
+
+            <div id="product-container" class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Products injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="gallery" class="py-32 bg-[#050505] border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div class="grid grid-cols-2 gap-4">
+                <img src="https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=600" class="rounded-sm opacity-80" alt="Process">
+                <img src="https://images.unsplash.com/photo-1583445013765-48c220463125?auto=format&fit=crop&q=80&w=600" class="rounded-sm mt-12 opacity-80" alt="Ingredients">
+            </div>
+            <div>
+                <h3 class="font-brand text-2xl mb-8 gold-gradient">UNCOMPROMISED QUALITY</h3>
+                <p class="text-gray-500 font-light leading-loose mb-8">
+                    Each bottle of AURA is a result of 18 months of maceration. We don't rush art. We don't compromise on purity. Our perfumes contain 30% fragrance oil concentration—ensuring a trail that lingers long after you've left the room.
+                </p>
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4 border-l-2 border-[#D4AF37] pl-6 py-2">
+                        <span class="font-brand text-lg">0%</span>
+                        <span class="text-xs text-gray-500 uppercase tracking-widest">Synthetic Fixatives</span>
+                    </div>
+                    <div class="flex items-center gap-4 border-l-2 border-[#D4AF37] pl-6 py-2">
+                        <span class="font-brand text-lg">100%</span>
+                        <span class="text-xs text-gray-500 uppercase tracking-widest">Vegan & Cruelty Free</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="concierge" class="bg-black pt-32 pb-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="font-brand text-2xl mb-8">AURA</div>
+                    <p class="text-gray-600 text-sm font-light leading-relaxed">Defining the scent of modern royalty through ancient wisdom and contemporary design.</p>
+                </div>
+                <div>
+                    <h4 class="font-brand text-[10px] text-[#D4AF37] mb-8">EXPLORE</h4>
+                    <ul class="text-gray-500 text-sm space-y-4 font-light">
+                        <li class="hover:text-white transition cursor-pointer">The Library</li>
+                        <li class="hover:text-white transition cursor-pointer">Master Perfumers</li>
+                        <li class="hover:text-white transition cursor-pointer">Private Selection</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-brand text-[10px] text-[#D4AF37] mb-8">SUPPORT</h4>
+                    <ul class="text-gray-500 text-sm space-y-4 font-light">
+                        <li class="hover:text-white transition cursor-pointer">Shipping</li>
+                        <li class="hover:text-white transition cursor-pointer">Returns</li>
+                        <li class="hover:text-white transition cursor-pointer">Personal Shopping</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-brand text-[10px] text-[#D4AF37] mb-8">CONNECT</h4>
+                    <form onsubmit="subscribe(event)" class="relative">
+                        <input type="email" placeholder="JOIN THE LIST" class="bg-transparent border-b border-white/20 w-full py-2 text-xs focus:border-[#D4AF37] outline-none">
+                        <button class="absolute right-0 top-2 text-[#D4AF37]"><i class="fa-solid fa-arrow-right"></i></button>
+                    </form>
+                    <div class="flex gap-6 mt-8 text-gray-600">
+                        <i class="fa-brands fa-instagram hover:text-white cursor-pointer"></i>
+                        <i class="fa-brands fa-tiktok hover:text-white cursor-pointer"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-600 tracking-widest border-t border-white/5 pt-8">
+                <p>&copy; 2025 AURA FRAGRANCES. DEVELOPED BY SENTERNET TECHNOLOGIES.</p>
+                <div class="flex gap-8 mt-4 md:mt-0">
+                    <span>PRIVACY</span>
+                    <span>LEGAL</span>
+                    <span>COOKIES</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bag Toast -->
+    <div id="bag-alert" class="fixed bottom-10 right-10 bg-[#D4AF37] text-black px-8 py-4 font-bold text-xs uppercase tracking-widest transform translate-y-32 transition-transform duration-500 z-[100]">
+        Added to Selection
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: 'Obsidian Moon', type: 'nocturnal', price: 210, img: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=600' },
+            { id: 2, name: 'Solaris', type: 'ethereal', price: 185, img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=600' },
+            { id: 3, name: 'Ether Drift', type: 'ethereal', price: 195, img: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=600' },
+            { id: 4, name: 'Cipher Oud', type: 'nocturnal', price: 240, img: 'https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=600' },
+            { id: 5, name: 'Silk Ghost', type: 'ethereal', price: 170, img: 'https://images.unsplash.com/photo-1583445013765-48c220463125?auto=format&fit=crop&q=80&w=600' },
+            { id: 6, name: 'Vesper Rose', type: 'nocturnal', price: 205, img: 'https://images.unsplash.com/photo-1615484477778-ca3b77942c23?auto=format&fit=crop&q=80&w=600' }
+        ];
+
+        function render(list) {
+            const container = document.getElementById('product-container');
+            container.innerHTML = list.map(p => `
+                <div class="product-card group border border-white/5 p-6 bg-[#0c0c0c]">
+                    <div class="aspect-[3/4] overflow-hidden mb-6 relative">
+                        <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                             <button onclick="addToBag()" class="bg-white text-black px-6 py-3 text-[10px] font-bold tracking-widest uppercase hover:bg-[#D4AF37] transition">Quick Add</button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[9px] text-[#D4AF37] tracking-[0.3em] uppercase mb-2">${p.type}</p>
+                            <h3 class="font-brand text-sm group-hover:text-[#D4AF37] transition">${p.name}</h3>
+                        </div>
+                        <span class="text-sm font-light">$${p.price}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filter(type) {
+            if (type === 'all') render(products);
+            else render(products.filter(p => p.type === type));
+        }
+
+        function addToBag() {
+            const alert = document.getElementById('bag-alert');
+            const dot = document.getElementById('cart-dot');
+            dot.classList.remove('hidden');
+            alert.classList.remove('translate-y-32');
+            setTimeout(() => alert.classList.add('translate-y-32'), 2000);
+        }
+
+        function subscribe(e) {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            input.value = "WELCOME TO THE INNER CIRCLE";
+            input.disabled = true;
+        }
+
+        window.onload = () => render(products);
+    </script>
+</body>
+</html>
