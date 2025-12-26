@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRIS | Ethereal Fragrances</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500;700&family=Montserrat:wght@200;400&display=swap');
+        
+        :root {
+            --royal-purple: #2D0B5A;
+            --electric-violet: #8F00FF;
+            --silver: #E2E8F0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #05020a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .purple-gradient {
+            background: linear-gradient(135deg, #2D0B5A 0%, #8F00FF 100%);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #e2e8f0, #8F00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-blur {
+            background: rgba(5, 2, 10, 0.7);
+            backdrop-filter: blur(15px);
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .scent-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(143, 0, 255, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .scent-card:hover {
+            border-color: rgba(143, 0, 255, 0.5);
+            background: rgba(143, 0, 255, 0.05);
+            box-shadow: 0 0 30px rgba(143, 0, 255, 0.2);
+        }
+
+        .purple-glow {
+            filter: drop-shadow(0 0 15px rgba(143, 0, 255, 0.4));
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 nav-blur border-b border-purple-900/30">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="serif text-3xl font-light tracking-[0.3em] text-gradient">IRIS</div>
+            
+            <div class="hidden md:flex space-x-10 text-[10px] uppercase tracking-[0.4em] font-light">
+                <a href="#home" class="hover:text-purple-400 transition">Atelier</a>
+                <a href="#collection" class="hover:text-purple-400 transition">Scents</a>
+                <a href="#philosophy" class="hover:text-purple-400 transition">Essence</a>
+                <a href="#contact" class="hover:text-purple-400 transition">Connect</a>
+            </div>
+
+            <div class="flex items-center space-x-6 text-sm">
+                <i class="fa-solid fa-moon cursor-pointer"></i>
+                <div class="relative cursor-pointer" onclick="updateCart()">
+                    <i class="fa-solid fa-vial"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 text-[8px] bg-purple-600 px-1 rounded-full">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center text-center px-4">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-30"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#05020a] via-transparent to-[#05020a]"></div>
+        
+        <div class="relative z-10 max-w-4xl">
+            <h2 class="serif text-lg tracking-[0.5em] text-purple-400 mb-6 uppercase">The Violet Hour</h2>
+            <h1 class="serif text-6xl md:text-9xl font-light mb-8 leading-tight text-white">
+                Celestial <br> <span class="italic font-normal text-gradient">Alchemy</span>
+            </h1>
+            <p class="text-gray-400 font-light tracking-widest text-sm max-w-xl mx-auto mb-12 leading-relaxed">
+                Capturing the fleeting moments between twilight and dawn. Iris creates fragrances that exist in the space between dreams and reality.
+            </p>
+            <div class="flex justify-center gap-8">
+                <a href="#collection" class="px-12 py-4 bg-white/5 border border-purple-500/30 hover:bg-purple-600 hover:text-white transition-all duration-500 uppercase text-[10px] tracking-[0.3em]">Explore Range</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Collection -->
+    <section id="collection" class="py-32 bg-[#05020a]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-24 border-b border-purple-900/20 pb-10">
+                <div class="text-center md:text-left">
+                    <h3 class="serif text-4xl mb-2">The Iris Vault</h3>
+                    <p class="text-purple-400 text-[10px] tracking-[0.4em] uppercase">Signature Parfum Extracts</p>
+                </div>
+                <div class="flex gap-8 mt-6 md:mt-0 text-[10px] uppercase tracking-widest text-gray-500">
+                    <button class="text-white border-b border-purple-500">All</button>
+                    <button class="hover:text-purple-400 transition">Floral</button>
+                    <button class="hover:text-purple-400 transition">Spiced</button>
+                    <button class="hover:text-purple-400 transition">Deep</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                <!-- Scent 1 -->
+                <div class="scent-card p-8 group">
+                    <div class="relative aspect-[3/4] mb-8 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 purple-glow" alt="Scent">
+                        <div class="absolute inset-0 bg-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[9px] text-purple-400 tracking-[0.5em] mb-4">EXTRACT NO. 01</p>
+                        <h4 class="serif text-2xl mb-4 group-hover:text-purple-300 transition">Purple Rain</h4>
+                        <p class="text-gray-500 text-xs font-light leading-relaxed mb-6">Lavender, White Musk, and Cold Rain.</p>
+                        <button onclick="addToCart()" class="text-[10px] tracking-[0.3em] text-white border-b border-white hover:text-purple-400 hover:border-purple-400 transition pb-1 uppercase">Select Scent</button>
+                    </div>
+                </div>
+
+                <!-- Scent 2 -->
+                <div class="scent-card p-8 group lg:mt-12">
+                    <div class="relative aspect-[3/4] mb-8 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 purple-glow" alt="Scent">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[9px] text-purple-400 tracking-[0.5em] mb-4">EXTRACT NO. 04</p>
+                        <h4 class="serif text-2xl mb-4 group-hover:text-purple-300 transition">Violet Smoke</h4>
+                        <p class="text-gray-500 text-xs font-light leading-relaxed mb-6">Dark Plum, Tobacco, and Incense.</p>
+                        <button onclick="addToCart()" class="text-[10px] tracking-[0.3em] text-white border-b border-white hover:text-purple-400 hover:border-purple-400 transition pb-1 uppercase">Select Scent</button>
+                    </div>
+                </div>
+
+                <!-- Scent 3 -->
+                <div class="scent-card p-8 group">
+                    <div class="relative aspect-[3/4] mb-8 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 purple-glow" alt="Scent">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[9px] text-purple-400 tracking-[0.5em] mb-4">EXTRACT NO. 09</p>
+                        <h4 class="serif text-2xl mb-4 group-hover:text-purple-300 transition">Nebula Dust</h4>
+                        <p class="text-gray-500 text-xs font-light leading-relaxed mb-6">Stardust, Silver Birch, and Ozone.</p>
+                        <button onclick="addToCart()" class="text-[10px] tracking-[0.3em] text-white border-b border-white hover:text-purple-400 hover:border-purple-400 transition pb-1 uppercase">Select Scent</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Brand Info -->
+    <footer id="contact" class="bg-[#020105] border-t border-purple-900/20 pt-32 pb-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 mb-32">
+                <div>
+                    <h5 class="serif text-5xl mb-10">Experience IRIS</h5>
+                    <p class="text-gray-500 font-light leading-loose text-sm max-w-md mb-12">
+                        Fragrance is the most intense form of memory. Our atelier in Aranthangi crafts unique olfactive stories for the discerning individual.
+                    </p>
+                    <div class="flex gap-10">
+                        <div>
+                            <p class="text-[8px] tracking-widest text-purple-500 uppercase mb-4">Contact</p>
+                            <p class="text-xs">+91 81900 38085</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] tracking-widest text-purple-500 uppercase mb-4">Location</p>
+                            <p class="text-xs">Aranthangi, India</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-end">
+                    <p class="text-[8px] tracking-[0.5em] text-purple-500 uppercase mb-6">Concierge</p>
+                    <a href="mailto:senternettechnologies@gmail.com" class="serif text-2xl md:text-4xl border-b border-purple-900/50 pb-4 hover:border-purple-400 transition duration-500">senternettechnologies@gmail.com</a>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center border-t border-purple-900/10 pt-10">
+                <div class="flex items-center gap-4 mb-6 md:mb-0">
+                    <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" class="w-10 h-10 rounded-full border border-purple-600 grayscale hover:grayscale-0 transition" alt="CEO">
+                    <div class="text-[10px] tracking-widest text-gray-500 uppercase">
+                        <p class="text-white">Senthilkumar</p>
+                        <p>CEO, Senternet Technologies</p>
+                    </div>
+                </div>
+                <div class="text-[9px] tracking-[0.4em] text-gray-600 uppercase text-center md:text-right">
+                    <p class="mb-2">&copy; 2025 IRIS Fragrance Lab. Crafted by <a href="https://rebrand.ly/senternet" class="text-purple-400">Senternet Technologies</a></p>
+                    <div class="flex gap-6 justify-center md:justify-end">
+                        <a href="https://instagram.com/senternet" class="hover:text-purple-400">Instagram</a>
+                        <span>WhatsApp</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Selection Message -->
+    <div id="alert" class="fixed top-10 left-1/2 -translate-x-1/2 bg-purple-600 text-white px-10 py-3 text-[10px] tracking-[0.3em] uppercase transform -translate-y-32 transition-transform duration-500 z-[100]">
+        Scent Essence Captured
+    </div>
+
+    <script>
+        let count = 0;
+        function addToCart() {
+            count++;
+            document.getElementById('cart-count').innerText = count;
+            const alert = document.getElementById('alert');
+            alert.classList.remove('-translate-y-32');
+            setTimeout(() => alert.classList.add('-translate-y-32'), 2500);
+        }
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroText = document.querySelector('#home .relative');
+            heroText.style.transform = `translateY(${scrolled * 0.3}px)`;
+        });
+    </script>
+</body>
+</html>
