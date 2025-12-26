@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALERIUS | Haute Parfumerie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@200;300;400;600&display=swap');
+        
+        :root {
+            --primary: #080808;
+            --accent: #c5a059;
+            --bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+            background-color: var(--bg);
+            color: var(--primary);
+            overflow-x: hidden;
+        }
+
+        .font-luxury {
+            font-family: 'Cinzel', serif;
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            transition: transform 0.4s ease;
+        }
+
+        .hero-zoom {
+            animation: slowZoom 20s infinite alternate;
+        }
+
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.15); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-hover img {
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-hover:hover img {
+            transform: scale(1.08);
+        }
+
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="custom-cursor hidden lg:block" id="cursor"></div>
+
+    <!-- Luxury Navigation -->
+    <nav class="fixed w-full z-50 nav-glass border-b border-black/5">
+        <div class="max-w-[1500px] mx-auto px-10 h-24 flex justify-between items-center">
+            <div class="flex-1 hidden lg:flex space-x-14 text-[10px] uppercase tracking-[0.5em] font-semibold text-gray-500">
+                <a href="#atelier" class="hover:text-[#c5a059] transition">Atelier</a>
+                <a href="#vault" class="hover:text-[#c5a059] transition">The Vault</a>
+            </div>
+
+            <div class="flex-shrink-0">
+                <h1 class="font-luxury text-4xl tracking-widest font-bold">VALERIUS</h1>
+                <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-[#c5a059] to-transparent mt-1"></div>
+            </div>
+
+            <div class="flex-1 flex justify-end items-center space-x-12">
+                <div class="hidden lg:flex space-x-14 text-[10px] uppercase tracking-[0.5em] font-semibold text-gray-500">
+                    <a href="#heritage" class="hover:text-[#c5a059] transition">Heritage</a>
+                    <a href="#concierge" class="hover:text-[#c5a059] transition">Concierge</a>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <i class="fa-solid fa-magnifying-glass text-sm cursor-pointer hover:text-[#c5a059]"></i>
+                    <div class="relative cursor-pointer" onclick="toggleSelection()">
+                        <i class="fa-solid fa-leaf text-sm"></i>
+                        <span id="bag-count" class="absolute -top-2 -right-2 bg-[#c5a059] text-white text-[7px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Immersive Hero -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=2000" 
+                 alt="Main Scent" class="w-full h-full object-cover hero-zoom">
+            <div class="absolute inset-0 bg-white/20"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-white/10"></div>
+        </div>
+        
+        <div class="relative z-10 text-center px-6">
+            <p class="uppercase tracking-[1.2em] text-[9px] mb-8 font-semibold text-gray-600 animate-pulse">L'Essence de l'Olympe</p>
+            <h2 class="font-luxury text-7xl md:text-[130px] leading-none mb-10 reveal">Imperial <br><span class="gold-text italic">Nectar</span></h2>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-10 reveal">
+                <button class="bg-black text-white px-14 py-5 text-[10px] tracking-[0.4em] font-bold uppercase hover:bg-[#c5a059] transition-colors duration-500">Discover Collection</button>
+                <button class="px-14 py-5 border border-black/10 text-[10px] tracking-[0.4em] font-bold uppercase hover:bg-black hover:text-white transition-all duration-500">The Private Salon</button>
+            </div>
+        </div>
+
+        <div class="absolute bottom-12 flex flex-col items-center gap-4 text-black/30">
+            <div class="w-[1px] h-16 bg-gradient-to-b from-transparent via-[#c5a059] to-transparent"></div>
+            <span class="text-[8px] uppercase tracking-[0.8em]">Scroll</span>
+        </div>
+    </section>
+
+    <!-- The Atelier Philosophy -->
+    <section id="atelier" class="py-48 bg-white overflow-hidden">
+        <div class="max-w-[1400px] mx-auto px-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-32 items-center">
+                <div class="lg:col-span-5 reveal">
+                    <span class="text-[#c5a059] text-[10px] tracking-[0.5em] font-bold mb-6 block uppercase">Our Legacy</span>
+                    <h3 class="font-luxury text-6xl mb-12 leading-tight">Beyond the <br><span class="italic font-normal">Senses</span></h3>
+                    <p class="text-gray-400 font-light leading-[2.2] text-lg mb-12">
+                        For three centuries, Valerius has defined the olfactive identity of world leaders and dreamers. We don't just blend oils; we preserve memories in hand-blown crystal.
+                    </p>
+                    <div class="grid grid-cols-2 gap-12">
+                        <div>
+                            <p class="font-luxury text-3xl mb-2 italic">127</p>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400">Natural Accords</p>
+                        </div>
+                        <div>
+                            <p class="font-luxury text-3xl mb-2 italic">18mo</p>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400">Aging Process</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 reveal">
+                    <div class="relative group">
+                        <img src="https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=1200" 
+                             class="w-full h-[650px] object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" alt="Process">
+                        <div class="absolute -bottom-10 -left-10 bg-[#c5a059] p-12 text-white hidden md:block">
+                            <p class="font-luxury text-2xl italic mb-2">Master Perfumer</p>
+                            <p class="text-[9px] uppercase tracking-widest opacity-80 font-bold">Elias Valerius</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Vault (Collection) -->
+    <section id="vault" class="py-48 bg-[#fafafa]">
+        <div class="max-w-[1600px] mx-auto px-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-32 reveal">
+                <div>
+                    <h4 class="font-luxury text-8xl md:text-[180px] opacity-[0.03] absolute -top-24 left-0 select-none">EDITION</h4>
+                    <h4 class="font-luxury text-6xl relative z-10">The Private <br><span class="italic">Archives</span></h4>
+                </div>
+                <div class="flex gap-12 mt-12 md:mt-0 text-[10px] tracking-[0.6em] font-bold uppercase text-gray-400">
+                    <button onclick="filter('all')" class="hover:text-[#c5a059] transition border-b border-transparent hover:border-[#c5a059] pb-2">All</button>
+                    <button onclick="filter('parfum')" class="hover:text-[#c5a059] transition border-b border-transparent hover:border-[#c5a059] pb-2">Parfum</button>
+                    <button onclick="filter('cologne')" class="hover:text-[#c5a059] transition border-b border-transparent hover:border-[#c5a059] pb-2">Cologne</button>
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-24">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="heritage" class="relative h-[90vh] flex items-center justify-center">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=2000" 
+                 class="w-full h-full object-cover fixed-bg">
+            <div class="absolute inset-0 bg-black/60"></div>
+        </div>
+        <div class="relative z-10 text-center max-w-4xl px-8 reveal">
+            <h5 class="font-luxury text-5xl md:text-8xl italic text-white mb-12 leading-tight">"A fragrance is the <br>shadow of the soul."</h5>
+            <div class="flex justify-center">
+                <div class="h-[1px] w-24 bg-[#c5a059]"></div>
+            </div>
+            <p class="text-white/40 uppercase tracking-[1em] text-[9px] mt-12">Elias Valerius, 1724</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="concierge" class="bg-white pt-48 pb-20 border-t border-black/5">
+        <div class="max-w-[1500px] mx-auto px-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-32 mb-32">
+                <div class="lg:col-span-5">
+                    <h6 class="font-luxury text-4xl mb-10">Inner Circle</h6>
+                    <p class="text-gray-400 font-light mb-16 text-sm leading-relaxed max-w-sm">Privileged access to limited editions and invitation-only atelier viewings.</p>
+                    <form onsubmit="subscribe(event)" class="relative">
+                        <input type="email" placeholder="Enter your email" class="w-full bg-transparent border-b border-gray-200 py-6 text-[10px] tracking-[0.5em] outline-none focus:border-[#c5a059] transition uppercase">
+                        <button class="absolute right-0 top-6 text-[#c5a059] text-[10px] font-bold tracking-[0.5em] uppercase hover:tracking-[0.8em] transition-all">Submit</button>
+                    </form>
+                </div>
+                <div class="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-16">
+                    <div>
+                        <p class="text-[9px] tracking-[0.5em] uppercase text-[#c5a059] mb-10 font-bold">The Maison</p>
+                        <ul class="space-y-6 text-[11px] tracking-widest text-gray-500 uppercase font-medium">
+                            <li class="hover:text-black transition cursor-pointer">Heritage</li>
+                            <li class="hover:text-black transition cursor-pointer">Manifesto</li>
+                            <li class="hover:text-black transition cursor-pointer">Locations</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-[9px] tracking-[0.5em] uppercase text-[#c5a059] mb-10 font-bold">Services</p>
+                        <ul class="space-y-6 text-[11px] tracking-widest text-gray-500 uppercase font-medium">
+                            <li class="hover:text-black transition cursor-pointer">Bespoke Scent</li>
+                            <li class="hover:text-black transition cursor-pointer">Gifting</li>
+                            <li class="hover:text-black transition cursor-pointer">Concierge</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-[9px] tracking-[0.5em] uppercase text-[#c5a059] mb-10 font-bold">Legal</p>
+                        <ul class="space-y-6 text-[11px] tracking-widest text-gray-500 uppercase font-medium">
+                            <li class="hover:text-black transition cursor-pointer">Privacy</li>
+                            <li class="hover:text-black transition cursor-pointer">Shipping</li>
+                            <li class="hover:text-black transition cursor-pointer">Ethics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center text-[9px] tracking-[0.5em] text-gray-300 border-t border-gray-50 pt-16">
+                <div class="flex items-center space-x-6 mb-8 md:mb-0">
+                    <span class="font-luxury text-2xl text-black tracking-normal">VALERIUS</span>
+                    <span class="hidden md:inline">|</span>
+                    <span>GENEVE</span>
+                    <span>LONDON</span>
+                    <span>DUBAI</span>
+                </div>
+                <p>&copy; 2025 VALERIUS HAUTE PARFUMERIE. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bag Toast -->
+    <div id="bag-toast" class="fixed bottom-10 right-10 bg-black text-white px-12 py-8 shadow-2xl transform translate-y-48 transition-transform duration-700 z-[100] border-t-2 border-[#c5a059]">
+        <div class="flex items-center gap-8">
+            <i class="fa-solid fa-check text-[#c5a059]"></i>
+            <div>
+                <p class="text-[9px] tracking-[0.5em] text-gray-500 mb-2 uppercase">Selection Confirmed</p>
+                <p class="font-luxury text-lg italic tracking-widest font-light">Elegance acquired.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: 'Royal Oud', type: 'parfum', price: 420, img: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800' },
+            { id: 2, name: 'Silver Smoke', type: 'cologne', price: 280, img: 'https://images.unsplash.com/photo-1583445013765-48c220463125?auto=format&fit=crop&q=80&w=800' },
+            { id: 3, name: 'Ivory Bloom', type: 'parfum', price: 350, img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800' },
+            { id: 4, name: 'Amber Night', type: 'parfum', price: 390, img: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=800' },
+            { id: 5, name: 'Oceanic Dust', type: 'cologne', price: 240, img: 'https://images.unsplash.com/photo-1557170334-a7c3d4031990?auto=format&fit=crop&q=80&w=800' },
+            { id: 6, name: 'Vintage Rose', type: 'parfum', price: 450, img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=800' },
+            { id: 7, name: 'Onyx Leather', type: 'parfum', price: 310, img: 'https://images.unsplash.com/photo-1592914610354-fd354ea45e48?auto=format&fit=crop&q=80&w=800' },
+            { id: 8, name: 'Golden Mist', type: 'cologne', price: 215, img: 'https://images.unsplash.com/photo-1615484477778-ca3b77942c23?auto=format&fit=crop&q=80&w=800' }
+        ];
+
+        function renderProducts(items) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = items.map(item => `
+                <div class="product-hover group reveal">
+                    <div class="relative aspect-[3/4] overflow-hidden mb-10 bg-gray-50">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover grayscale opacity-90 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000">
+                        <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button onclick="addToBag()" class="px-10 py-4 bg-white text-black text-[10px] font-bold tracking-[0.5em] uppercase shadow-xl hover:bg-black hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-500">Selection +</button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[9px] text-[#c5a059] tracking-[0.5em] uppercase mb-3 font-bold">${item.type}</p>
+                            <h5 class="font-luxury text-2xl group-hover:italic transition-all duration-500">${item.name}</h5>
+                        </div>
+                        <span class="text-sm font-light text-gray-300 tracking-widest">$${item.price}</span>
+                    </div>
+                </div>
+            `).join('');
+            initReveals();
+        }
+
+        function filter(type) {
+            if(type === 'all') renderProducts(products);
+            else renderProducts(products.filter(i => i.type === type));
+        }
+
+        let selectionCount = 0;
+        function addToBag() {
+            selectionCount++;
+            document.getElementById('bag-count').innerText = selectionCount;
+            const toast = document.getElementById('bag-toast');
+            toast.classList.remove('translate-y-48');
+            setTimeout(() => toast.classList.add('translate-y-48'), 4000);
+        }
+
+        function subscribe(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "Accepted";
+            e.target.reset();
+        }
+
+        function initReveals() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        window.onload = () => {
+            renderProducts(products);
+            initReveals();
+        };
+    </script>
+</body>
+</html>
