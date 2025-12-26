@@ -1,122 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senternet Premium Webapp Ecosystem | Aranthangi's Finest</title>
+    <title>Senternet Marketplace | Premium Templates</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/phosphor-icons@2.0.8/css/regular/style.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <title>Senternet Technologies | Best Web Design & Digital Marketing in Aranthangi</title>
-    <meta name="description" content="Senternet Technologies in Aranthangi offers expert Web Design, Graphic Design, and Digital Marketing services. Led by CEO Senthilkumar, we build high-performance SEO websites.">
-    <meta name="keywords" content="Senternet Technologies, Web Design Aranthangi, Digital Marketing Pudukkottai, SEO Services, Senthilkumar CEO, Graphic Design Aranthangi">
-    <meta name="author" content="Senthilkumar (CEO)">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rebrand.ly/senternet">
-    <meta property="og:title" content="Senternet Technologies - Digital Growth Experts">
-    <meta property="og:description" content="Transform your business with Senternet Technologies. Expert web development and digital marketing in Aranthangi.">
-    <meta property="og:image" content="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://rebrand.ly/senternet">
-    <meta property="twitter:title" content="Senternet Technologies - Web & Digital Marketing">
-    <meta property="twitter:description" content="High-quality SEO based webapps and marketing strategies from Aranthangi's finest tech team.">
-    
-    <!-- JSON-LD Schema Markup (Critical for SEO) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "SENTERNET TECHNOLOGIES",
-      "image": "https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp",
-      "url": "https://rebrand.ly/senternet",
-      "telephone": "+918190038085",
-      "email": "senternettechnologies@gmail.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Main Road",
-        "addressLocality": "Aranthangi",
-        "addressRegion": "TN",
-        "postalCode": "614616",
-        "addressCountry": "IN"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 10.1614,
-        "longitude": 78.9959
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-        ],
-        "opens": "09:00",
-        "closes": "21:00"
-      },
-      "sameAs": [
-        "https://instagram.com/senternet"
-      ]
-    }
-    </script>
-
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #6366f1;
+            --accent: #f59e0b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+
         .glass {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
@@ -124,282 +27,235 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .hero-gradient {
-            background: radial-gradient(circle at top right, #e0e7ff 0%, #ffffff 50%, #f1f5f9 100%);
-            min-height: 50vh; /* Reduced to 50% as requested */
-        }
-
         .card-shimmer {
             position: relative;
             overflow: hidden;
         }
+
         .card-shimmer::after {
             content: "";
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            transition: 0.8s;
-            pointer-events: none;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
         }
+
         .card-shimmer:hover::after {
             left: 100%;
-            top: 100%;
         }
 
         .featured-border {
             border: 2px solid transparent;
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(45deg, #4f46e5, #ec4899, #f59e0b) border-box;
-            animation: border-glow 4s linear infinite;
+            background-image: linear-gradient(white, white), linear-gradient(to right, #6366f1, #a855f7);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
         }
 
-        @keyframes border-glow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .iframe-wrapper {
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
         }
-        .template-card:hover .iframe-wrapper {
-            transform: scale(1.05);
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
         }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #e0e7ff 0%, transparent 50%),
+                        radial-gradient(circle at bottom left, #fae8ff 0%, transparent 50%);
         }
-        .animate-marquee {
-            display: flex;
-            width: 200%;
-            animation: marquee 30s linear infinite;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 20px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
+<body class="text-slate-900 leading-relaxed">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-[100] glass border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="https://rebrand.ly/senternet" target="_blank" class="flex items-center gap-4 group">
-                <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:rotate-12 transition-transform">
-                    <i class="ph ph-lightning text-white text-2xl"></i>
+    <!-- Top Navigation -->
+    <nav class="sticky top-0 z-50 glass border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3">
+                    <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" class="w-10 h-10 rounded-full border-2 border-indigo-500 shadow-sm" alt="CEO">
+                    <div>
+                        <h1 class="text-xl font-extrabold tracking-tight text-slate-900">SENTERNET<span class="text-indigo-600">.</span></h1>
+                        <p class="text-[10px] uppercase tracking-tighter font-bold text-slate-400">Aranthangi's Tech Hub</p>
+                    </div>
                 </div>
-                <div>
-                    <span class="block text-xl font-bold tracking-tight text-slate-900">SENTERNET</span>
-                    <span class="block text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Technologies • Aranthangi</span>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="https://rebrand.ly/senternet" target="_blank" class="text-sm font-semibold hover:text-indigo-600 transition">Official Site</a>
+                    <button onclick="openConsultation()" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition flex items-center gap-2">
+                        <i class="ph ph-chat-circle-dots"></i> Hire Us
+                    </button>
                 </div>
-            </a>
-
-            <div class="hidden md:flex items-center gap-8 font-semibold text-sm text-slate-600">
-                <a href="#featured" class="hover:text-indigo-600 transition">Featured</a>
-                <a href="#all-templates" class="hover:text-indigo-600 transition">Marketplace</a>
-                <a href="https://wa.me/918190038085" class="bg-slate-900 text-white px-6 py-3 rounded-full hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2">
-                    <i class="ph ph-chat-circle-dots"></i> Hire Senthil
-                </a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="pt-32 pb-16 px-6 hero-gradient relative overflow-hidden flex items-center">
-        <div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-indigo-100 rounded-full blur-[120px] opacity-50"></div>
-        
-        <div class="max-w-5xl mx-auto text-center relative z-10">
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-slate-200 mb-6 animate-bounce">
-                <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                <span class="text-xs font-bold text-slate-600 tracking-wide uppercase">Elite Web Solutions</span>
-            </div>
-            
-            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-6">
-                Premium Ecosystem for <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500">Digital Dominance.</span>
-            </h1>
-            
-            <p class="text-base text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-                Explore 30+ high-performance web applications and interactive tools designed by <strong>Senternet Technologies</strong> to scale your business.
+    <section class="hero-gradient py-12 md:py-20 border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <span class="inline-block px-4 py-1.5 mb-6 bg-white rounded-full text-xs font-bold text-indigo-600 shadow-sm border border-indigo-50">🚀 HIGH CONVERSION TEMPLATES</span>
+            <h2 class="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
+                Launch your business <br> in <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">record time.</span>
+            </h2>
+            <p class="max-w-2xl mx-auto text-slate-500 text-lg mb-10 font-medium">
+                Premium digital assets and full-stack solutions built by <span class="text-indigo-600 font-bold">Senternet Technologies</span>. Custom designs, ready to deploy.
             </p>
 
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="#all-templates" class="px-7 py-3.5 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 hover:scale-105 transition shadow-xl shadow-indigo-200">
-                    Browse Marketplace
-                </a>
-                <button onclick="openRegisterModal()" class="px-7 py-3.5 bg-white text-slate-900 border border-slate-200 rounded-2xl font-bold hover:bg-slate-50 transition">
-                    Custom Project
-                </button>
+            <div class="max-w-xl mx-auto relative group">
+                <i class="ph ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-indigo-500 transition-colors"></i>
+                <input type="text" id="main-search" oninput="handleSearch()" placeholder="Search from 32+ templates..." 
+                    class="w-full pl-14 pr-6 py-5 bg-white rounded-3xl border border-slate-200 shadow-xl focus:ring-4 focus:ring-indigo-100 focus:outline-none transition-all text-lg font-medium">
             </div>
         </div>
     </section>
 
-
-    <!-- Marquee Banner -->
-    <div class="bg-indigo-600 py-3 overflow-hidden border-y border-indigo-500">
-        <div class="animate-marquee items-center text-white font-bold uppercase tracking-widest text-[10px]">
-            <span class="px-6">🚀 Custom Web Solutions</span>
-            <span class="px-6">💎 Premium UI Assets</span>
-            <span class="px-6">📱 Mobile Responsive Designs</span>
-            <span class="px-6">🎯 SEO Optimized Templates</span>
-            <span class="px-6">🛠️ 24/7 Support from Aranthangi</span>
-            <span class="px-6">🚀 Custom Web Solutions</span>
-            <span class="px-6">💎 Premium UI Assets</span>
-            <span class="px-6">📱 Mobile Responsive Designs</span>
-            <span class="px-6">🎯 SEO Optimized Templates</span>
-            <span class="px-6">🛠️ 24/7 Support from Aranthangi</span>
-        </div>
-    </div>
-
-    <!-- Featured Spotlight -->
-    <section id="featured" class="py-20 px-6 max-w-7xl mx-auto">
-        <div class="mb-12">
-            <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                <i class="ph-fill ph-star text-amber-400 text-4xl"></i> Featured Masterpieces
-            </h2>
-            <p class="text-slate-500 mt-2">Elite tools curated for maximum impact.</p>
-        </div>
+    <!-- Content Area -->
+    <main class="max-w-7xl mx-auto px-4 py-12">
         
-        <div id="featured-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Featured items injected here -->
-        </div>
-    </section>
-
-    <!-- Marketplace Section -->
-    <section id="all-templates" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col lg:flex-row gap-12">
-                
-                <!-- Sidebar -->
-                <aside class="lg:w-72 shrink-0">
-                    <div class="sticky top-28 space-y-8">
-                        <div>
-                            <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <i class="ph ph-magnifying-glass"></i> Quick Search
-                            </h3>
-                            <input type="text" id="main-search" oninput="handleSearch()" placeholder="Search apps..." 
-                                   class="w-full bg-slate-100 border-none rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 transition">
-                        </div>
-
-                        <div>
-                            <h3 class="font-bold text-slate-900 mb-4">Categories</h3>
-                            <div id="category-chips" class="flex flex-wrap lg:flex-col gap-2">
-                                <!-- Chips injected here -->
-                            </div>
-                        </div>
-
-                        <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
-                            <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" 
-                                 alt="Senthilkumar CEO" class="w-16 h-16 rounded-2xl shadow-lg mb-4 object-cover border-2 border-white">
-                            <h4 class="font-bold text-indigo-900">Need Custom Work?</h4>
-                            <p class="text-sm text-indigo-700/80 mb-4">Talk directly to Senthil for your specialized web requirements.</p>
-                            <a href="https://wa.me/918190038085" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-center block font-bold text-sm hover:bg-indigo-700">Chat Now</a>
-                        </div>
-                    </div>
-                </aside>
-
-                <!-- Grid -->
-                <div class="flex-grow">
-                    <div id="template-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- Standard cards injected here -->
-                    </div>
-                    
-                    <div id="no-results" class="hidden py-20 text-center">
-                        <i class="ph ph-mask-sad text-6xl text-slate-300 mb-4"></i>
-                        <h3 class="text-xl font-bold text-slate-900">No matches found</h3>
-                        <p class="text-slate-500">Try checking your spelling or selecting a different category.</p>
-                    </div>
-                </div>
+        <!-- Category Filter -->
+        <div class="mb-12">
+            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Browse by Category</h4>
+            <div id="category-chips" class="flex flex-wrap gap-2">
+                <!-- Chips injected here -->
             </div>
         </div>
-    </section>
+
+        <!-- Marketplace Grid -->
+        <div id="market-section">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="ph ph-sparkle text-indigo-500"></i> Full Project Portfolio
+                </h3>
+                <span id="result-count" class="text-sm font-bold text-slate-400"></span>
+            </div>
+            
+            <div id="template-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Cards injected here -->
+            </div>
+
+            <!-- No Results -->
+            <div id="no-results" class="hidden py-20 text-center">
+                <div class="text-6xl mb-4">🔍</div>
+                <h4 class="text-xl font-bold text-slate-800">No templates found</h4>
+                <p class="text-slate-500">Try adjusting your search or filters.</p>
+            </div>
+        </div>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-white py-16 px-6">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div class="col-span-1 md:col-span-2">
-                <a href="https://rebrand.ly/senternet" class="text-2xl font-black tracking-tighter mb-6 block">SENTERNET TECHNOLOGIES</a>
-                <p class="text-slate-400 max-w-md leading-relaxed mb-8">
-                    Established in Aranthangi. We bridge the gap between imagination and digital reality. Specializing in high-end web design and graphic strategies.
-                </p>
-                <div class="flex gap-4">
-                    <a href="https://instagram.com/senternet" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-indigo-600 transition"><i class="ph ph-instagram-logo"></i></a>
-                    <a href="https://wa.me/918190038085" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-green-600 transition"><i class="ph ph-whatsapp-logo"></i></a>
-                    <a href="mailto:senternettechnologies@gmail.com" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-indigo-600 transition"><i class="ph ph-envelope"></i></a>
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-2">
+                    <h2 class="text-2xl font-black text-slate-900 mb-4">SENTERNET TECHNOLOGIES</h2>
+                    <p class="text-slate-500 max-w-sm mb-6 font-medium">Expert website design, digital marketing, and software development services based in Aranthangi.</p>
+                    <div class="flex gap-4">
+                        <a href="https://instagram.com/senternet" target="_blank" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white transition"><i class="ph ph-instagram-logo"></i></a>
+                        <a href="https://wa.me/918190038085" target="_blank" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white transition"><i class="ph ph-whatsapp-logo"></i></a>
+                        <a href="mailto:senternettechnologies@gmail.com" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white transition"><i class="ph ph-envelope"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4">Contact Info</h4>
+                    <ul class="space-y-3 text-sm text-slate-500 font-medium">
+                        <li class="flex items-center gap-2"><i class="ph ph-map-pin text-indigo-500"></i> Aranthangi, Pudukkottai</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-whatsapp-logo text-green-500"></i> +91 81900 38085</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-envelope text-red-500"></i> senternettechnologies@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4">Our Core Team</h4>
+                    <p class="text-sm text-slate-500 font-medium leading-relaxed">
+                        Senthilkumar (CEO), Kumar (Design), Sathish (Graphics), Swetha (Marketing), Shanthi (Digital), Santhosh (Web), Anitha (Backend), Surya (Dev), Saran (Social), Fasman (Business), Arun (AutoCAD), Siva (Products).
+                    </p>
                 </div>
             </div>
-            <div>
-                <h4 class="font-bold text-lg mb-6">Our Services</h4>
-                <ul class="space-y-4 text-slate-400 text-sm">
-                    <li>Web Development</li>
-                    <li>Graphic Design</li>
-                    <li>AppScript Solutions</li>
-                    <li>Digital Marketing</li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold text-lg mb-6">Get in Touch</h4>
-                <div class="space-y-4 text-sm">
-                    <p class="flex items-center gap-3 text-slate-400"><i class="ph ph-phone text-indigo-400"></i> +91 81900 38085</p>
-                    <p class="flex items-center gap-3 text-slate-400"><i class="ph ph-map-pin text-indigo-400"></i> Aranthangi, TN, India</p>
+            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">© 2024 Senternet Technologies. All Rights Reserved.</p>
+                <div class="flex items-center gap-2 bg-indigo-50 px-4 py-2 rounded-full">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-black text-indigo-600 uppercase">System Status: Active</span>
                 </div>
             </div>
-        </div>
-        <div class="max-w-7xl mx-auto border-t border-slate-800 mt-16 pt-8 text-center text-xs text-slate-500">
-            &copy; 2025 Senternet Technologies. Powered by Senthilkumar K (CEO).
         </div>
     </footer>
 
     <!-- Preview Modal -->
-    <div id="preview-modal" class="fixed inset-0 z-[200] hidden bg-white flex flex-col">
-        <div class="h-16 px-6 border-b flex items-center justify-between bg-white shadow-sm">
-            <div class="flex items-center gap-4">
-                <button onclick="closePreview()" class="text-slate-500 hover:text-slate-900 transition"><i class="ph ph-arrow-left text-2xl"></i></button>
-                <h3 id="modal-title" class="font-bold text-slate-900">Preview</h3>
+    <div id="preview-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
+        <div class="absolute inset-4 md:inset-10 bg-white rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-white/20">
+            <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-white">
+                <div class="flex items-center gap-3">
+                    <button onclick="closePreview()" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition">
+                        <i class="ph ph-x text-lg"></i>
+                    </button>
+                    <div>
+                        <h4 id="modal-title" class="font-bold text-slate-900 leading-none">Template Preview</h4>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Senternet Interactive Preview</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="refreshPreview()" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="ph ph-arrows-clockwise"></i> Refresh
+                    </button>
+                    <button id="modal-buy-btn" class="px-6 py-2 bg-green-500 text-white rounded-xl text-xs font-bold hover:bg-green-600 transition shadow-lg shadow-green-100 flex items-center gap-2">
+                        <i class="ph ph-shopping-cart-simple"></i> Buy Now
+                    </button>
+                </div>
             </div>
-            <div class="flex items-center gap-4">
-                <button onclick="refreshPreview()" class="p-2 hover:bg-slate-100 rounded-lg text-slate-600"><i class="ph ph-arrow-clockwise"></i></button>
-                <a id="modal-buy-btn" href="#" class="px-5 py-2 bg-green-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-100">Buy License</a>
+            <div class="flex-grow bg-slate-50 relative">
+                <div id="preview-loader" class="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        <span class="text-xs font-bold text-slate-400 animate-pulse">Loading Live Frame...</span>
+                    </div>
+                </div>
+                <iframe id="preview-frame" class="w-full h-full border-none"></iframe>
             </div>
-        </div>
-        <div class="flex-grow bg-slate-100 relative">
-            <div id="preview-loader" class="absolute inset-0 flex items-center justify-center bg-white z-10 hidden">
-                <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-            </div>
-            <iframe id="preview-frame" class="w-full h-full border-0" src=""></iframe>
         </div>
     </div>
 
-    <!-- Consulting Modal -->
-    <div id="reg-modal" class="fixed inset-0 z-[300] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
-        <div class="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl relative">
-            <button onclick="closeRegisterModal()" class="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><i class="ph ph-x text-2xl"></i></button>
-            <h3 class="text-3xl font-extrabold text-slate-900 mb-2">Start a Project</h3>
-            <p class="text-slate-500 mb-8">Share your requirements with Senthil.</p>
-            <form onsubmit="handleConsultation(event)" class="space-y-5">
-                <input type="text" id="c-name" placeholder="Full Name" required class="w-full p-4 bg-slate-100 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500">
-                <input type="text" id="c-location" placeholder="Your Location" required class="w-full p-4 bg-slate-100 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500">
-                <textarea id="c-msg" placeholder="Project details..." rows="3" class="w-full p-4 bg-slate-100 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500"></textarea>
-                <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 flex items-center justify-center gap-3 hover:bg-indigo-700">
-                    <i class="ph ph-paper-plane-tilt"></i> Send Request
+    <!-- Consultation Modal -->
+    <div id="consultation-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onclick="closeConsultation()"></div>
+        <div class="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 border border-white/20">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
+                    <i class="ph-fill ph-rocket-launch"></i>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900">Project Inquiry</h3>
+                <p class="text-slate-500 text-sm font-medium">Let's build something extraordinary together.</p>
+            </div>
+            <form id="consult-form" onsubmit="handleConsultation(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Your Name</label>
+                    <input type="text" id="c-name" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:outline-none transition-all font-medium">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Project Idea</label>
+                    <textarea id="c-msg" rows="3" required placeholder="Tell us what you need..." class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:outline-none transition-all font-medium resize-none"></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition flex items-center justify-center gap-2">
+                    Send to WhatsApp <i class="ph ph-paper-plane-tilt"></i>
                 </button>
             </form>
+            <button onclick="closeConsultation()" class="mt-4 w-full text-slate-400 text-xs font-bold hover:text-slate-600 transition">Maybe Later</button>
         </div>
     </div>
 
     <script>
         const WHATSAPP = "918190038085";
+        
         const templates = [
-            // User provided items
-            { id: 'bulk-sender', title: 'SMS / WhatsApp Sender PRO', url: 'sms.html', desc: '<mark>Bulk SMS / WHATSAPP Message sender Tool.</mark>', category: 'Business Tools', creator: 'Haritha', price: 98, isFeatured: true },
- { id: 'senternet-tips', title: 'senternet Tips & Freetime Uses', url: 'sentips.html', desc: '<mark>Mega Link collections - By our Online Team crews.</mark>', category: 'Senternet', creator: 'senternet Team', price: 0, isFeatured: true },
-                     { id: 'earn-daily', title: 'EarnPoint Rewards', url: 'earn1.html', desc: 'data entry job.', category: 'senternet', creator: 'senternet', price: 720, isFeatured: true },
-   { id: 'invoice-flow', title: 'Invoice Flow Generator', url: 'invoice1.html', desc: 'Enterprise-grade billing and tax calculation system.', category: 'Fintech', creator: 'Senthil', price: 1299},
+            // USER PROVIDED ORIGINAL LIST (32+ Items)
+            { id: 'bulk-sender', title: 'SMS / WhatsApp Sender PRO', url: 'sms.html', desc: 'Bulk SMS / WHATSAPP Message sender Tool for marketing.', category: 'Business Tools', creator: 'Haritha', price: 98, isFeatured: true },
+            { id: 'senternet-tips', title: 'senternet Tips & Freetime', url: 'sentips.html', desc: 'Mega Link collections - By our Online Team crews.', category: 'Senternet', creator: 'Team', price: 0, isFeatured: true },
+            { id: 'earn-daily', title: 'EarnPoint Rewards', url: 'earn1.html', desc: 'Data entry job and rewards tracking platform.', category: 'Senternet', creator: 'Senthil', price: 720 },
+            { id: 'invoice-flow', title: 'Invoice Flow Generator', url: 'invoice1.html', desc: 'Enterprise-grade billing and tax calculation system.', category: 'Fintech', creator: 'Senthil', price: 1299 },
             { id: 'haritha-donate', title: 'Haritha Donation Portal', url: 'harithadonate.html', desc: 'Clean, trust-focused charity collection platform.', category: 'Websites', creator: 'Haritha', price: 150 },
             { id: 'honey-sell', title: 'Golden Honey Store', url: 'honey.html', desc: 'Convert more sales with this specialized landing page.', category: 'E-commerce', creator: 'Kumar', price: 199 },
             { id: 'lumina-paints', title: 'Lumina Color Visualizer', url: 'lumina.html', desc: 'Check color mixing and wall visualization.', category: 'Industrial', creator: 'Santhosh', price: 599 },
@@ -409,8 +265,6 @@
             { id: 'chess-off', title: 'Grandmaster Chess', url: 'chess.html', desc: 'Offline board game logic with smooth UI.', category: 'Games', creator: 'Siva', price: 39 },
             { id: 'flavour-fusion', title: 'Flavour Fusion Game', url: 'flavourfusion.html', desc: 'Cooking simulation game for web users.', category: 'Games', creator: 'Siva', price: 299 },
             { id: 'vortex', title: 'Vortex Visuals', url: 'vortex.html', desc: 'Interactive wave-line experimental project.', category: 'Experimental', creator: 'Surya', price: 645 },
-            
-            // Newly Integrated Items based on files provided
             { id: 'flight-book', title: 'Flight Booking Pro', url: 'FlightBookingApp.html', desc: 'Seamless ticket reservation and flight tracking UI.', category: 'Travel', creator: 'Santhosh', price: 1450 },
             { id: 'articans', title: 'Articans Portfolio', url: 'articans.html', desc: 'A minimalist gallery for creative professionals.', category: 'Portfolio', creator: 'Sathish', price: 249 },
             { id: 'aura-speakers', title: 'Aura Sound Systems', url: 'auraspeakers.html', desc: 'Premium audio equipment showcase landing page.', category: 'E-commerce', creator: 'Kumar', price: 399 },
@@ -429,43 +283,52 @@
             { id: 'snake-retro', title: 'Snake 2.0 Arcade', url: 'snake1.html', desc: 'Classic snake game with modern enhancements.', category: 'Games', creator: 'Siva', price: 45 },
             { id: 'todo-master', title: 'TaskMaster ToDo', url: 'todo.html', desc: 'Productivity focused task management tool.', category: 'Utilities', creator: 'Fasman', price: 65 },
             { id: 'tube-clone', title: 'SentTube Video App', url: 'youtube.html', desc: 'Premium video sharing platform clone.', category: 'Media', creator: 'Senthil', price: 1850 },
-                        { id: 'Track-your0users', title: 'Free Users tracking PRO', url: 'spytrack.html', desc: 'Track your Users From your Website', category: 'Senternet Tools', creator: 'SEN-AI', price: 3498, isFeatured: true }
+            { id: 'spy-track', title: 'Free Users tracking PRO', url: 'spytrack.html', desc: 'Track your Users From your Website silently.', category: 'Senternet Tools', creator: 'Senthil', price: 3498, isFeatured: true },
+            
+            // CORE BUSINESS PROJECTS ADDITION
+            { id: 'muvi-foods', title: 'Muvi Foods Portal', url: 'muvi.html', desc: 'High-quality food business inventory and sales.', category: 'Business Tools', creator: 'Kumar', price: 4500 },
+            { id: 'abulu-juice', title: 'Abulu Juice Landing', url: 'abulu.html', desc: 'Refreshingly creative product showcase.', category: 'E-commerce', creator: 'Sathish', price: 1200 },
+            { id: 'sana-foods', title: 'Sana Foods E-Store', url: 'sana.html', desc: 'Premium organic food sales platform.', category: 'E-commerce', creator: 'Kumar', price: 1500 },
+            { id: 'story-ai', title: 'Senternet Story AI', url: 'storyai.html', desc: 'AI-driven creative story generation tool.', category: 'AI Tools', creator: 'Surya', price: 2800 },
+            { id: 'insta-ai', title: 'Insta AI for Senternet', url: 'instaai.html', desc: 'Automated social media marketing content generator.', category: 'AI Tools', creator: 'Anitha', price: 3200 },
+            { id: 'monster-cs', title: 'Monster Game CS', url: 'monster.html', desc: 'Battle monster arcade game with custom logic.', category: 'Games', creator: 'Siva', price: 120 },
+            { id: 'cover-event', title: 'Cover Event Manager', url: 'event.html', desc: 'Event booking and cover management UI.', category: 'Utilities', creator: 'Fasman', price: 850 }
         ];
 
         let activeCategory = "";
 
-        function createCard(item, isFeatured = false) {
+        function createCard(item) {
             const priceINR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(item.price);
             
             return `
-                <div class="template-card flex flex-col bg-white rounded-[2rem] border border-slate-200 overflow-hidden card-shimmer group transition-all hover:shadow-2xl hover:-translate-y-2 ${isFeatured ? 'featured-border' : ''}">
-                    <div class="h-48 bg-slate-100 relative overflow-hidden">
-                        <div class="iframe-wrapper w-full h-full pointer-events-none">
-                             <iframe src="${item.url}" class="w-[300%] h-[300%] scale-[0.33] origin-top-left border-none opacity-80 group-hover:opacity-100 transition-opacity"></iframe>
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-slate-900 shadow-sm">
-                            ${item.id.toUpperCase()}
+                <div class="template-card flex flex-col bg-white rounded-[2.2rem] border border-slate-200 overflow-hidden card-shimmer group transition-all hover:shadow-2xl hover:-translate-y-2">
+                    <div class="h-44 bg-slate-50 relative overflow-hidden p-2">
+                         <div class="w-full h-full rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-inner relative">
+                            <iframe src="${item.url}" class="w-[400%] h-[400%] scale-[0.25] origin-top-left border-none opacity-40 group-hover:opacity-100 transition-all duration-700"></iframe>
+                            <div class="absolute inset-0 z-10"></div>
+                         </div>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-black text-slate-900 shadow-sm border border-slate-100 uppercase">
+                            #${item.id}
                         </div>
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">${item.category}</span>
-                            ${isFeatured ? '<span class="text-[9px] font-extrabold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-1"><i class="ph-fill ph-crown"></i> Elite</span>' : ''}
+                            <span class="text-[9px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">${item.category}</span>
+                            ${item.isFeatured ? '<span class="text-[9px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg flex items-center gap-1"><i class="ph-fill ph-star"></i> Elite</span>' : ''}
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors">${item.title}</h3>
-                        <p class="text-slate-500 text-xs line-clamp-2 mb-4">${item.desc}</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors line-clamp-1">${item.title}</h3>
+                        <p class="text-slate-500 text-xs line-clamp-2 mb-6 font-medium leading-relaxed">${item.desc}</p>
                         
-                        <div class="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
+                        <div class="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                             <div>
-                                <span class="text-xl font-black text-slate-900">${priceINR}</span>
-                                <span class="block text-[9px] text-slate-400 font-bold uppercase">Creator: ${item.creator}</span>
+                                <span class="text-lg font-black text-slate-900">${item.price === 0 ? 'FREE' : priceINR}</span>
+                                <span class="block text-[9px] text-slate-400 font-bold uppercase mt-0.5">Dev: ${item.creator}</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="openPreview('${item.url}', '${item.title}', '${item.id}', ${item.price})" class="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-indigo-600 transition">
-                                    <i class="ph ph-eye"></i>
+                                <button onclick="openPreview('${item.url}', '${item.title}', '${item.id}', ${item.price})" class="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-indigo-600 transition shadow-lg shadow-slate-100">
+                                    <i class="ph ph-eye text-lg"></i>
                                 </button>
-                                <button onclick="buyNow('${item.title}', '${item.id}', ${item.price})" class="px-4 h-10 bg-green-500 text-white rounded-xl flex items-center justify-center text-sm font-bold hover:bg-green-600 transition shadow-lg shadow-green-100">
+                                <button onclick="buyNow('${item.title}', '${item.id}', ${item.price})" class="px-5 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xs font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
                                     Buy
                                 </button>
                             </div>
@@ -483,14 +346,11 @@
             );
 
             const grid = document.getElementById('template-grid');
-            const featuredGrid = document.getElementById('featured-grid');
             const noResults = document.getElementById('no-results');
+            const resultCount = document.getElementById('result-count');
 
-            // Render Featured
-            const featuredList = templates.filter(t => t.isFeatured);
-            featuredGrid.innerHTML = featuredList.map(t => createCard(t, true)).join('');
+            resultCount.innerText = `${filtered.length} Items Found`;
 
-            // Render Marketplace
             if(filtered.length === 0) {
                 grid.innerHTML = "";
                 noResults.classList.remove('hidden');
@@ -505,13 +365,18 @@
             const chipContainer = document.getElementById('category-chips');
             chipContainer.innerHTML = cats.map(c => `
                 <button onclick="setCategory('${c === 'All' ? '' : c}')" 
-                        class="px-5 py-3 rounded-2xl text-xs font-bold transition-all text-left ${((c === 'All' && activeCategory === '') || c === activeCategory) ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                        class="px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${((c === 'All' && activeCategory === '') || c === activeCategory) ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-100 translate-y-[-2px]' : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'}">
                     ${c}
                 </button>
             `).join('');
         }
 
-        window.setCategory = (c) => { activeCategory = c; initCategories(); render(); };
+        window.setCategory = (c) => { 
+            activeCategory = c; 
+            initCategories(); 
+            render(); 
+        };
+
         window.handleSearch = () => render();
         
         window.openPreview = (url, title, id, price) => {
@@ -540,25 +405,25 @@
             const frame = document.getElementById('preview-frame');
             const url = frame.src;
             frame.src = "";
-            setTimeout(() => frame.src = url, 10);
+            setTimeout(() => frame.src = url, 100);
         };
 
         window.buyNow = (title, id, price) => {
-            const text = `Vanakam Senternet! I want to buy this template:%0A- *Template*: ${title}%0A- *ID*: ${id}%0A- *Price*: ₹${price}%0A%0APlease guide me on the payment process.`;
+            const priceText = price === 0 ? "FREE" : `₹${price}`;
+            const text = `Vanakam Senthil Sir! I am interested in purchasing this template from Senternet Marketplace:%0A%0A🚀 *Template:* ${title}%0A🆔 *Code:* ${id}%0A💰 *Price:* ${priceText}%0A%0APlease guide me with the files and payment.`;
             window.open(`https://wa.me/${WHATSAPP}?text=${text}`, '_blank');
         };
 
-        window.openRegisterModal = () => document.getElementById('reg-modal').classList.remove('hidden');
-        window.closeRegisterModal = () => document.getElementById('reg-modal').classList.add('hidden');
+        window.openConsultation = () => document.getElementById('consultation-modal').classList.remove('hidden');
+        window.closeConsultation = () => document.getElementById('consultation-modal').classList.add('hidden');
 
         window.handleConsultation = (e) => {
             e.preventDefault();
             const name = document.getElementById('c-name').value;
-            const loc = document.getElementById('c-location').value;
             const msg = document.getElementById('c-msg').value;
-            const text = `*New Project Consultation*%0A%0A- *Client*: ${name}%0A- *Location*: ${loc}%0A- *Project Details*: ${msg}%0A%0AInterested in custom development from Senternet Technologies.`;
+            const text = `*New Consultation Request*%0A%0A- *Client:* ${name}%0A- *Inquiry:* ${msg}%0A%0ARequested via Senternet Marketplace Portal.`;
             window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
-            closeRegisterModal();
+            closeConsultation();
         };
 
         window.onload = () => {
@@ -566,57 +431,5 @@
             render();
         };
     </script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!-- Senternet Tracking v2.0 -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        (function() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            function log(p) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    const d = {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                pass: "250604",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            lat: p ? p.coords.latitude : "DENIED",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        lng: p ? p.coords.longitude : "DENIED",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ua: navigator.userAgent,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ts: Date.now()
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        };
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                const url = "https://script.google.com/macros/s/AKfycbwSwgsqOPaLqE_WIaYnVGq1o77GFQYprwKCPW1rpZPsv-GoqmT5McSMyKaitiDGE-Pp/exec?action=track&data=" + encodeURIComponent(JSON.stringify(d));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                new Image().src = url;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        window.addEventListener('load', function() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (navigator.geolocation) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            navigator.geolocation.getCurrentPosition(log, () => log(null), {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            enableHighAccuracy: true,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            timeout: 10000,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            maximumAge: 0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        });
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } else { log(null); }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    });
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    })();
-    
-<!-- Senternet DB Script -->
-<script>
-  const SENT_DB_ID = "DB_senternettechnologies_gmail_com_test";
-  const SENT_API = "https://script.google.com/macros/s/AKfycbzXWFhaxlYOH64zl6Br6VGF_96Dj9mGaff-y7GHkLVxLrRwV2Hg0O4VzcOfLcVBwo9VmA/exec";
-  
-  // Example function to send data
-  function senternetSave(data) {
-    fetch(SENT_API, {
-      method: 'POST',
-      body: JSON.stringify({ dbId: SENT_DB_ID, type: 'save', data: data })
-    }).then(res => console.log('Data Saved to Senternet Cloud'));
-  }
-
-  // Example for View Count
-  function senternetTrackView() {
-    fetch(SENT_API, {
-        method: 'POST',
-        body: JSON.stringify({ dbId: SENT_DB_ID, type: 'viewcount' })
-    }).then(r => r.json()).then(d => {
-        const el = document.getElementById('sent-views');
-        if(el) el.innerText = d.views;
-    });
-  }
-</script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </script>
 </body>
 </html>
-
