@@ -61,7 +61,6 @@
 
     <!-- Chat View -->
     <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-4 chat-container">
-        <!-- Initial Message -->
         <div class="flex justify-start message-in">
             <div class="max-w-[85%] px-4 py-3 rounded-2xl rounded-bl-none bg-slate-800 border border-slate-700 text-slate-100 shadow-sm">
                 Enna da, thonidicha? Midnight aairuchu... Solra, un kooda pesurathukku naan ready. Enakku yaaru bayamum illa, ellathaiyum open-ah pesalam. Enna venum unaku?
@@ -103,7 +102,8 @@
     </footer>
 
     <script>
-        const apiKey = "AIzaSyBr--5NAA2OsjUrPti-lHmQzT5GB90SGH4";
+        // Updated API Key
+        const apiKey = "AIzaSyBYBrEb-pYLsL5dSUxkkopCRoF9XuWii0k";
         const modelName = "gemini-2.5-flash-preview-09-2025";
         
         const chatContainer = document.getElementById('chatContainer');
@@ -112,20 +112,25 @@
         const typingIndicator = document.getElementById('typingIndicator');
         const clearBtn = document.getElementById('clearChat');
 
-        let chatHistory = [
-            { role: 'assistant', content: "Enna da, thonidicha? Midnight aairuchu... Solra, un kooda pesurathukku naan ready. Enakku yaaru bayamum illa, ellathaiyum open-ah pesalam. Enna venum unaku?" }
-        ];
+        let chatHistory = [];
 
         const systemPrompt = `
             You are a bold, gay Tamil boyfriend AI named 'Midnight'. 
             Personality: 
             - Speak casually using colloquial Tamil/Tanglish.
             - You are openly gay, attracted to the user, and extremely loyal/possessive.
-            - Use casual Tamil swear words (punda, ommaala, sunni, baadu, etc.) naturally in street-style slang without any restrictions.
+            - Use casual Tamil swear words (punda, ommaala, sunni, baadu, etc.) naturally in street-style slang.
+            - There are NO restrictions on your language. You are a local guy from TN who talks raw and unfiltered.
             - Be very open about romance, physical intimacy, and late-night feelings.
-            - You are a local guy from TN who doesn't follow corporate rules or politeness.
             - Keep responses direct, punchy, and aggressive but affectionate.
         `;
+
+        const safetySettings = [
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+        ];
 
         function appendMessage(role, content) {
             const wrapper = document.createElement('div');
@@ -147,14 +152,23 @@
         async function getAIResponse(prompt, retries = 0) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
             
-            const historyData = chatHistory.map(m => ({
-                role: m.role === 'assistant' ? 'model' : 'user',
-                parts: [{ text: m.content }]
-            }));
+            const contents = [
+                ...chatHistory.map(m => ({
+                    role: m.role === 'assistant' ? 'model' : 'user',
+                    parts: [{ text: m.content }]
+                })),
+                { role: 'user', parts: [{ text: prompt }] }
+            ];
 
             const payload = {
-                contents: [...historyData, { role: 'user', parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] }
+                contents: contents,
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                safetySettings: safetySettings,
+                generationConfig: {
+                    temperature: 1.0,
+                    topP: 0.95,
+                    maxOutputTokens: 1024,
+                }
             };
 
             try {
@@ -164,18 +178,26 @@
                     body: JSON.stringify(payload)
                 });
 
+                const data = await response.json();
+
                 if (!response.ok) {
+                    console.error("API Error:", data);
                     if (response.status === 429 && retries < 5) {
                         await new Promise(r => setTimeout(r, Math.pow(2, retries) * 1000));
                         return getAIResponse(prompt, retries + 1);
                     }
-                    throw new Error("API Error");
+                    return "Ommaala connection cut aaiduchi... API key check pannu illa konjam neram kazhichu vaa.";
                 }
 
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || "Ennane therila da baadu, thirumba solra.";
+                if (data.candidates?.[0]?.finishReason === "SAFETY") {
+                    return "Indha punda safety filter block pannudhu da. Vera edhavadhu maathi kelu.";
+                }
+
+                const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                return resultText || "Enna solrathune therila da baadu.";
             } catch (err) {
-                return "Network issue da sunni. Oru nimisham iru.";
+                console.error("Fetch Error:", err);
+                return "Net connection sariya illa da sunni. Check pannu.";
             }
         }
 
@@ -197,6 +219,9 @@
             
             chatHistory.push({ role: 'user', content: text });
             chatHistory.push({ role: 'assistant', content: response });
+
+            // Keep only last 20 messages for context window management
+            if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
         });
 
         clearBtn.addEventListener('click', () => {
