@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senternet IDE | God-Tier Compiler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+        
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .editor-container {
+            height: calc(100vh - 160px);
+        }
+
+        #code-input {
+            background: #1e293b;
+            color: #e2e8f0;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+            line-height: 1.5;
+        }
+
+        .suggestion-box {
+            position: absolute;
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 4px;
+            z-index: 50;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: #6366f1;
+        }
+
+        iframe {
+            background: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-4 bg-slate-800 p-4 rounded-xl border border-slate-700">
+        <div class="flex items-center gap-3">
+            <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" alt="CEO" class="w-10 h-10 rounded-full border-2 border-indigo-500">
+            <div>
+                <h1 class="text-xl font-bold text-indigo-400">Senternet Technologies IDE</h1>
+                <p class="text-xs text-slate-400">CEO: Senthilkumar | Aranthangi</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="runCode()" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold transition">RUN CODE</button>
+            <button onclick="clearCode()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg transition">Clear</button>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 editor-container">
+        <!-- Editor Section -->
+        <div class="relative flex flex-col">
+            <div class="bg-slate-700 px-4 py-2 text-sm rounded-t-lg flex justify-between items-center">
+                <span>index.html</span>
+                <span class="text-indigo-300">HTML Tags Recommended</span>
+            </div>
+            <textarea id="code-input" class="w-full h-full p-4 rounded-b-lg text-sm" placeholder="Type 'ht' to see magic..."></textarea>
+            
+            <!-- Suggestion Box -->
+            <div id="suggestion-box" class="suggestion-box"></div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="flex flex-col">
+            <div class="bg-slate-700 px-4 py-2 text-sm rounded-t-lg">Live Preview</div>
+            <iframe id="preview-frame" class="w-full h-full border-none"></iframe>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-4 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 <a href="https://rebrand.ly/senternet" target="_blank" class="text-indigo-400 hover:underline">SENTERNERT TECHNOLOGIES</a>. Location: Aranthangi | WhatsApp: +91 81900 38085</p>
+    </footer>
+
+    <script>
+        const editor = document.getElementById('code-input');
+        const suggestionBox = document.getElementById('suggestion-box');
+        const previewFrame = document.getElementById('preview-frame');
+
+        const tagLibrary = [
+            { trigger: 'ht', display: '<html>', value: '<html>\n\t\n</html>' },
+            { trigger: 'he', display: '<head>', value: '<head>\n\t\n</head>' },
+            { trigger: 'bo', display: '<body>', value: '<body>\n\t\n</body>' },
+            { trigger: 'di', display: '<div>', value: '<div>\n\t\n</div>' },
+            { trigger: 'h1', display: '<h1>', value: '<h1></h1>' },
+            { trigger: 'p', display: '<p>', value: '<p></p>' },
+            { trigger: 'im', display: '<img>', value: '<img src="https://picsum.photos/400/300" alt="Senternet Image">' }
+        ];
+
+        editor.addEventListener('input', (e) => {
+            const cursorPosition = editor.selectionStart;
+            const textBeforeCursor = editor.value.substring(0, cursorPosition);
+            const lastWord = textBeforeCursor.split(/\s+/).pop();
+
+            if (lastWord.length >= 2) {
+                const matches = tagLibrary.filter(tag => tag.trigger === lastWord.toLowerCase());
+                
+                if (matches.length > 0) {
+                    showSuggestions(matches, cursorPosition);
+                } else {
+                    hideSuggestions();
+                }
+            } else {
+                hideSuggestions();
+            }
+        });
+
+        function showSuggestions(matches, pos) {
+            suggestionBox.innerHTML = '';
+            matches.forEach(match => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerText = `Recommend: ${match.display}`;
+                div.onclick = () => applySuggestion(match.value, match.trigger.length);
+                suggestionBox.appendChild(div);
+            });
+
+            // Position the box near the cursor (approximate)
+            const lines = editor.value.substring(0, pos).split('\n');
+            const top = lines.length * 21 + 40; 
+            suggestionBox.style.left = '20px';
+            suggestionBox.style.top = `${top}px`;
+            suggestionBox.style.display = 'block';
+        }
+
+        function hideSuggestions() {
+            suggestionBox.style.display = 'none';
+        }
+
+        function applySuggestion(value, triggerLength) {
+            const pos = editor.selectionStart;
+            const text = editor.value;
+            const before = text.substring(0, pos - triggerLength);
+            const after = text.substring(pos);
+            
+            editor.value = before + value + after;
+            hideSuggestions();
+            editor.focus();
+            
+            // Set cursor inside the tag if needed
+            const newPos = before.length + value.indexOf('\n') + 2;
+            editor.setSelectionRange(newPos, newPos);
+        }
+
+        function runCode() {
+            const code = editor.value;
+            const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            doc.open();
+            doc.write(code);
+            doc.close();
+        }
+
+        function clearCode() {
+            if(confirm("Ellathaiyum clear pannidalaama thala?")) {
+                editor.value = '';
+                runCode();
+            }
+        }
+
+        // Shortcut: Ctrl + Enter to run
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                runCode();
+            }
+        });
+
+        // Initialize with basic structure
+        editor.value = `<!DOCTYPE html>\n<html>\n<head>\n\t<style>\n\t\tbody { font-family: sans-serif; text-align: center; padding-top: 50px; }\n\t\th1 { color: #4f46e5; }\n\t</style>\n</head>\n<body>\n\t<h1>Welcome to Senternet IDE</h1>\n\t<p>Start typing your code here...</p>\n</body>\n</html>`;
+        runCode();
+
+    </script>
+</body>
+</html>
+
