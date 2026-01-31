@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StarMaker Appreciation Certificate | SENTERNET</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700;900&display=swap');
+        
+        body {
+            background: #020617;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .cert-border {
+            border: 15px solid #1e1b4b;
+            position: relative;
+            background: #ffffff;
+            color: #1e1b4b;
+            padding: 40px;
+            box-shadow: inset 0 0 0 10px #c5a059;
+        }
+
+        .cert-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #1e1b4b;
+        }
+
+        .cert-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: #c5a059;
+        }
+
+        .gold-text { color: #c5a059; }
+
+        #certificate-preview {
+            width: 800px;
+            height: 600px;
+        }
+
+        .profile-frame {
+            border: 4px solid #c5a059;
+            padding: 3px;
+            background: white;
+        }
+
+        /* Responsive scaling for preview */
+        .preview-scale {
+            transform: scale(0.5);
+            transform-origin: top center;
+        }
+        @media (min-width: 768px) {
+            .preview-scale {
+                transform: scale(0.85);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4">
+
+    <!-- Input Section -->
+    <div class="w-full max-w-md bg-slate-900/50 p-6 rounded-3xl border border-white/10 mb-10">
+        <h1 class="text-xl font-black text-center mb-4 uppercase tracking-widest text-indigo-400">Certificate Studio</h1>
+        <div class="space-y-4">
+            <input id="sid-input" type="text" placeholder="Enter StarMaker SID" class="w-full bg-slate-800 border border-white/10 p-3 rounded-xl outline-none focus:ring-2 ring-indigo-500 text-center font-bold">
+            <button onclick="generateCertificate()" id="gen-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-black transition-all active:scale-95">GENERATE CERTIFICATE</button>
+        </div>
+        <p id="status" class="text-[10px] text-center mt-3 text-slate-500 font-bold uppercase"></p>
+    </div>
+
+    <!-- Certificate Container -->
+    <div id="cert-wrapper" class="hidden flex flex-col items-center">
+        <div class="preview-scale">
+            <div id="certificate-preview" class="cert-border flex flex-col items-center text-center justify-between">
+                
+                <!-- Header -->
+                <div>
+                    <h2 class="cert-title text-4xl mb-2">CERTIFICATE</h2>
+                    <h3 class="text-sm font-bold tracking-[0.2em] mb-6">OF APPRECIATION</h3>
+                    <div class="w-32 h-1 bg-indigo-900 mx-auto"></div>
+                </div>
+
+                <!-- Profile & Content -->
+                <div class="flex flex-col items-center">
+                    <div class="profile-frame rounded-full overflow-hidden mb-4 shadow-xl">
+                        <img id="cert-img" src="" class="w-24 h-24 object-cover">
+                    </div>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">This is proudly presented to</p>
+                    <h1 id="cert-user-name" class="cert-name mb-1">Star User</h1>
+                    <p class="text-[10px] font-black tracking-widest text-indigo-900 mb-6">STARMAKER ID: <span id="cert-sid-display">---</span></p>
+                    
+                    <div class="max-w-md mx-auto">
+                        <p class="text-xs leading-relaxed italic text-slate-700">
+                            "Thanks for using StarMaker and contributing your amazing voice to our community. Your passion for music inspires us all. Keep singing and shining like a star!"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="w-full flex justify-between items-end px-10">
+                    <div class="text-left">
+                        <p class="text-[8px] font-black text-slate-400 uppercase">Presented By</p>
+                        <p class="text-sm font-black text-indigo-900">STARMAKER OFFICIAL</p>
+                    </div>
+                    
+                    <!-- Branding Badge -->
+                    <div class="bg-indigo-900 text-white p-4 rounded-tl-3xl rounded-br-3xl">
+                        <p class="text-[8px] font-bold">DESIGNED BY</p>
+                        <p class="text-[10px] font-black tracking-tighter">canising-668332</p>
+                    </div>
+
+                    <div class="text-right">
+                        <p class="text-[8px] font-black text-slate-400 uppercase">Date</p>
+                        <p id="cert-date" class="text-sm font-black text-indigo-900">31/01/2026</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-[-40px] flex gap-4">
+            <button onclick="downloadCert()" class="bg-green-600 hover:bg-green-500 px-8 py-3 rounded-full font-black text-xs flex items-center gap-2">
+                DOWNLOAD IMAGE
+            </button>
+            <button onclick="window.location.reload()" class="bg-slate-800 px-8 py-3 rounded-full font-black text-xs">NEW ONE</button>
+        </div>
+    </div>
+
+    <script>
+        async function generateCertificate() {
+            const sid = document.getElementById('sid-input').value.trim();
+            const btn = document.getElementById('gen-btn');
+            const status = document.getElementById('status');
+            const wrapper = document.getElementById('cert-wrapper');
+
+            if (!sid) {
+                status.innerText = "Please enter a valid SID";
+                return;
+            }
+
+            btn.disabled = true;
+            status.innerText = "Fetching Profile Details...";
+
+            try {
+                // Fetch data using the reliable Pay API
+                const targetUrl = `https://pay.starmakerstudios.com/rapid/user?category=6&id=${sid}`;
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+                
+                const response = await fetch(proxyUrl);
+                const json = await response.json();
+                const res = JSON.parse(json.contents);
+
+                if (res && res.user) {
+                    const user = res.user;
+                    
+                    // Update Certificate Fields
+                    document.getElementById('cert-img').src = user.profile_image || 'https://via.placeholder.com/150';
+                    document.getElementById('cert-user-name').textContent = user.stage_name || 'Star Singer';
+                    document.getElementById('cert-sid-display').textContent = sid;
+                    document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
+
+                    // Show Preview
+                    wrapper.classList.remove('hidden');
+                    status.innerText = "Certificate Generated Successfully!";
+                    
+                    // Smooth scroll to cert
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                } else {
+                    status.innerText = "User not found. Try another SID.";
+                }
+            } catch (err) {
+                status.innerText = "Link failed. Check connection.";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function downloadCert() {
+            const cert = document.getElementById('certificate-preview');
+            html2canvas(cert, {
+                useCORS: true,
+                scale: 2 // High resolution
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `StarMaker_Appreciation_${document.getElementById('sid-input').value}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>
+
