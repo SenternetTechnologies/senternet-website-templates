@@ -18,6 +18,7 @@
             color: #1e293b;
             min-height: 100vh;
             overflow-x: hidden;
+            margin: 0;
         }
         .glass-card {
             background: rgba(255, 255, 255, 0.7);
@@ -57,9 +58,57 @@
             background: linear-gradient(to right, #fff1f2, #fff);
             border-left: 4px solid #ff2d55;
         }
+
+        /* Intro Animation Styles */
+        #event-intro {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+            background-image: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWJwcmxpc2tncHA3YnoydjdiZ3R4amlxYml5YWg0a2JhempjNjM5ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/KxWDsHfQH6S8AnkZGo/giphy.gif");
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1s ease-out, visibility 1s;
+        }
+        #event-intro::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+        }
+        .intro-content {
+            position: relative;
+            text-align: center;
+            color: white;
+            animation: scaleUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes scaleUp {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255, 45, 85, 0.8), 0 0 40px rgba(255, 45, 85, 0.4);
+        }
     </style>
 </head>
 <body class="p-4 md:p-10 flex flex-col items-center">
+
+    <!-- Intro Screen -->
+    <div id="event-intro">
+        <div class="intro-content space-y-4 px-6">
+            <div class="text-7xl mb-4">💝</div>
+            <h1 class="text-5xl md:text-7xl font-black glow-text tracking-tighter italic">LOVE LOCK-IN</h1>
+            <p class="text-xl md:text-2xl font-bold tracking-widest text-pink-200 uppercase">Valentine's Special Event</p>
+            <div class="mt-8 flex justify-center">
+                <div class="h-1 w-24 bg-white rounded-full overflow-hidden">
+                    <div class="h-full bg-pink-500 w-full animate-[loading_2s_ease-in-out]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Header Section -->
     <header class="w-full max-w-xl text-center mb-10 animate-in fade-in duration-700">
@@ -107,7 +156,7 @@
             <div id="input-view" class="space-y-6">
                 <div class="space-y-4">
                     <div class="group">
-                        <h1>REGISTERATION FORM</h1>
+                        <h1 class="text-xs font-black text-slate-400 mb-4 tracking-widest">REGISTRATION FORM</h1>
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Starmaker SID</label>
                         <input type="number" id="sid-input" 
                             class="input-field w-full rounded-2xl px-6 py-4.5 text-base font-medium text-slate-800" 
@@ -176,11 +225,6 @@
     <!-- Footer -->
     <footer class="mt-20 text-center pb-12 w-full max-w-xl">
         <div class="flex flex-col items-center pt-10 border-t border-slate-100">
-            <a href="https://rebrand.ly/senternet" target="_blank" class="mb-4 group">
-                <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" 
-                    class="w-16 h-16 rounded-full border-4 border-white shadow-xl group-hover:scale-110 transition-transform object-cover">
-            </a>
-            <div data-v-250d7883="" data-v-ba0fee60="" class="list-item cell"><div data-v-250d7883="" class="avatar cell-hd" style="background-image: url(&quot;https://improxy.starmakerstudios.com/tools/im/200/production/users/12384898980175187/profile.jpg?&quot;);"></div><div data-v-250d7883="" class="cell-bd content"><div data-v-250d7883="" class="cell"><div data-v-250d7883="" class="title">𝚨krᴀϻ_Jᴀᴀи🇵🇸</div><span data-v-250d7883="" class="icon">45</span></div></div></div>
             <p class="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em]">LOVE LOCK IN EVENT</p>
             <p class="text-slate-400 text-[9px] mt-2 font-bold uppercase tracking-widest italic leading-loose">
                 starmaker | Developer support: +91 81900 38085<br>
@@ -192,6 +236,19 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbx_JdoTdZF1jA4MF3sNvXdEw431WR-PnKQiTUIEzviFMO0WM6aBLcZK9B48NqToV_XP/exec";
         let tempUser = null;
+
+        // Intro screen handler
+        window.addEventListener('load', () => {
+            const intro = document.getElementById('event-intro');
+            setTimeout(() => {
+                intro.style.opacity = '0';
+                setTimeout(() => {
+                    intro.style.visibility = 'hidden';
+                }, 1000);
+            }, 3000); // Intro stays for 3 seconds
+            
+            loadEntries();
+        });
 
         async function fetchProfile() {
             const sid = document.getElementById('sid-input').value.trim();
@@ -314,7 +371,6 @@
             }
         }
 
-        window.onload = loadEntries;
         setInterval(loadEntries, 15000);
     </script>
 </body>
