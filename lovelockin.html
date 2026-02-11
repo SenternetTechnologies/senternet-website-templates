@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love Lock-in | Starmaker February 14th special event</title>
+    <title>Love Lock-in | Valentine's Special Event</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -50,9 +50,13 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* List scroll styling */
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #f1f5f9; border-radius: 10px; }
+        
+        .prize-badge {
+            background: linear-gradient(to right, #fff1f2, #fff);
+            border-left: 4px solid #ff2d55;
+        }
     </style>
 </head>
 <body class="p-4 md:p-10 flex flex-col items-center">
@@ -60,32 +64,45 @@
     <!-- Header Section -->
     <header class="w-full max-w-xl text-center mb-10 animate-in fade-in duration-700">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-pink-50 border border-pink-100 text-[10px] font-extrabold tracking-widest text-pink-500 uppercase">
-            <span class="heart-beat">💖</span> Senternet Valentine's 2026
+            <span class="heart-beat">💖</span> VALENTINE’S DAY SPECIAL 🚨🔥
         </div>
         <h1 class="text-5xl font-extrabold tracking-tight text-slate-900 mb-2">Love <span class="love-gradient bg-clip-text text-transparent">Lock-in</span></h1>
-        <p class="text-slate-400 font-medium text-sm">Dedicated songs from the heart.</p>
+        <p class="text-slate-500 font-semibold text-sm">Any A. R. Rahman musical love song is allowed 🎼</p>
+        <div class="mt-4 flex flex-wrap justify-center gap-3 text-[11px] font-bold text-slate-400">
+            <span class="bg-slate-100 px-3 py-1 rounded-full text-slate-600">📅 14th February</span>
+            <span class="bg-slate-100 px-3 py-1 rounded-full text-slate-600">👥 Limit: 30 Entries</span>
+            <span class="bg-pink-100 px-3 py-1 rounded-full text-pink-600">🏠 Room ID: 145490</span>
+        </div>
     </header>
 
     <main class="w-full max-w-xl space-y-8">
         
-        <!-- Live Entries Counter & Small List -->
-        <div class="w-full space-y-4">
-            <div class="flex items-center justify-between px-2">
-                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-red-500 heart-beat"></span> Recent Locks
-                </h3>
-                <span id="entry-count" class="text-[10px] font-bold text-pink-500 bg-pink-50 px-2 py-0.5 rounded-full">Loading...</span>
+        <!-- Competition Info Card -->
+        <div class="glass-card rounded-[2rem] p-6 space-y-4 border-pink-100">
+            <h3 class="text-xs font-black uppercase tracking-widest text-slate-800 flex items-center gap-2">
+                🏆 PRIZES & RULES
+            </h3>
+            <div class="grid grid-cols-1 gap-3">
+                <div class="prize-badge p-3 rounded-r-xl">
+                    <p class="text-[10px] font-black text-pink-500 uppercase">1st Prize</p>
+                    <p class="text-xs font-bold text-slate-700">One-month Netflix recharge + 800 Gold Coins</p>
+                </div>
+                <div class="prize-badge p-3 rounded-r-xl" style="border-left-color: #9333ea;">
+                    <p class="text-[10px] font-black text-purple-500 uppercase">2nd Prize</p>
+                    <p class="text-xs font-bold text-slate-700">One-month Netflix recharge</p>
+                </div>
+                <div class="prize-badge p-3 rounded-r-xl" style="border-left-color: #f59e0b;">
+                    <p class="text-[10px] font-black text-amber-500 uppercase">3rd Prize</p>
+                    <p class="text-xs font-bold text-slate-700">100 Gold Coins</p>
+                </div>
             </div>
-            
-            <div id="live-list" class="flex gap-4 overflow-x-auto pb-4 custom-scroll snap-x">
-                <!-- Data fetched via AppScript -->
-                <div class="min-w-[200px] h-24 glass-card rounded-2xl animate-pulse"></div>
-            </div>
+            <p class="text-[9px] text-slate-400 italic leading-relaxed">
+                Hosted By "Ahsan Vibes" & Co-host Ishaa. Queue system follows for 30 participants.
+            </p>
         </div>
 
         <!-- Main Form Container -->
-        <div id="form-container" class="glass-card rounded-[3rem] p-8 md:p-12 space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-            
+        <div id="form-container" class="glass-card rounded-[3rem] p-8 md:p-12 space-y-8 shadow-2xl">
             <!-- Input View -->
             <div id="input-view" class="space-y-6">
                 <div class="space-y-4">
@@ -96,7 +113,7 @@
                             placeholder="Enter SID (e.g. 133456789)">
                     </div>
                     <div class="group">
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Favorite Song Name</label>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">A.R. Rahman Song Choice</label>
                         <input type="text" id="song-input" 
                             class="input-field w-full rounded-2xl px-6 py-4.5 text-base font-medium text-slate-800" 
                             placeholder="Type song name...">
@@ -105,18 +122,18 @@
 
                 <button onclick="fetchProfile()" id="fetch-btn" 
                     class="w-full love-gradient py-5 rounded-2xl font-bold text-white shadow-2xl shadow-pink-500/20 active:scale-[0.98] transition-all flex justify-center items-center gap-3">
-                    <span id="btn-text">LOCK YOUR SONG</span>
+                    <span id="btn-text">JOIN THE COMPETITION</span>
                     <div id="btn-loader" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full loader"></div>
                 </button>
             </div>
 
-            <!-- Preview View (Hidden by default) -->
+            <!-- Preview View -->
             <div id="preview-view" class="hidden space-y-8 text-center animate-in zoom-in-95 duration-300">
                 <div class="relative inline-block mx-auto">
                     <div class="absolute inset-0 love-gradient blur-2xl opacity-20 rounded-full"></div>
                     <img id="prev-img" src="" class="w-32 h-32 rounded-full border-[6px] border-white shadow-2xl relative z-10 object-cover">
                     <div class="absolute -bottom-2 -right-2 bg-white p-2.5 rounded-full shadow-lg z-20">
-                        <span class="text-xl">⭐</span>
+                        <span class="text-xl">🎙️</span>
                     </div>
                 </div>
 
@@ -126,28 +143,47 @@
                 </div>
 
                 <div class="bg-slate-50 border border-slate-100 rounded-[2rem] p-6">
-                    <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest mb-2">Dedicated Song</p>
+                    <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest mb-2">Rahman Special Dedicated Song</p>
                     <p id="prev-song" class="text-xl font-bold text-slate-800 italic">"Song Title"</p>
                 </div>
 
                 <div class="flex gap-4">
                     <button onclick="backToInput()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 py-5 rounded-2xl font-bold text-sm transition-all">EDIT</button>
-                    <button onclick="confirmLock()" id="confirm-btn" class="flex-[2] love-gradient text-white py-5 rounded-2xl font-bold text-sm shadow-xl shadow-pink-500/20 active:scale-[0.98] transition-all">CONFIRM LOCK ❤️</button>
+                    <button onclick="confirmLock()" id="confirm-btn" class="flex-[2] love-gradient text-white py-5 rounded-2xl font-bold text-sm shadow-xl shadow-pink-500/20 active:scale-[0.98] transition-all">LOCK MY ENTRY ❤️</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Participants List Below Form -->
+        <div class="w-full space-y-6 pt-10">
+            <div class="flex items-center justify-between px-2">
+                <h3 class="text-xs font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-pink-500 heart-beat"></span> Registered Lovers
+                </h3>
+                <span id="entry-count" class="text-[10px] font-black text-white bg-pink-500 px-3 py-1 rounded-full shadow-lg shadow-pink-200">...</span>
+            </div>
+            
+            <div id="live-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Data fetched via AppScript -->
+                <div class="h-24 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
+                <div class="h-24 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
             </div>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="mt-16 text-center pb-12 w-full max-w-xl">
+    <footer class="mt-20 text-center pb-12 w-full max-w-xl">
         <div class="flex flex-col items-center pt-10 border-t border-slate-100">
-            <a href="https://rebrand.ly/senternet" target="_blank" class="mb-4">
-                <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/12384898980175187/profile.jpg?" 
-                    class="w-16 h-16 rounded-full border-4 border-white shadow-xl hover:scale-110 transition-transform">
+            <a href="https://rebrand.ly/senternet" target="_blank" class="mb-4 group">
+                <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" 
+                    class="w-16 h-16 rounded-full border-4 border-white shadow-xl group-hover:scale-110 transition-transform object-cover">
             </a>
-            <p class="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em]">Love Lock in </p>
-            <p class="text-slate-400 text-[9px] mt-2 font-bold uppercase tracking-widest italic">Starmaker | Developer support: 8190038085</p>
+            <p class="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em]">SENTERNET TECHNOLOGIES</p>
+            <p class="text-slate-400 text-[9px] mt-2 font-bold uppercase tracking-widest italic leading-loose">
+                Aranthangi, Pudukkottai | WhatsApp: +91 81900 38085<br>
+                senternettechnologies@gmail.com
+            </p>
         </div>
     </footer>
 
@@ -155,7 +191,6 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbx_JdoTdZF1jA4MF3sNvXdEw431WR-PnKQiTUIEzviFMO0WM6aBLcZK9B48NqToV_XP/exec";
         let tempUser = null;
 
-        // Fetch Starmaker Profile
         async function fetchProfile() {
             const sid = document.getElementById('sid-input').value.trim();
             const song = document.getElementById('song-input').value.trim();
@@ -208,11 +243,10 @@
             document.getElementById('input-view').classList.remove('hidden');
         }
 
-        // Send to WebApp (Sheet)
         async function confirmLock() {
             const btn = document.getElementById('confirm-btn');
             btn.disabled = true;
-            btn.innerText = "LOCKING...";
+            btn.innerText = "LOCKING ENTRY...";
 
             try {
                 await fetch(API_URL, {
@@ -222,19 +256,17 @@
                     body: JSON.stringify(tempUser)
                 });
                 
-                // UX Delay for "Success" feel
                 setTimeout(() => {
-                    alert("Love Locked Successfully! ❤️");
+                    alert("Love Entry Locked Successfully! ❤️ All the best!");
                     location.reload();
                 }, 1000);
             } catch (e) {
                 alert("Save Failed!");
                 btn.disabled = false;
-                btn.innerText = "CONFIRM LOCK ❤️";
+                btn.innerText = "LOCK MY ENTRY ❤️";
             }
         }
 
-        // Fetch Entries for Top List
         async function loadEntries() {
             const list = document.getElementById('live-list');
             const count = document.getElementById('entry-count');
@@ -243,23 +275,34 @@
                 const res = await fetch(API_URL + "?action=read");
                 const data = await res.json();
                 
-                count.innerText = `${data.length} Registered`;
+                count.innerText = `${data.length} / 30 Registered`;
                 list.innerHTML = '';
 
                 if(data.length === 0) {
-                    list.innerHTML = `<div class="w-full text-center text-slate-300 text-xs py-6">No one registered yet.</div>`;
+                    list.innerHTML = `<div class="col-span-full text-center text-slate-300 text-xs py-10 border-2 border-dashed border-slate-100 rounded-3xl">Be the first one to register!</div>`;
                     return;
                 }
 
                 data.reverse().forEach(item => {
                     const card = document.createElement('div');
-                    card.className = "snap-center min-w-[240px] glass-card p-4 rounded-3xl flex items-center gap-4 animate-in fade-in slide-in-from-right-4 duration-500";
+                    card.className = "glass-card p-5 rounded-3xl flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-500";
                     card.innerHTML = `
-                        <img src="${item.avatar}" class="w-12 h-12 rounded-full border-2 border-pink-100 object-cover shadow-sm">
+                        <div class="relative">
+                            <img src="${item.avatar}" class="w-14 h-14 rounded-full border-2 border-pink-100 object-cover shadow-sm">
+                            <div class="absolute -top-1 -left-1 bg-white p-1 rounded-full shadow-sm">
+                                <span class="text-[8px]">⭐</span>
+                            </div>
+                        </div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-xs font-black text-slate-800 truncate">${item.name}</h4>
-                            <p class="text-[10px] font-bold text-pink-500 truncate italic">🎵 ${item.song}</p>
-                            <p class="text-[8px] text-slate-400 font-mono mt-0.5">${item.sid}</p>
+                            <div class="flex justify-between items-start">
+                                <h4 class="text-[13px] font-black text-slate-800 truncate">${item.name}</h4>
+                                <span class="text-[8px] font-mono text-slate-400">#${item.sid}</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-pink-500 truncate mt-1">🎵 ${item.song}</p>
+                            <div class="mt-2 flex gap-1">
+                                <span class="h-1 w-8 bg-pink-500 rounded-full opacity-30"></span>
+                                <span class="h-1 w-2 bg-pink-500 rounded-full opacity-10"></span>
+                            </div>
                         </div>
                     `;
                     list.appendChild(card);
@@ -274,4 +317,3 @@
     </script>
 </body>
 </html>
-
