@@ -51,14 +51,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .custom-scroll::-webkit-scrollbar { width: 5px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #f1f5f9; border-radius: 10px; }
-        
-        .prize-badge {
-            background: linear-gradient(to right, #fff1f2, #fff);
-            border-left: 4px solid #ff2d55;
-        }
-
         #event-intro {
             position: fixed;
             inset: 0;
@@ -95,6 +87,23 @@
             filter: grayscale(1);
             opacity: 0.6;
             cursor: not-allowed;
+        }
+        .rank-number {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+        }
+        .toggle-active {
+            background-color: #ff2d55 !important;
+            color: white !important;
         }
     </style>
 </head>
@@ -202,17 +211,42 @@
             </div>
         </div>
 
+        <!-- SEARCH & LIST SECTION -->
         <div class="w-full space-y-6 pt-10">
-            <div class="flex items-center justify-between px-2">
-                <h3 class="text-xs font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-pink-500 heart-beat"></span> Registered Lovers
-                </h3>
-                <span id="entry-count" class="text-[10px] font-black text-white bg-pink-500 px-3 py-1 rounded-full shadow-lg shadow-pink-200">...</span>
+            <div class="flex flex-col space-y-4 px-2">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-pink-500 heart-beat"></span> Event Board
+                    </h3>
+                    <span id="entry-count" class="text-[10px] font-black text-white bg-pink-500 px-3 py-1 rounded-full shadow-lg shadow-pink-200">...</span>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <!-- Search Box -->
+                    <div class="relative w-full">
+                        <input type="text" id="search-input" oninput="filterEntries()" 
+                            class="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-pink-50 transition-all" 
+                            placeholder="Find singer by name or SID...">
+                        <span class="absolute right-4 top-3.5 opacity-30 text-xs">🔍</span>
+                    </div>
+                    
+                    <!-- View Toggle -->
+                    <div class="flex bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto shrink-0">
+                        <button onclick="setSort('top')" id="toggle-top" 
+                            class="flex-1 md:w-28 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all toggle-active">
+                            TOP VOTED
+                        </button>
+                        <button onclick="setSort('recent')" id="toggle-recent" 
+                            class="flex-1 md:w-28 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400">
+                            RECENT
+                        </button>
+                    </div>
+                </div>
             </div>
             
             <div id="live-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="h-24 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
-                <div class="h-24 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
+                <div class="h-32 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
+                <div class="h-32 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
             </div>
         </div>
 
@@ -223,7 +257,7 @@
             <p class="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em]">LOVE LOCK IN EVENT</p>
             <p class="text-slate-400 text-[9px] mt-2 font-bold uppercase tracking-widest italic leading-loose">
                 starmaker | Developer support: +91 81900 38085<br>
-                starmakersenthil@gmail.com | SENTERNET TECHNOLOGIES
+                sentermakersenthil@gmail.com | <a href="https://rebrand.ly/senternet" class="text-pink-500 font-black">SENTERNET TECHNOLOGIES</a>
             </p>
         </div>
     </footer>
@@ -231,6 +265,8 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbx_JdoTdZF1jA4MF3sNvXdEw431WR-PnKQiTUIEzviFMO0WM6aBLcZK9B48NqToV_XP/exec";
         let tempUser = null;
+        let allEntries = [];
+        let currentSort = 'top'; // Default sort
 
         window.addEventListener('load', () => {
             const intro = document.getElementById('event-intro');
@@ -310,7 +346,7 @@
                 });
                 
                 setTimeout(() => {
-                    alert("Your Love Entry Locked Successfully! ❤️ All the best! meet you soon on Room id: 145490");
+                    alert("Your Love Entry Locked Successfully! ❤️ All the best!");
                     location.reload();
                 }, 1000);
             } catch (e) {
@@ -320,7 +356,6 @@
             }
         }
 
-        // --- NEW VOTING LOGIC ---
         async function handleVote(sid) {
             const today = new Date().toDateString();
             const lastVote = localStorage.getItem('last_vote_date');
@@ -336,14 +371,13 @@
             voteBtn.innerHTML = "Voting...";
 
             try {
-                // We use action=vote and send sid
                 const response = await fetch(`${API_URL}?action=vote&sid=${sid}`);
                 const resData = await response.json();
 
                 if (resData.status === "success") {
                     localStorage.setItem('last_vote_date', today);
                     alert("Your vote has been cast successfully! 💖");
-                    loadEntries(); // Refresh list to see new counts
+                    loadEntries(); 
                 } else {
                     alert("Vote failed. Please try again.");
                     voteBtn.disabled = false;
@@ -357,66 +391,107 @@
             }
         }
 
-        async function loadEntries() {
-            const list = document.getElementById('live-list');
-            const count = document.getElementById('entry-count');
+        function setSort(type) {
+            currentSort = type;
+            document.getElementById('toggle-top').classList.toggle('toggle-active', type === 'top');
+            document.getElementById('toggle-top').classList.toggle('text-slate-400', type !== 'top');
+            document.getElementById('toggle-recent').classList.toggle('toggle-active', type === 'recent');
+            document.getElementById('toggle-recent').classList.toggle('text-slate-400', type !== 'recent');
+            filterEntries();
+        }
 
+        function filterEntries() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            // First Filter by search
+            let results = allEntries.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) || 
+                item.sid.toString().includes(searchTerm)
+            );
+
+            // Then Apply Sort
+            if (currentSort === 'top') {
+                results.sort((a, b) => (b.votes || 0) - (a.votes || 0));
+            } else {
+                // Assuming newer entries come last in original array, so we reverse for recent
+                results = results.slice().reverse(); 
+            }
+
+            renderList(results);
+        }
+
+        async function loadEntries() {
             try {
                 const res = await fetch(API_URL + "?action=read");
-                const data = await res.json();
-                
-                count.innerText = `${data.length} / 30 Registered`;
-                list.innerHTML = '';
-
-                if(data.length === 0) {
-                    list.innerHTML = `<div class="col-span-full text-center text-slate-300 text-xs py-10 border-2 border-dashed border-slate-100 rounded-3xl">Be the first one to register!</div>`;
-                    return;
-                }
-
-                data.reverse().forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = "glass-card p-5 rounded-3xl flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-2 duration-500";
-                    
-                    // item.votes might be undefined initially, default to 0
-                    const voteCount = item.votes || 0;
-
-                    card.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <div class="relative">
-                                <img src="${item.avatar}" class="w-14 h-14 rounded-full border-2 border-pink-100 object-cover shadow-sm">
-                                <div class="absolute -top-1 -left-1 bg-white p-1 rounded-full shadow-sm">
-                                    <span class="text-[8px]">⭐</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-[13px] font-black text-slate-800 truncate">${item.name}</h4>
-                                    <span class="text-[8px] font-mono text-slate-400">#${item.sid}</span>
-                                </div>
-                                <p class="text-[11px] font-bold text-pink-500 truncate mt-1">🎵 ${item.song}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between mt-1 pt-3 border-t border-slate-50">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Votes</span>
-                                <span class="px-2 py-0.5 bg-pink-50 text-pink-600 rounded-lg text-[11px] font-black">${voteCount}</span>
-                            </div>
-                            <button 
-                                data-sid="${item.sid}"
-                                onclick="handleVote('${item.sid}')" 
-                                class="vote-btn px-4 py-2 love-gradient text-white text-[10px] font-bold rounded-xl shadow-lg shadow-pink-200 active:scale-95 transition-all">
-                                VOTE ❤️
-                            </button>
-                        </div>
-                    `;
-                    list.appendChild(card);
-                });
+                allEntries = await res.json();
+                filterEntries(); // This will sort and render
             } catch (e) {
                 console.log("Retry Please, Many users visiting our event!");
             }
+        }
+
+        function renderList(data) {
+            const list = document.getElementById('live-list');
+            const count = document.getElementById('entry-count');
+            
+            count.innerText = `${data.length} / 30 Registered`;
+            list.innerHTML = '';
+
+            if(data.length === 0) {
+                list.innerHTML = `<div class="col-span-full text-center text-slate-300 text-xs py-10 border-2 border-dashed border-slate-100 rounded-3xl">No lovers found matching that name or SID.</div>`;
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-5 rounded-3xl flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-2 duration-500 relative";
+                
+                const voteCount = item.votes || 0;
+                
+                // Rank icon for Top Voted View
+                let rankBadge = '';
+                if(currentSort === 'top') {
+                    let rankColor = "bg-slate-400";
+                    if(index === 0) rankColor = "bg-yellow-400"; // Gold
+                    if(index === 1) rankColor = "bg-slate-300";  // Silver
+                    if(index === 2) rankColor = "bg-orange-400"; // Bronze
+                    rankBadge = `<div class="absolute top-4 right-4 rank-number ${rankColor}">${index + 1}</div>`;
+                }
+
+                card.innerHTML = `
+                    ${rankBadge}
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <img src="${item.avatar}" class="w-14 h-14 rounded-full border-2 border-pink-100 object-cover shadow-sm">
+                            <div class="absolute -top-1 -left-1 bg-white p-1 rounded-full shadow-sm">
+                                <span class="text-[8px]">⭐</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0 pr-6">
+                            <h4 class="text-[13px] font-black text-slate-800 truncate uppercase">${item.name}</h4>
+                            <p class="text-[8px] font-mono text-slate-400 mt-0.5">SID: ${item.sid}</p>
+                            <p class="text-[11px] font-bold text-pink-500 truncate mt-1">🎵 ${item.song}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-1 pt-3 border-t border-slate-50">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Total Votes</span>
+                            <span class="px-2 py-0.5 bg-pink-50 text-pink-600 rounded-lg text-[11px] font-black">${voteCount}</span>
+                        </div>
+                        <button 
+                            data-sid="${item.sid}"
+                            onclick="handleVote('${item.sid}')" 
+                            class="vote-btn px-4 py-2 love-gradient text-white text-[10px] font-bold rounded-xl shadow-lg shadow-pink-200 active:scale-95 transition-all">
+                            VOTE ❤️
+                        </button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
         }
 
         setInterval(loadEntries, 15000);
     </script>
 </body>
 </html>
+
