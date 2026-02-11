@@ -97,7 +97,7 @@
                 </div>
             </div>
             <p class="text-[9px] text-slate-400 italic leading-relaxed">
-                Hosted By "Ahsan Vibes" & Co-host Ishaa. Queue system follows for 30 participants.
+               <marquee><b> Hosted By "Ahsan Vibes" & Co-host Ishaa. Queue system follows for 30 participants.</b></marquee>
             </p>
         </div>
 
@@ -107,6 +107,7 @@
             <div id="input-view" class="space-y-6">
                 <div class="space-y-4">
                     <div class="group">
+                        <h1>REGISTERATION FORM</h1>
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Starmaker SID</label>
                         <input type="number" id="sid-input" 
                             class="input-field w-full rounded-2xl px-6 py-4.5 text-base font-medium text-slate-800" 
@@ -143,7 +144,7 @@
                 </div>
 
                 <div class="bg-slate-50 border border-slate-100 rounded-[2rem] p-6">
-                    <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest mb-2">Rahman Special Dedicated Song</p>
+                    <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest mb-2">A R Rahman Special Dedicated Song</p>
                     <p id="prev-song" class="text-xl font-bold text-slate-800 italic">"Song Title"</p>
                 </div>
 
@@ -247,7 +248,7 @@
         async function confirmLock() {
             const btn = document.getElementById('confirm-btn');
             btn.disabled = true;
-            btn.innerText = "LOCKING ENTRY...";
+            btn.innerText = "SUBMITTING ENTRY...";
 
             try {
                 await fetch(API_URL, {
@@ -258,13 +259,13 @@
                 });
                 
                 setTimeout(() => {
-                    alert("Love Entry Locked Successfully! ❤️ All the best!");
+                    alert("Your Love Entry Locked Successfully! ❤️ All the best! meet you soon on Room id: 145490");
                     location.reload();
                 }, 1000);
             } catch (e) {
                 alert("Save Failed!");
                 btn.disabled = false;
-                btn.innerText = "LOCK MY ENTRY ❤️";
+                btn.innerText = "SUBMIT MY ENTRY ❤️";
             }
         }
 
@@ -309,7 +310,7 @@
                     list.appendChild(card);
                 });
             } catch (e) {
-                console.log("Feed Error");
+                console.log("Retry Please, Many users visiting our event!");
             }
         }
 
