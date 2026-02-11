@@ -20,10 +20,45 @@
             overflow-x: hidden;
             margin: 0;
         }
+
+        /* Floating Hearts Animation */
+        .heart-particle {
+            position: fixed;
+            color: rgba(255, 45, 85, 0.2);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* Giant Heart Beat with Foggy Splash */
+        .bg-heart-wrap {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: blur(40px);
+            opacity: 0.15;
+        }
+        .giant-heart {
+            font-size: 400px;
+            animation: giantPulse 2.5s ease-in-out infinite;
+        }
+        @keyframes giantPulse {
+            0% { transform: scale(1); filter: blur(40px); }
+            30% { transform: scale(1.3); filter: blur(20px); opacity: 0.3; }
+            100% { transform: scale(1); filter: blur(40px); }
+        }
+
         .glass-card {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
         }
         .love-gradient {
@@ -35,12 +70,11 @@
             50% { transform: scale(1.1); }
         }
         .input-field {
-            background: #f8fafc;
-            border: 2px solid transparent;
+            background: #ffffff;
+            border: 2px solid #f1f5f9;
             transition: all 0.3s ease;
         }
         .input-field:focus {
-            background: #fff;
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(255, 45, 85, 0.1);
             outline: none;
@@ -105,9 +139,23 @@
             background-color: #ff2d55 !important;
             color: white !important;
         }
+        .timer-slot {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 12px;
+            min-width: 60px;
+        }
     </style>
 </head>
 <body class="p-4 md:p-10 flex flex-col items-center">
+
+    <!-- Background Elements -->
+    <div id="hearts-container"></div>
+    <div class="bg-heart-wrap">
+        <div class="giant-heart">❤️</div>
+    </div>
 
     <div id="event-intro">
         <div class="intro-content space-y-4 px-6">
@@ -122,7 +170,32 @@
         </div>
     </div>
 
-    <header class="w-full max-w-xl text-center mb-10 animate-in fade-in duration-700">
+    <!-- Countdown Timer -->
+    <div class="w-full max-w-xl mb-8">
+        <div class="love-gradient p-6 rounded-[2rem] shadow-xl text-white text-center">
+            <p class="text-[10px] font-black tracking-[0.3em] uppercase mb-4 opacity-80">Event Closing In</p>
+            <div class="flex justify-center gap-3" id="timer">
+                <div class="timer-slot">
+                    <div id="days" class="text-2xl font-black">00</div>
+                    <div class="text-[8px] uppercase font-bold opacity-70">Days</div>
+                </div>
+                <div class="timer-slot">
+                    <div id="hours" class="text-2xl font-black">00</div>
+                    <div class="text-[8px] uppercase font-bold opacity-70">Hours</div>
+                </div>
+                <div class="timer-slot">
+                    <div id="minutes" class="text-2xl font-black">00</div>
+                    <div class="text-[8px] uppercase font-bold opacity-70">Mins</div>
+                </div>
+                <div class="timer-slot">
+                    <div id="seconds" class="text-2xl font-black">00</div>
+                    <div class="text-[8px] uppercase font-bold opacity-70">Secs</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="w-full max-w-xl text-center mb-10 animate-in fade-in duration-700 relative z-10">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-pink-50 border border-pink-100 text-[10px] font-extrabold tracking-widest text-pink-500 uppercase">
             <span class="heart-beat">💖</span> VALENTINE’S DAY SPECIAL 🚨🔥
         </div>
@@ -135,30 +208,68 @@
         </div>
     </header>
 
-    <main class="w-full max-w-xl space-y-8">
+    <main class="w-full max-w-xl space-y-8 relative z-10">
         
-        <div class="glass-card rounded-[2rem] p-6 space-y-4 border-pink-100">
+        <div class="glass-card rounded-[2rem] p-6 space-y-6 border-pink-100">
             <h3 class="text-xs font-black uppercase tracking-widest text-slate-800 flex items-center gap-2">
                 🏆 PRIZES & RULES
             </h3>
             <div class="grid grid-cols-1 gap-3">
-                <div class="prize-badge p-3 rounded-r-xl">
+                <div class="prize-badge p-3 rounded-r-xl border-l-4 border-pink-500 bg-pink-50/50">
                     <p class="text-[10px] font-black text-pink-500 uppercase">1st Prize</p>
                     <p class="text-xs font-bold text-slate-700">One-month Netflix recharge + 800 Gold Coins</p>
                 </div>
-                <div class="prize-badge p-3 rounded-r-xl" style="border-left-color: #9333ea;">
+                <div class="prize-badge p-3 rounded-r-xl border-l-4 border-purple-500 bg-purple-50/50">
                     <p class="text-[10px] font-black text-purple-500 uppercase">2nd Prize</p>
                     <p class="text-xs font-bold text-slate-700">One-month Netflix recharge</p>
                 </div>
-                <div class="prize-badge p-3 rounded-r-xl" style="border-left-color: #f59e0b;">
+                <div class="prize-badge p-3 rounded-r-xl border-l-4 border-amber-500 bg-amber-50/50">
                     <p class="text-[10px] font-black text-amber-500 uppercase">3rd Prize</p>
                     <p class="text-xs font-bold text-slate-700">100 Gold Coins</p>
                 </div>
             </div>
 
-            <!-- Instagram Follow Section Added Here -->
-            <div class="mt-4 bg-white/50 border border-pink-100 rounded-2xl p-4 flex items-center gap-4">
-                <img src="ahsan.jpg" alt="Ahsan" class="w-12 h-12 rounded-full object-cover border-2 border-pink-500" onerror="this.src='https://ui-avatars.com/api/?name=Ahsan+Vibes&background=ff2d55&color=fff'">
+            <!-- Host & Coordinator Profiles -->
+            <div class="space-y-4">
+                <p class="text-[10px] font-black text-slate-400 tracking-widest uppercase text-center">Event Team</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Host 1 -->
+                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                        <img src="ahsan.jpg" class="w-10 h-10 rounded-full border-2 border-pink-500" onerror="this.src="https://improxy.starmakerstudios.com/tools/im/200/production/users/4785074603220767/profile.jpg?">
+                        <div class="overflow-hidden">
+                            <p class="text-[9px] font-black text-pink-500 uppercase">Host</p>
+                            <p class="text-[11px] font-bold text-slate-800 truncate">Aʜsᴀɴ Vibes</p>
+                        </div>
+                    </div>
+                    <!-- Host 2 -->
+                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                        <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/2251799823372058/profile.jpg?" class="w-10 h-10 rounded-full border-2 border-pink-500">
+                        <div class="overflow-hidden">
+                            <p class="text-[9px] font-black text-pink-500 uppercase">Co-Host</p>
+                            <p class="text-[11px] font-bold text-slate-800 truncate">✨⍣⃝👑𓆰Iʂԋαα🩶Gσριƙα༄⍣⃝👑✨</p>
+                        </div>
+                    </div>
+                    <!-- Coordinator 1 -->
+                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                        <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/7318349397991279/profile.jpg?" class="w-10 h-10 rounded-full border-2 border-slate-300">
+                        <div class="overflow-hidden">
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Hᴜsᴋᴇʏ</p>
+                            <p class="text-[11px] font-bold text-slate-800 truncate">User 1</p>
+                        </div>
+                    </div>
+                    <!-- Coordinator 2 -->
+                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                        <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/4785074599601255/profile.jpg?" class="w-10 h-10 rounded-full border-2 border-slate-300">
+                        <div class="overflow-hidden">
+                            <p class="text-[9px] font-black text-slate-400 uppercase">𝙉ᴀᴀᴊᴀ</p>
+                            <p class="text-[11px] font-bold text-slate-800 truncate">User 2</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-pink-50">
+                <img src="ahsan.jpg" class="w-12 h-12 rounded-full object-cover border-2 border-pink-500" onerror="this.src='https://ui-avatars.com/api/?name=Ahsan+Vibes&background=ff2d55&color=fff'">
                 <div class="flex-1">
                     <p class="text-[10px] font-bold text-slate-800">To win 100 Gold Coins Giveaway</p>
                     <p class="text-[11px] font-black text-pink-600">Follow : @ahsan.vibes in Instagram</p>
@@ -166,32 +277,37 @@
                 <a href="https://www.instagram.com/ahsan.vibes" target="_blank" class="bg-pink-500 hover:bg-pink-600 text-white text-[10px] font-black px-4 py-2 rounded-full transition-all active:scale-95">FOLLOW</a>
             </div>
 
-            <p class="text-[9px] text-slate-400 italic leading-relaxed">
-               <marquee><b> Hosted By "Ahsan Vibes" & Co-host Ishaa. Queue system follows for 30 participants. Vote for your favorite singer!</b></marquee>
+            <p class="text-[9px] text-slate-400 italic leading-relaxed text-center">
+               <marquee scrollamount="3"><b> Hosted By "Ahsan Vibes" & Co-host Ishaa. Queue system follows for 30 participants. Vote for your favorite singer!</b></marquee>
             </p>
         </div>
 
-        <div id="form-container" class="glass-card rounded-[3rem] p-8 md:p-12 space-y-8 shadow-2xl">
+        <!-- Registration Form Section (Improved Visibility) -->
+        <div id="form-container" class="bg-white rounded-[3rem] p-8 md:p-12 space-y-8 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] border-2 border-pink-100 relative">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-pink-500 text-white px-6 py-2 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg">
+                Registration Live
+            </div>
+            
             <div id="input-view" class="space-y-6">
-                <div class="space-y-4">
+                <div class="space-y-5">
                     <div class="group">
-                        <h1 class="text-xs font-black text-slate-400 mb-4 tracking-widest">REGISTRATION FORM</h1>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Starmaker SID</label>
+                        <h1 class="text-xs font-black text-pink-500 mb-6 tracking-widest text-center">ENTER YOUR DETAILS</h1>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1">Starmaker SID</label>
                         <input type="number" id="sid-input" 
-                            class="input-field w-full rounded-2xl px-6 py-4.5 text-base font-medium text-slate-800" 
-                            placeholder="Enter SID (e.g. 133456789)">
+                            class="input-field w-full rounded-2xl px-6 py-5 text-lg font-bold text-slate-800 shadow-sm" 
+                            placeholder="e.g. 133456789">
                     </div>
                     <div class="group">
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">A.R. Rahman Song Choice</label>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1">A.R. Rahman Song Choice</label>
                         <input type="text" id="song-input" 
-                            class="input-field w-full rounded-2xl px-6 py-4.5 text-base font-medium text-slate-800" 
-                            placeholder="Type song name...">
+                            class="input-field w-full rounded-2xl px-6 py-5 text-lg font-bold text-slate-800 shadow-sm" 
+                            placeholder="Type your Rahman song...">
                     </div>
                 </div>
 
                 <button onclick="fetchProfile()" id="fetch-btn" 
-                    class="w-full love-gradient py-5 rounded-2xl font-bold text-white shadow-2xl shadow-pink-500/20 active:scale-[0.98] transition-all flex justify-center items-center gap-3">
-                    <span id="btn-text">JOIN THE COMPETITION</span>
+                    class="w-full love-gradient py-6 rounded-2xl font-black text-white shadow-2xl shadow-pink-500/30 active:scale-[0.98] transition-all flex justify-center items-center gap-3">
+                    <span id="btn-text" class="tracking-widest">JOIN THE COMPETITION</span>
                     <div id="btn-loader" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full loader"></div>
                 </button>
             </div>
@@ -217,7 +333,7 @@
 
                 <div class="flex gap-4">
                     <button onclick="backToInput()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 py-5 rounded-2xl font-bold text-sm transition-all">EDIT</button>
-                    <button onclick="confirmLock()" id="confirm-btn" class="flex-[2] love-gradient text-white py-5 rounded-2xl font-bold text-sm shadow-xl shadow-pink-500/20 active:scale-[0.98] transition-all">SUBMIT MY ENTRY ❤️</button>
+                    <button onclick="confirmLock()" id="confirm-btn" class="flex-[2] love-gradient text-white py-5 rounded-2xl font-bold text-sm shadow-xl shadow-pink-500/20 active:scale-[0.98] transition-all">LOCK MY ENTRY ❤️</button>
                 </div>
             </div>
         </div>
@@ -233,22 +349,20 @@
                 </div>
 
                 <div class="flex flex-col md:flex-row gap-4 items-center">
-                    <!-- Search Box -->
                     <div class="relative w-full">
                         <input type="text" id="search-input" oninput="filterEntries()" 
-                            class="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-pink-50 transition-all" 
+                            class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-pink-50 transition-all shadow-sm" 
                             placeholder="Find singer by name or SID...">
-                        <span class="absolute right-4 top-3.5 opacity-30 text-xs">🔍</span>
+                        <span class="absolute right-4 top-4.5 opacity-30 text-xs">🔍</span>
                     </div>
                     
-                    <!-- View Toggle -->
                     <div class="flex bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto shrink-0">
                         <button onclick="setSort('top')" id="toggle-top" 
-                            class="flex-1 md:w-28 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all toggle-active">
+                            class="flex-1 md:w-28 px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all toggle-active">
                             TOP VOTED
                         </button>
                         <button onclick="setSort('recent')" id="toggle-recent" 
-                            class="flex-1 md:w-28 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400">
+                            class="flex-1 md:w-28 px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400">
                             RECENT
                         </button>
                     </div>
@@ -267,19 +381,60 @@
         <div class="flex flex-col items-center pt-10 border-t border-slate-100">
             <p class="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em]">LOVE LOCK IN EVENT</p>
             <p class="text-slate-400 text-[9px] mt-2 font-bold uppercase tracking-widest italic leading-loose">
-                starmaker | Developer support: +91 81900 38085<br>
-                sentermakersenthil@gmail.com | <a href="https://rebrand.ly/senternet" class="text-pink-500 font-black">SENTERNET TECHNOLOGIES</a>
+                starmaker | Support: +91 81900 38085
             </p>
         </div>
     </footer>
 
     <script>
+        // BACKGROUND HEARTS GENERATOR
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const icons = ['❤️', '💖', '💕', '💗', '💝'];
+            for(let i=0; i<30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                heart.style.animationDelay = Math.random() * 10 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // TIMER LOGIC
+        function updateTimer() {
+            const targetDate = new Date('February 14, 2026 18:30:00').getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById('timer').innerHTML = "<span class='text-xs font-black uppercase tracking-widest'>Event Registration Closed! ❤️</span>";
+                return;
+            }
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+
         const API_URL = "https://script.google.com/macros/s/AKfycbx_JdoTdZF1jA4MF3sNvXdEw431WR-PnKQiTUIEzviFMO0WM6aBLcZK9B48NqToV_XP/exec";
         let tempUser = null;
         let allEntries = [];
-        let currentSort = 'top'; // Default sort
+        let currentSort = 'top';
 
         window.addEventListener('load', () => {
+            createHearts();
+            setInterval(updateTimer, 1000);
+            updateTimer();
+
             const intro = document.getElementById('event-intro');
             setTimeout(() => {
                 intro.style.opacity = '0';
@@ -413,21 +568,15 @@
 
         function filterEntries() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            
-            // First Filter by search
             let results = allEntries.filter(item => 
                 item.name.toLowerCase().includes(searchTerm) || 
                 item.sid.toString().includes(searchTerm)
             );
-
-            // Then Apply Sort
             if (currentSort === 'top') {
                 results.sort((a, b) => (b.votes || 0) - (a.votes || 0));
             } else {
-                // Assuming newer entries come last in original array, so we reverse for recent
                 results = results.slice().reverse(); 
             }
-
             renderList(results);
         }
 
@@ -435,48 +584,38 @@
             try {
                 const res = await fetch(API_URL + "?action=read");
                 allEntries = await res.json();
-                filterEntries(); // This will sort and render
+                filterEntries();
             } catch (e) {
-                console.log("Retry Please, Many users visiting our event!");
+                console.log("Retry Please!");
             }
         }
 
         function renderList(data) {
             const list = document.getElementById('live-list');
             const count = document.getElementById('entry-count');
-            
             count.innerText = `${data.length} / 30 Registered`;
             list.innerHTML = '';
-
             if(data.length === 0) {
-                list.innerHTML = `<div class="col-span-full text-center text-slate-300 text-xs py-10 border-2 border-dashed border-slate-100 rounded-3xl">No lovers found matching that name or SID.</div>`;
+                list.innerHTML = `<div class="col-span-full text-center text-slate-300 text-xs py-10 border-2 border-dashed border-slate-100 rounded-3xl">No lovers found.</div>`;
                 return;
             }
-
             data.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = "glass-card p-5 rounded-3xl flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-2 duration-500 relative";
-                
                 const voteCount = item.votes || 0;
-                
-                // Rank icon for Top Voted View
                 let rankBadge = '';
                 if(currentSort === 'top') {
                     let rankColor = "bg-slate-400";
-                    if(index === 0) rankColor = "bg-yellow-400"; // Gold
-                    if(index === 1) rankColor = "bg-slate-300";  // Silver
-                    if(index === 2) rankColor = "bg-orange-400"; // Bronze
+                    if(index === 0) rankColor = "bg-yellow-400";
+                    if(index === 1) rankColor = "bg-slate-300";
+                    if(index === 2) rankColor = "bg-orange-400";
                     rankBadge = `<div class="absolute top-4 right-4 rank-number ${rankColor}">${index + 1}</div>`;
                 }
-
                 card.innerHTML = `
                     ${rankBadge}
                     <div class="flex items-center gap-4">
                         <div class="relative">
                             <img src="${item.avatar}" class="w-14 h-14 rounded-full border-2 border-pink-100 object-cover shadow-sm">
-                            <div class="absolute -top-1 -left-1 bg-white p-1 rounded-full shadow-sm">
-                                <span class="text-[8px]">⭐</span>
-                            </div>
                         </div>
                         <div class="flex-1 min-w-0 pr-6">
                             <h4 class="text-[13px] font-black text-slate-800 truncate uppercase">${item.name}</h4>
@@ -489,18 +628,12 @@
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Total Votes</span>
                             <span class="px-2 py-0.5 bg-pink-50 text-pink-600 rounded-lg text-[11px] font-black">${voteCount}</span>
                         </div>
-                        <button 
-                            data-sid="${item.sid}"
-                            onclick="handleVote('${item.sid}')" 
-                            class="vote-btn px-4 py-2 love-gradient text-white text-[10px] font-bold rounded-xl shadow-lg shadow-pink-200 active:scale-95 transition-all">
-                            VOTE ❤️
-                        </button>
+                        <button data-sid="${item.sid}" onclick="handleVote('${item.sid}')" class="vote-btn px-4 py-2 love-gradient text-white text-[10px] font-bold rounded-xl shadow-lg shadow-pink-200 active:scale-95 transition-all">VOTE ❤️</button>
                     </div>
                 `;
                 list.appendChild(card);
             });
         }
-
         setInterval(loadEntries, 15000);
     </script>
 </body>
