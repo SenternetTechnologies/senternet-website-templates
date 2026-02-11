@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Lock-in | Senternet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff2d55;
+            --secondary: #ff375f;
+            --accent: #9333ea;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #ffffff;
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+        .love-gradient {
+            background: linear-gradient(135deg, #ff2d55 0%, #9333ea 100%);
+        }
+        .heart-beat { animation: heartbeat 1.5s ease-in-out infinite; }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .input-field {
+            background: #f8fafc;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            background: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 45, 85, 0.1);
+            outline: none;
+        }
+        .loader {
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* List scroll styling */
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #f1f5f9; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-10 flex flex-col items-center">
+
+    <!-- Header Section -->
+    <header class="w-full max-w-xl text-center mb-10 animate-in fade-in duration-700">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-pink-50 border border-pink-100 text-[10px] font-extrabold tracking-widest text-pink-500 uppercase">
+            <span class="heart-beat">💖</span> Senternet Valentine's 2026
+        </div>
+        <h1 class="text-5xl font-extrabold tracking-tight text-slate-900 mb-2">Love <span class="love-gradient bg-clip-text text-transparent">Lock-in</span></h1>
+        <p class="text-slate-400 font-medium text-sm">Dedicated songs from the heart.</p>
+    </header>
+
+    <main class="w-full max-w-xl space-y-8">
+        
+        <!-- Live Entries Counter & Small List -->
+        <div class="w-full space-y-4">
+            <div class="flex items-center justify-between px-2">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 heart-beat"></span> Recent Locks
+                </h3>
+                <span id="entry-count" class="text-[10px] font-bold text-pink-500 bg-pink-50 px-2 py-0.5 rounded-full">Loading...</span>
+            </div>
+            
+            <div id="live-list" class="flex gap-4 overflow-x-auto pb-4 custom-scroll snap-x">
+                <!-- Data fetched via AppScript -->
+                <div class="min-w-[200px] h-24 glass-card rounded-2xl animate-pulse"></div>
+            </div>
+        </div>
+
+        <!-- Main Form Container -->
+        <div id="form-container" class="glass-card rounded-[3rem] p-8 md:p-12 space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+            
+            <!-- Input View -->
+            <div id="input-view" class="space-y-6">
+                <div class="space-y-4">
+                    <div class="group">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Starmaker SID</label>
+                        <input type="number" id="sid-input" 
+                            class="input-field w-full rounded-2xl px-6 py-4.5 text-base font-medium text-slate-800" 
+                            placeholder="Enter SID (e.g. 133456789)">
+                    </div>
+                    <div class="group">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Favorite Song Name</label>
+                        <input type="text" id="song-input" 
+                            class="input-field w-full rounded-2xl px-6 py-4.5 text-base font-medium text-slate-800" 
+                            placeholder="Type song name...">
+                    </div>
+                </div>
+
+                <button onclick="fetchProfile()" id="fetch-btn" 
+                    class="w-full love-gradient py-5 rounded-2xl font-bold text-white shadow-2xl shadow-pink-500/20 active:scale-[0.98] transition-all flex justify-center items-center gap-3">
+                    <span id="btn-text">LOCK YOUR SONG</span>
+                    <div id="btn-loader" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full loader"></div>
+                </button>
+            </div>
+
+            <!-- Preview View (Hidden by default) -->
+            <div id="preview-view" class="hidden space-y-8 text-center animate-in zoom-in-95 duration-300">
+                <div class="relative inline-block mx-auto">
+                    <div class="absolute inset-0 love-gradient blur-2xl opacity-20 rounded-full"></div>
+                    <img id="prev-img" src="" class="w-32 h-32 rounded-full border-[6px] border-white shadow-2xl relative z-10 object-cover">
+                    <div class="absolute -bottom-2 -right-2 bg-white p-2.5 rounded-full shadow-lg z-20">
+                        <span class="text-xl">⭐</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 id="prev-name" class="text-2xl font-black text-slate-900">...</h2>
+                    <p id="prev-sid" class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">SID: ...</p>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-100 rounded-[2rem] p-6">
+                    <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest mb-2">Dedicated Song</p>
+                    <p id="prev-song" class="text-xl font-bold text-slate-800 italic">"Song Title"</p>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="backToInput()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 py-5 rounded-2xl font-bold text-sm transition-all">EDIT</button>
+                    <button onclick="confirmLock()" id="confirm-btn" class="flex-[2] love-gradient text-white py-5 rounded-2xl font-bold text-sm shadow-xl shadow-pink-500/20 active:scale-[0.98] transition-all">CONFIRM LOCK ❤️</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center pb-12 w-full max-w-xl">
+        <div class="flex flex-col items-center pt-10 border-t border-slate-100">
+            <a href="https://rebrand.ly/senternet" target="_blank" class="mb-4">
+                <img src="https://www.jotform.com/uploads/senternettechnologies/agent_files/avatar_images/1000009224-6944f3cfaee596.07540393.webp" 
+                    class="w-16 h-16 rounded-full border-4 border-white shadow-xl hover:scale-110 transition-transform">
+            </a>
+            <p class="text-slate-900 text-[10px] font-black uppercase tracking-[0.4em]">SENTERNET TECHNOLOGIES</p>
+            <p class="text-slate-400 text-[9px] mt-2 font-bold uppercase tracking-widest italic">Aranthangi | +91 81900 38085</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbx_JdoTdZF1jA4MF3sNvXdEw431WR-PnKQiTUIEzviFMO0WM6aBLcZK9B48NqToV_XP/exec";
+        let tempUser = null;
+
+        // Fetch Starmaker Profile
+        async function fetchProfile() {
+            const sid = document.getElementById('sid-input').value.trim();
+            const song = document.getElementById('song-input').value.trim();
+
+            if(!sid || !song) return alert("SID and Song name required!");
+
+            const btn = document.getElementById('fetch-btn');
+            const loader = document.getElementById('btn-loader');
+            const text = document.getElementById('btn-text');
+
+            btn.disabled = true;
+            text.classList.add('opacity-0');
+            loader.classList.remove('hidden');
+
+            try {
+                const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://pay.starmakerstudios.com/rapid/user?category=6&id=${sid}&ts=${Date.now()}`)}`;
+                const response = await fetch(proxy);
+                const raw = await response.json();
+                const data = JSON.parse(raw.contents);
+
+                if(data.code === 0 && data.user) {
+                    tempUser = {
+                        sid: sid,
+                        name: data.user.stage_name,
+                        avatar: data.user.profile_image,
+                        song: song
+                    };
+
+                    document.getElementById('input-view').classList.add('hidden');
+                    document.getElementById('preview-view').classList.remove('hidden');
+                    
+                    document.getElementById('prev-img').src = tempUser.avatar;
+                    document.getElementById('prev-name').innerText = tempUser.name;
+                    document.getElementById('prev-sid').innerText = `SID: ${tempUser.sid}`;
+                    document.getElementById('prev-song').innerText = `"${tempUser.song}"`;
+                } else {
+                    alert("User not found!");
+                }
+            } catch (e) {
+                alert("Connection Error!");
+            } finally {
+                btn.disabled = false;
+                text.classList.remove('opacity-0');
+                loader.classList.add('hidden');
+            }
+        }
+
+        function backToInput() {
+            document.getElementById('preview-view').classList.add('hidden');
+            document.getElementById('input-view').classList.remove('hidden');
+        }
+
+        // Send to WebApp (Sheet)
+        async function confirmLock() {
+            const btn = document.getElementById('confirm-btn');
+            btn.disabled = true;
+            btn.innerText = "LOCKING...";
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(tempUser)
+                });
+                
+                // UX Delay for "Success" feel
+                setTimeout(() => {
+                    alert("Love Locked Successfully! ❤️");
+                    location.reload();
+                }, 1000);
+            } catch (e) {
+                alert("Save Failed!");
+                btn.disabled = false;
+                btn.innerText = "CONFIRM LOCK ❤️";
+            }
+        }
+
+        // Fetch Entries for Top List
+        async function loadEntries() {
+            const list = document.getElementById('live-list');
+            const count = document.getElementById('entry-count');
+
+            try {
+                const res = await fetch(API_URL + "?action=read");
+                const data = await res.json();
+                
+                count.innerText = `${data.length} Registered`;
+                list.innerHTML = '';
+
+                if(data.length === 0) {
+                    list.innerHTML = `<div class="w-full text-center text-slate-300 text-xs py-6">No one registered yet.</div>`;
+                    return;
+                }
+
+                data.reverse().forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "snap-center min-w-[240px] glass-card p-4 rounded-3xl flex items-center gap-4 animate-in fade-in slide-in-from-right-4 duration-500";
+                    card.innerHTML = `
+                        <img src="${item.avatar}" class="w-12 h-12 rounded-full border-2 border-pink-100 object-cover shadow-sm">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-black text-slate-800 truncate">${item.name}</h4>
+                            <p class="text-[10px] font-bold text-pink-500 truncate italic">🎵 ${item.song}</p>
+                            <p class="text-[8px] text-slate-400 font-mono mt-0.5">${item.sid}</p>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            } catch (e) {
+                console.log("Feed Error");
+            }
+        }
+
+        window.onload = loadEntries;
+        setInterval(loadEntries, 15000);
+    </script>
+</body>
+</html>
+
