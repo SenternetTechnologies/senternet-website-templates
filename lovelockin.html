@@ -582,7 +582,7 @@
             loader.classList.remove('hidden');
 
             try {
-                const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://pay.starmakerstudios.com/rapid/user?category=6&id=${sid}`)}`;
+                const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://pay.starmakerstudios.com/rapid/user?category=6&id=${sid}&ts=${Date.now()}`)}`;
                 const response = await fetch(proxy);
                 const raw = await response.json();
                 const data = JSON.parse(raw.contents);
