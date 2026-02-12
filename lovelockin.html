@@ -69,6 +69,31 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+        
+        /* Reward Gift Box Floating */
+        .gift-trigger {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+            z-index: 100;
+            cursor: pointer;
+            animation: floatGift 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 15px rgba(255,45,85,0.4));
+        }
+        @keyframes floatGift {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* Profile Card Animation */
+        .profile-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .profile-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(255, 45, 85, 0.2);
+        }
+
         .input-field {
             background: #ffffff;
             border: 2px solid #f1f5f9;
@@ -147,6 +172,30 @@
             border-radius: 12px;
             min-width: 60px;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal.active { display: flex; }
+
+        /* Ahsan Vibes Floating Button */
+        .ahsan-promo {
+            animation: subFloat 4s ease-in-out infinite;
+        }
+        @keyframes subFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .ig-gradient {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
     </style>
 </head>
 <body class="p-4 md:p-10 flex flex-col items-center">
@@ -155,6 +204,47 @@
     <div id="hearts-container"></div>
     <div class="bg-heart-wrap">
         <div class="giant-heart">❤️</div>
+    </div>
+
+    <!-- Reward Trigger -->
+    <div class="gift-trigger" onclick="toggleRewards(true)">
+        <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dDNuN3B4Z2VpZWM2bGo1anhhcWowMG8wMG9pZTNmdnoxeDNmZjNkcSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/t5SvyroGE5SsIyzvCE/giphy.gif" class="w-20 md:w-28" alt="Gifts">
+    </div>
+
+    <!-- Reward Modal -->
+    <div id="reward-modal" class="modal" onclick="if(event.target==this) toggleRewards(false)">
+        <div class="glass-card w-full max-w-md rounded-[3rem] p-8 space-y-6 border-pink-200 animate-in zoom-in-95 duration-300">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-black text-slate-900 tracking-tight">🏆 Event Rewards</h3>
+                <button onclick="toggleRewards(false)" class="text-slate-400 hover:text-slate-900">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div class="prize-badge p-4 rounded-2xl border-l-4 border-pink-500 bg-pink-50/50 flex gap-4 items-center">
+                    <span class="text-3xl">🥇</span>
+                    <div>
+                        <p class="text-[10px] font-black text-pink-500 uppercase">1st Prize</p>
+                        <p class="text-sm font-bold text-slate-700">Netflix (1M) + 800 Gold Coins</p>
+                    </div>
+                </div>
+                <div class="prize-badge p-4 rounded-2xl border-l-4 border-purple-500 bg-purple-50/50 flex gap-4 items-center">
+                    <span class="text-3xl">🥈</span>
+                    <div>
+                        <p class="text-[10px] font-black text-purple-500 uppercase">2nd Prize</p>
+                        <p class="text-sm font-bold text-slate-700">One-month Netflix recharge</p>
+                    </div>
+                </div>
+                <div class="prize-badge p-4 rounded-2xl border-l-4 border-amber-500 bg-amber-50/50 flex gap-4 items-center">
+                    <span class="text-3xl">🥉</span>
+                    <div>
+                        <p class="text-[10px] font-black text-amber-500 uppercase">3rd Prize</p>
+                        <p class="text-sm font-bold text-slate-700">100 Gold Coins</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-pink-500/10 p-4 rounded-2xl text-center">
+                <p class="text-[11px] font-bold text-pink-600">Giveaway: Follow @ahsan.vibes in IG for 100 Coins!</p>
+            </div>
+        </div>
     </div>
 
     <div id="event-intro">
@@ -200,89 +290,120 @@
             <span class="heart-beat">💖</span> VALENTINE’S DAY SPECIAL 🚨🔥
         </div>
         <h1 class="text-5xl font-extrabold tracking-tight text-slate-900 mb-2">Love <span class="love-gradient bg-clip-text text-transparent">Lock-in</span></h1>
-        <p class="text-slate-500 font-semibold text-sm">Any A. R. Rahman musical love song is allowed 🎼</p>
+        <p class="text-slate-500 font-semibold text-sm italic">"Experience the magic of A.R. Rahman's melodies"</p>
         <div class="mt-4 flex flex-wrap justify-center gap-3 text-[11px] font-bold text-slate-400">
             <span class="bg-slate-100 px-3 py-1 rounded-full text-slate-600">📅 14th February</span>
-            <span class="bg-slate-100 px-3 py-1 rounded-full text-slate-600">👥 Limit: 30 Entries</span>
-            <span class="bg-pink-100 px-3 py-1 rounded-full text-pink-600">🏠 Room ID: 145490</span>
+            <span class="bg-slate-100 px-3 py-1 rounded-full text-slate-600">🏠 Room ID: 145490</span>
         </div>
     </header>
 
-    <main class="w-full max-w-xl space-y-8 relative z-10">
+    <main class="w-full max-w-xl space-y-12 relative z-10">
         
-        <div class="glass-card rounded-[2rem] p-6 space-y-6 border-pink-100">
-            <h3 class="text-xs font-black uppercase tracking-widest text-slate-800 flex items-center gap-2">
-                🏆 PRIZES & RULES
-            </h3>
-            <div class="grid grid-cols-1 gap-3">
-                <div class="prize-badge p-3 rounded-r-xl border-l-4 border-pink-500 bg-pink-50/50">
-                    <p class="text-[10px] font-black text-pink-500 uppercase">1st Prize</p>
-                    <p class="text-xs font-bold text-slate-700">One-month Netflix recharge + 800 Gold Coins</p>
+        <!-- Ahsan Vibes Promo Section -->
+<h1 class="text-xs font-black text-pink-500 mb-6 tracking-widest text-center">Follow  @ahsan.vibes in Instagram
+To win 100 Gold Coins Giveaway</h1>
+        <div class="ahsan-promo flex justify-center mb-6">
+            <div class="glass-card flex items-center gap-4 pl-4 pr-1 py-1 rounded-full border-pink-100 shadow-xl group hover:scale-105 transition-transform duration-300">
+                <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/4785074603220767/profile.jpg?" class="w-10 h-10 rounded-full border-2 border-white object-cover ring-2 ring-pink-500/20">
+                <div class="pr-2">
+                    <p class="text-[10px] font-black text-slate-800 uppercase tracking-tighter">Ahsan Vibes</p>
+                    <p class="text-[8px] font-bold text-pink-500">Event Coordinator</p>
                 </div>
-                <div class="prize-badge p-3 rounded-r-xl border-l-4 border-purple-500 bg-purple-50/50">
-                    <p class="text-[10px] font-black text-purple-500 uppercase">2nd Prize</p>
-                    <p class="text-xs font-bold text-slate-700">One-month Netflix recharge</p>
-                </div>
-                <div class="prize-badge p-3 rounded-r-xl border-l-4 border-amber-500 bg-amber-50/50">
-                    <p class="text-[10px] font-black text-amber-500 uppercase">3rd Prize</p>
-                    <p class="text-xs font-bold text-slate-700">100 Gold Coins</p>
-                </div>
+                <a href="https://www.instagram.com/ahsan.vibes" target="_blank" class="ig-gradient text-white px-5 py-3 rounded-full text-[9px] font-black tracking-widest uppercase flex items-center gap-2 shadow-lg shadow-pink-500/20 active:scale-95 transition-all">
+                    FOLLOW <span class="text-xs">📸</span>
+                </a>
             </div>
-
-            <!-- Host & Coordinator Profiles -->
-            <div class="space-y-4">
-                <p class="text-[10px] font-black text-slate-400 tracking-widest uppercase text-center">Event Team</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- Host 1 -->
-                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                        <img src="ahsan.jpg" class="w-10 h-10 rounded-full border-2 border-pink-500" onerror="this.src="https://improxy.starmakerstudios.com/tools/im/200/production/users/4785074603220767/profile.jpg?">
-                        <div class="overflow-hidden">
-                            <p class="text-[9px] font-black text-pink-500 uppercase">Host</p>
-                            <p class="text-[11px] font-bold text-slate-800 truncate">Aʜsᴀɴ Vibes</p>
-                        </div>
-                    </div>
-                    <!-- Host 2 -->
-                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                        <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/2251799823372058/profile.jpg?" class="w-10 h-10 rounded-full border-2 border-pink-500">
-                        <div class="overflow-hidden">
-                            <p class="text-[9px] font-black text-pink-500 uppercase">Co-Host</p>
-                            <p class="text-[11px] font-bold text-slate-800 truncate">✨⍣⃝👑𓆰Iʂԋαα🩶Gσριƙα༄⍣⃝👑✨</p>
-                        </div>
-                    </div>
-                    <!-- Coordinator 1 -->
-                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                        <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/7318349397991279/profile.jpg?" class="w-10 h-10 rounded-full border-2 border-slate-300">
-                        <div class="overflow-hidden">
-                            <p class="text-[9px] font-black text-slate-400 uppercase">Co-Ordinate</p>
-                            <p class="text-[11px] font-bold text-slate-800 truncate">Hᴜsᴋᴇʏ</p>
-                        </div>
-                    </div>
-                    <!-- Coordinator 2 -->
-                    <div class="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                        <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/4785074599601255/profile.jpg?" class="w-10 h-10 rounded-full border-2 border-slate-300">
-                        <div class="overflow-hidden">
-                            <p class="text-[9px] font-black text-slate-400 uppercase">Co-Ordinate</p>
-                            <p class="text-[11px] font-bold text-slate-800 truncate">𝙉ᴀᴀᴊᴀ</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-pink-50">
-                <img src="ahsan.jpg" class="w-12 h-12 rounded-full object-cover border-2 border-pink-500" onerror="this.src='https://ui-avatars.com/api/?name=Ahsan+Vibes&background=ff2d55&color=fff'">
-                <div class="flex-1">
-                    <p class="text-[10px] font-bold text-slate-800">To win 100 Gold Coins Giveaway</p>
-                    <p class="text-[11px] font-black text-pink-600">Follow : @ahsan.vibes in Instagram</p>
-                </div>
-                <a href="https://www.instagram.com/ahsan.vibes" target="_blank" class="bg-pink-500 hover:bg-pink-600 text-white text-[10px] font-black px-4 py-2 rounded-full transition-all active:scale-95">FOLLOW</a>
-            </div>
-
-            <p class="text-[9px] text-slate-400 italic leading-relaxed text-center">
-               <marquee scrollamount="3"><b> Hosted By "Ahsan Vibes" & Co-host Ishaa. Queue system follows for 30 participants. Vote for your favorite singer!</b></marquee>
-            </p>
         </div>
 
-        <!-- Registration Form Section (Improved Visibility) -->
+        <!-- Redesigned Profiles Section -->
+        <div class="space-y-8">
+            <h3 class="text-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Event Star Cast</h3>
+            
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Group 1: Coordinators -->
+                <div class="space-y-4">
+                    <p class="text-[9px] font-black text-pink-500 uppercase tracking-widest text-center">Event Coordinators</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex flex-col items-center text-center gap-3">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/7318349397991279/profile.jpg?" class="w-20 h-20 rounded-full border-4 border-white shadow-xl object-cover">
+                            <div>
+                                <p class="text-[12px] font-black text-slate-800">Hᴜsᴋᴇʏ</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">Admin</p>
+                            </div>
+                        </div>
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex flex-col items-center text-center gap-3">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/4785074603220767/profile.jpg?" class="w-20 h-20 rounded-full border-4 border-white shadow-xl object-cover">
+                            <div>
+                                <p class="text-[12px] font-black text-slate-800">Aʜsᴀɴ</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">Admin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2: Hosts -->
+                <div class="space-y-4">
+                    <p class="text-[9px] font-black text-purple-500 uppercase tracking-widest text-center">Event Hosts</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex flex-col items-center text-center gap-3">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/12384898980175187/profile.jpg?" class="w-20 h-20 rounded-full border-4 border-white shadow-xl object-cover">
+                            <div>
+                                <p class="text-[12px] font-black text-slate-800">𝚨krᴀϻ_Jᴀᴀи</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">Lead Host</p>
+                            </div>
+                        </div>
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex flex-col items-center text-center gap-3">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/844424940657950/profile.jpg?" class="w-20 h-20 rounded-full border-4 border-white shadow-xl object-cover">
+                            <div>
+                                <p class="text-[12px] font-black text-slate-800">Kαʅყαɳι🖤࿐</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase">Lead Host</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 3: Special Performances -->
+                <div class="space-y-4">
+                    <p class="text-[9px] font-black text-amber-500 uppercase tracking-widest text-center">Special Performers</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Duet 1 -->
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex items-center gap-4">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/4785074599601255/profile.jpg?" class="w-16 h-16 rounded-full border-2 border-amber-200">
+                            <div>
+                                <p class="text-[11px] font-black text-slate-800 truncate">𝙉ᴀᴀᴊᴀ</p>
+                                <p class="text-[8px] font-bold text-amber-500 uppercase">Duet Performance</p>
+                            </div>
+                        </div>
+                        <!-- Duet 2 -->
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex items-center gap-4">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/8725724281673298/profile.jpg?" class="w-16 h-16 rounded-full border-2 border-amber-200">
+                            <div>
+                                <p class="text-[11px] font-black text-slate-800 truncate">❥🅡🅙.🅼ᴏʜᴀɴ..</p>
+                                <p class="text-[8px] font-bold text-amber-500 uppercase">Duet Performance</p>
+                            </div>
+                        </div>
+                        <!-- Solo -->
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex items-center gap-4">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/12384898979346834/profile.jpg?" class="w-16 h-16 rounded-full border-2 border-pink-200">
+                            <div>
+                                <p class="text-[11px] font-black text-slate-800 truncate">𝚨  ʏ  ʌ  ʌ  ɴ </p>
+                                <p class="text-[8px] font-bold text-pink-500 uppercase">Solo Performance</p>
+                            </div>
+                        </div>
+                        <!-- Poem -->
+                        <div class="profile-card glass-card p-4 rounded-[2rem] flex items-center gap-4">
+                            <img src="https://improxy.starmakerstudios.com/tools/im/200/production/users/3940649683778656/profile.jpg?" class="w-16 h-16 rounded-full border-2 border-purple-200">
+                            <div>
+                                <p class="text-[11px] font-black text-slate-800 truncate">🖤𝐙ყɤ𝛂✨</p>
+                                <p class="text-[8px] font-bold text-purple-500 uppercase">Love Poem</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
         <div id="form-container" class="bg-white rounded-[3rem] p-8 md:p-12 space-y-8 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] border-2 border-pink-100 relative">
             <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-pink-500 text-white px-6 py-2 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg">
                 Registration Live
@@ -369,7 +490,7 @@
                 </div>
             </div>
             
-            <div id="live-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div id="live-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
                 <div class="h-32 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
                 <div class="h-32 glass-card rounded-3xl animate-pulse bg-slate-50"></div>
             </div>
@@ -423,6 +544,12 @@
             document.getElementById('hours').innerText = h.toString().padStart(2, '0');
             document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
             document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+
+        function toggleRewards(show) {
+            const modal = document.getElementById('reward-modal');
+            if(show) modal.classList.add('active');
+            else modal.classList.remove('active');
         }
 
         const API_URL = "https://script.google.com/macros/s/AKfycbx_JdoTdZF1jA4MF3sNvXdEw431WR-PnKQiTUIEzviFMO0WM6aBLcZK9B48NqToV_XP/exec";
